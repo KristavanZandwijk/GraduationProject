@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { QueryEngine } from '@comunica/query-sparql';
 
 const ComunicaComponent1 = ({ sources, setQueryResults }) => { // Updated props to include 'sources'
-    useEffect(() => {
+    useEffect(() =>  {
         const myEngine = new QueryEngine();
 
         const executeQuery = async () => {

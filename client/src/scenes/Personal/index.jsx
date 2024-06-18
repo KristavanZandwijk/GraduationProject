@@ -1,31 +1,34 @@
 import React from 'react';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import Header from 'components/Header';
+import FileDrop from 'components/FileDrop';
+import FileTable from 'components/DataSpaceContent';
+import { useSelector } from 'react-redux';
 
 const Personal = () => {
+const { picturePath } = useSelector((state) => state.user);
 
-  const redirectToIfcViewerHTML = () => {
-    window.location.href = 'http://localhost:1002/client/src/components/IfcviewerHTML/index.html';
-  };
+return (
+<Box m="1.5rem 2.5rem" height="100vh" display="flex" flexDirection="column">
+{/* Header */}
+<Box flex="0 0 auto">
+<Header
+       title="Personal Data Space"
+       subtitle="Here you can upload the data to your personal server."
+     />
+</Box>
 
-  return (
-    <Box m="1.5rem 2.5rem" height="100vh" display="flex" flexDirection="column">
-      {/* Header */}
-      <Box flex="0 0 auto">
-        <Header
-          title="Personal Data Space"
-          subtitle="This page will show your data."
-        />
-      </Box>
-
-      {/* Button */}
-      <Box flex="0 0 auto">
-        <Button onClick={redirectToIfcViewerHTML} variant="contained" color="primary">
-          Open IFC Viewer
-        </Button>
-      </Box>
-    </Box>
-  );
+  {/* FileDrop Component */}
+  <Box flex="1" mt="1rem">
+    <FileDrop picturePath={picturePath} />
+  </Box>
+  
+  {/* FileTable Component */}
+  <Box flex="1" mt="1rem">
+    <FileTable />
+  </Box>
+</Box>
+);
 };
 
 export default Personal;

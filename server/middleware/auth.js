@@ -1,4 +1,6 @@
+// server/middleware/auth.js
 import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 export const verifyToken = async (req, res, next) => {
   try {
@@ -14,6 +16,14 @@ export const verifyToken = async (req, res, next) => {
 
     const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verified;
+
+    // Fetch user data from the database
+    const user = await User.findById(verified.id);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    
+    req.userData = user;
     next();
   } catch (err) {
     res.status(500).json({ error: err.message });

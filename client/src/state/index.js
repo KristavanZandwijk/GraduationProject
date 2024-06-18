@@ -1,3 +1,4 @@
+// client/src/state/index.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -5,6 +6,7 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
+  files: [],
 };
 
 export const authSlice = createSlice({
@@ -32,6 +34,9 @@ export const authSlice = createSlice({
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
     },
+    setFiles: (state, action) => {
+      state.files = action.payload.files;
+    },
     setPost: (state, action) => {
       const updatedPosts = state.posts.map((post) => {
         if (post._id === action.payload.post._id) return action.payload.post;
@@ -39,9 +44,16 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    setFile: (state, action) => {
+      const updatedFiles = state.files.map((file) => {
+        if (file._id === action.payload.file._id) return action.payload.file;
+        return file;
+      });
+      state.files = updatedFiles;
+    },
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
+export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost, setFile, setFiles } =
   authSlice.actions;
 export default authSlice.reducer;

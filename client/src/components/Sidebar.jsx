@@ -30,7 +30,6 @@ import {
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import FlexBetween from "./FlexBetween";
-import profileImage from "assets/profile.jpeg";
 import { useSelector } from "react-redux";
 import UserImage from "./UserImage";
 

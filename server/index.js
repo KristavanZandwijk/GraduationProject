@@ -12,12 +12,14 @@ import authRoutes from "./routes/auth.js";
 import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import fileRoutes from "./routes/files.js";
+import buildingRoutes from "./routes/building.js";
+import elementRoutes from "./routes/element.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
-import User from "./models/User.js";
-import Post from "./models/Post.js";
-import { users, posts } from "./data/index.js";
+import Element from "./models/Elements.js";
+import { elements } from "./data/index.js";
+
 
 /* CONFIGURATIONS */
 const __filename = fileURLToPath(import.meta.url);
@@ -53,6 +55,9 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/files", fileRoutes);
+app.use("/buildings", buildingRoutes);
+app.use("/elements", elementRoutes);
+
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;
@@ -65,5 +70,7 @@ mongoose
     /* ADD DATA ONE TIME */
     // User.insertMany(users);
     // Post.insertMany(posts);
+    //Building.insertMany(buildings);
+    //Element.insertMany(elements);
   })
   .catch((error) => console.log(`${error} did not connect`));

@@ -14,6 +14,8 @@ import postRoutes from "./routes/posts.js";
 import fileRoutes from "./routes/files.js";
 import buildingRoutes from "./routes/building.js";
 import elementRoutes from "./routes/element.js";
+import newBuildingRoutes from "./routes/newBuilding.js";
+import newElementRoutes from "./routes/newElement.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -57,6 +59,8 @@ app.use("/posts", postRoutes);
 app.use("/files", fileRoutes);
 app.use("/buildings", buildingRoutes);
 app.use("/elements", elementRoutes);
+app.use("/newbuildings", newBuildingRoutes);
+app.use("/newelements", newElementRoutes);
 
 
 /* MONGOOSE SETUP */

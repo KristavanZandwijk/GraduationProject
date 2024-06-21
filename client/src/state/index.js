@@ -39,13 +39,11 @@ export const authSlice = createSlice({
       state.files = action.payload.files;
     },
     setBuildings: (state, action) => {
-      state.buildings = action.payload.buildings; // handle setting buildings
+      state.buildings = action.payload; // handle setting buildings directly
     },
-
     setElements: (state, action) => {
-      state.elements = action.payload.elements;
+      state.elements = action.payload;
     },
-
     setPost: (state, action) => {
       const updatedPosts = state.posts.map((post) => {
         if (post._id === action.payload.post._id) return action.payload.post;
@@ -59,6 +57,20 @@ export const authSlice = createSlice({
         return file;
       });
       state.files = updatedFiles;
+    },
+    setBuilding: (state, action) => {
+      const updatedBuildings = state.buildings.map((building) => {
+        if (building._id === action.payload.building._id) return action.payload.building;
+        return building;
+      });
+      state.buildings = updatedBuildings;
+    },
+    setElement: (state, action) => {
+      const updatedElements = state.elements.map((element) => {
+        if (element._id === action.payload.element._id) return action.payload.element;
+        return element;
+      });
+      state.elements = updatedElements;
     },
   },
 });
@@ -74,6 +86,8 @@ export const {
   setFile,
   setBuildings, // export setBuildings action
   setElements,
+  setBuilding,
+  setElement,
 } = authSlice.actions;
 
 export default authSlice.reducer;

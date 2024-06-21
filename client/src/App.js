@@ -18,6 +18,10 @@ import DataPrivacy from "scenes/DataPrivacy";
 import Personal from "scenes/Personal"
 import Profile from "scenes/Profile";
 import ProfilePage from "scenes/ProfilePage";
+import NewBuilding from "scenes/NewBuilding";
+import NewElement from "scenes/NewElement";
+import BuildingDataSpaceID from "scenes/BuildingDataSpaceID";
+import ElementDataSpaceID from "scenes/ElementDataSpaceID";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -35,7 +39,9 @@ function App() {
             <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />} />
             <Route path="/profile/:userId"   element={isAuth ? <ProfilePage /> : <Navigate to="/" />}/>
             <Route path="/buildingdataspace" element={ isAuth ? <BuildingDataSpace /> : <Navigate to="/" />}/>
+            <Route path="/buildingdataspace/:buildingDataSpaceID" element={ isAuth ? <BuildingDataSpaceID /> : <Navigate to="/" />}/>
             <Route path="/elementdataspace" element={isAuth ? <ElementDataSpace /> : <Navigate to="/" />}/>
+            <Route path="/elementdataspace/:elementDataSpaceID" element={isAuth ? <ElementDataSpaceID /> : <Navigate to="/" />}/>
             <Route path="/searchfunction" element={isAuth ? <SearchFunction /> : <Navigate to="/" />}/>
             <Route path="/projectlearning" element={isAuth ? <ProjectLearning /> : <Navigate to="/" />}/>
             <Route path="/elementpassport" element={isAuth ? <ElementPassport /> : <Navigate to="/" />}/>
@@ -44,6 +50,8 @@ function App() {
             <Route path="/dataprivacy" element={isAuth ? <DataPrivacy /> : <Navigate to="/" />}/>
             <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />}/>
             <Route path="/profile" element={isAuth ? <Profile /> : <Navigate to="/" />}/>
+            <Route path="/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />}/>
+            <Route path="/newelement" element={isAuth ? <NewElement /> : <Navigate to="/" />}/>
           </Route>
             <Route path="/" element={<LoginPage />} />
           </Routes>

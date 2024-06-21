@@ -20,14 +20,6 @@ const BuildingSchema = new mongoose.Schema(
             min: 5,
             max: 15,
         },
-        // containsElements: {
-        //     type: Array,
-        //     default: [],
-        // },
-        // containsProjects: {
-        //     type: Array,
-        //     default: [],
-        // },
         hasOwner: {
             type: String,
             required: true,

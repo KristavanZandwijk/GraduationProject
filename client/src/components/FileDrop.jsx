@@ -70,11 +70,13 @@ const FileDrop = ({ picturePath }) => {
           value={description}
           sx={{
             width: "100%",
-            backgroundColor: theme.palette.neutral.main,
+            backgroundColor: theme.palette.secondary.default,
             borderRadius: "2rem",
             padding: "1rem 2rem",
+            border: `2px solid ${theme.palette.secondary.main}`, // use backticks for template literals
           }}
         />
+
       </FlexBetween>
       {isData && (
         <Box

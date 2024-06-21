@@ -1,15 +1,17 @@
-// client/src/scenes/ElementDataSpace/index.js
 import React, { useEffect } from 'react';
-import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import { setElements } from '../../state';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import ElementTable from 'components/ElementInformation';
 
 const ElementDataSpace = () => {
   const dispatch = useDispatch();
-  const elements = useSelector((state) => state.elements);
+  const elements = useSelector((state) => state.elements || []);
   const { personID } = useSelector((state) => state.user);
+  const navigate = useNavigate();
   const token = useSelector((state) => state.token);
 
   useEffect(() => {
@@ -18,54 +20,38 @@ const ElementDataSpace = () => {
         const response = await axios.get('http://localhost:5001/elements', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        dispatch(setElements({ elements: response.data }));
+        dispatch(setElements(Array.isArray(response.data) ? response.data : []));
       } catch (error) {
-        console.error("Failed to fetch elements", error);
+        console.error('Failed to fetch elements:', error);
       }
     };
 
     fetchElements();
   }, [dispatch, token]);
 
-  const filteredElements = elements.filter(element => element.hasOwner === personID);
+  const filteredElements = Array.isArray(elements) 
+    ? elements.filter(element => element.hasOwner === personID) 
+    : [];
+
+  const handleNewElementClick = () => {
+    navigate('/newelement');
+  };
 
   return (
     <Box m="1.5rem 2.5rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="Element Data Space" subtitle="This space shows all the elements that are owned by you." />
+        <Header title="Element Data Spaces" subtitle="This space shows all the element data spaces that are accessible to you. Click on the element data space ID to access the element data space." />
+        <Button variant="contained" color="primary" onClick={handleNewElementClick}>
+          Create New Element
+        </Button>
       </Box>
       <Box mt={3}>
-        {!elements.length ? (
+        {elements.length === 0 ? (
           <CircularProgress />
-        ) : !filteredElements.length ? (
+        ) : filteredElements.length === 0 ? (
           <Typography variant="h6">You unfortunately do not own any elements (yet).</Typography>
         ) : (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell><Typography variant="h6">Element ID</Typography></TableCell>
-                  <TableCell><Typography variant="h6">Element Data Space ID</Typography></TableCell>
-                  <TableCell><Typography variant="h6">Owner ID</Typography></TableCell>
-                  <TableCell><Typography variant="h6">Element Name</Typography></TableCell>
-                  <TableCell><Typography variant="h6">Element Location</Typography></TableCell>
-                  <TableCell><Typography variant="h6">Created At</Typography></TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredElements.map((element) => (
-                  <TableRow key={element.elementID}>
-                    <TableCell>{element.elementID}</TableCell>
-                    <TableCell>{element.elementDataSpaceID}</TableCell>
-                    <TableCell>{element.hasOwner}</TableCell>
-                    <TableCell>{element.elementName}</TableCell>
-                    <TableCell>{element.elementLocation}</TableCell>
-                    <TableCell>{new Date(element.createdAt).toLocaleString()}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <ElementTable elements={filteredElements} />
         )}
       </Box>
     </Box>

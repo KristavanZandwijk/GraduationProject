@@ -14,18 +14,18 @@ const ElementSchema = new mongoose.Schema(
             min: 5,
             max: 15,
         },
-            hasBuilding:{
-                type: String,
-                required: true,
+        hasBuilding:{
+            type: String,
+            required: true,
         },
-        // containsElements: {
-        //     type: Array,
-        //     default: [],
-        // },
-        // containsProjects: {
-        //     type: Array,
-        //     default: [],
-        // },
+         hasFiles:{
+            type: Array,
+            default: [],
+        },
+         isPartOf:{
+            type: Array,
+            default: [],
+        },
         hasOwner: {
             type: String,
             required: true,

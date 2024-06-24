@@ -1,4 +1,3 @@
-// client/src/components/FileDrop.jsx
 import {
   EditOutlined,
   DeleteOutlined,
@@ -14,6 +13,8 @@ import {
   Button,
   IconButton,
   useMediaQuery,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
@@ -27,7 +28,9 @@ const FileDrop = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isData, setIsData] = useState(false);
   const [data, setData] = useState(null);
+  const [relatedTo, setRelatedTo] = useState("");
   const [description, setDescription] = useState("");
+  const [considers, setConsiders] = useState("");
   const theme = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -43,6 +46,8 @@ const FileDrop = ({ picturePath }) => {
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", description);
+    formData.append("relatedTo", relatedTo);
+    formData.append("considers", considers);
     if (data) {
       formData.append("data", data);
       formData.append("filePath", data.name);
@@ -58,25 +63,58 @@ const FileDrop = ({ picturePath }) => {
     dispatch(setFiles({ files }));
     setData(null);
     setDescription(""); // Clear description after file upload
+    setRelatedTo("");
+    setConsiders("");
   };
 
   return (
     <WidgetWrapper>
       <FlexBetween gap="1.5rem">
-        <UserImage image={picturePath} />
-        <InputBase
-          placeholder="Add a description to your files"
-          onChange={(e) => setDescription(e.target.value)}
-          value={description}
-          sx={{
-            width: "100%",
-            backgroundColor: theme.palette.secondary.default,
-            borderRadius: "2rem",
-            padding: "1rem 2rem",
-            border: `2px solid ${theme.palette.secondary.main}`, // use backticks for template literals
-          }}
-        />
-
+        <Box display="flex" flexDirection="column" gap="1rem" width="100%">
+          <UserImage image={picturePath} />
+          <InputBase
+            placeholder="Add a description to your files"
+            onChange={(e) => setDescription(e.target.value)}
+            value={description}
+            sx={{
+              width: "100%",
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: "2rem",
+              padding: "1rem 2rem",
+              border: `2px solid ${theme.palette.secondary[100]}`, // use backticks for template literals
+            }}
+          />
+          <Select
+            value={considers}
+            onChange={(e) => setConsiders(e.target.value)}
+            displayEmpty
+            sx={{
+              width: "100%",
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: "2rem",
+              padding: "1rem 2rem",
+              border: `2px solid ${theme.palette.secondary[100]}`, // use backticks for template literals
+            }}
+          >
+            <MenuItem value="" disabled>
+              Is the file related to an element or a building
+            </MenuItem>
+            <MenuItem value="element">Element</MenuItem>
+            <MenuItem value="building">Building</MenuItem>
+          </Select>
+          <InputBase
+            placeholder="The file is related to (give related Element building data space ID)"
+            onChange={(e) => setRelatedTo(e.target.value)}
+            value={relatedTo}
+            sx={{
+              width: "100%",
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: "2rem",
+              padding: "1rem 2rem",
+              border: `2px solid ${theme.palette.secondary[100]}`, // use backticks for template literals
+            }}
+          />
+        </Box>
       </FlexBetween>
       {isData && (
         <Box
@@ -100,7 +138,7 @@ const FileDrop = ({ picturePath }) => {
               <FlexBetween>
                 <Box
                   {...getRootProps()}
-                  border={`2px dashed ${theme.palette.secondary.main}`}
+                  border={`2px dashed ${theme.palette.secondary[100]}`}
                   p="1rem"
                   width="100%"
                   sx={{ "&:hover": { cursor: "pointer" } }}
@@ -133,9 +171,9 @@ const FileDrop = ({ picturePath }) => {
 
       <FlexBetween>
         <FlexBetween gap="0.25rem" onClick={() => setIsData(!isData)}>
-          <PublishOutlined sx={{ color: theme.palette.secondary[200] }} />
+          <PublishOutlined sx={{ color: theme.palette.secondary[100] }} />
           <Typography
-            color={theme.palette.secondary[200]}
+            color={theme.palette.secondary[100]}
             sx={{ "&:hover": { cursor: "pointer", color: theme.palette.secondary.main } }}
           >
             Add Data
@@ -155,7 +193,7 @@ const FileDrop = ({ picturePath }) => {
           disabled={!description && !data}
           onClick={handleFile}
           sx={{
-            color: theme.palette.secondary.main,
+            color: theme.palette.secondary[100],
             backgroundColor: theme.palette.background.alt,
             borderRadius: "3rem",
           }}

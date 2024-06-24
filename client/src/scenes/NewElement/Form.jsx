@@ -3,6 +3,7 @@ import {
     Divider,
     InputBase,
     Button,
+    Typography,
     useTheme,
     useMediaQuery,
 } from "@mui/material";
@@ -56,17 +57,36 @@ const ElementDrop = () => {
     };
 
     return (
-        <Box>
+        <Box
+        sx={{
+          backgroundColor: theme.palette.secondary.default,
+          borderRadius: "1rem",
+          padding: "2rem",
+          border: "1px solid", // Set the border width and style
+          borderColor: theme.palette.secondary[100] // Set the border colo
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            marginBottom: "2rem",
+            textAlign: "center",
+            color: theme.palette.secondary[100],
+            fontweight: "bold",
+          }}
+        >
+          Create the meta-data of a new element here!
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <InputBase
                 placeholder="Add a element ID"
                 onChange={(e) => setElementID(e.target.value)}
                 value={elementID}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
             <InputBase
@@ -75,10 +95,9 @@ const ElementDrop = () => {
                 value={elementDataSpaceID}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
             <InputBase
@@ -87,10 +106,9 @@ const ElementDrop = () => {
                 value={hasOwner}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
             <InputBase
@@ -99,10 +117,9 @@ const ElementDrop = () => {
                 value={elementName}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
             <InputBase
@@ -111,10 +128,9 @@ const ElementDrop = () => {
                 value={elementLocation}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
             <InputBase
@@ -123,13 +139,13 @@ const ElementDrop = () => {
                 value={hasBuilding}
                 sx={{
                     width: "100%",
-                    backgroundColor: theme.palette.neutral.main,
+                    backgroundColor: theme.palette.primary.main,
                     borderRadius: "2rem",
                     padding: "1rem 2rem",
-                    margin: "1rem 0"
                 }}
             />
-            <Divider sx={{ margin: "1.25rem 0" }} />
+            </Box>
+            <Divider sx={{ margin: "2rem 0" }} />
             <Button
                 disabled={
                     !elementID ||
@@ -141,9 +157,12 @@ const ElementDrop = () => {
                 }
                 onClick={handleElement}
                 sx={{
-                    color: theme.palette.secondary.main,
-                    backgroundColor: theme.palette.background.alt,
+                    backgroundColor: theme.palette.secondary[300],
+                    color: theme.palette.primary.main,
+                    "&:hover": { color: theme.palette.primary[800] },
                     borderRadius: "3rem",
+                    width: "100%",
+                    padding: "1rem 2rem",
                 }}
             >
                 UPLOAD

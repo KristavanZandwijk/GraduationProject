@@ -4,17 +4,26 @@ import Header from 'components/Header';
 import BuildingDrop from './Form';
 
 const NewBuilding = () => {
-
   return (
-    <Box m="1.5rem 2.5rem" height="100vh" display="flex">
-      {/* Right side content */}
-      <Box flex="1" ml={4}>
-        <Header
-          title="New Building"
-          subtitle="This page enables users to make a new building."
-        />
+    <Box 
+      m="1.5rem 2.5rem" 
+      height="100vh" 
+      display="flex" 
+      flexDirection="column" 
+      alignItems="center"
+      sx={{ 
+        backgroundColor: (theme) => theme.palette.secondary.default,
+        borderRadius: "1rem",
+        padding: "2rem"
+      }}
+    >
+      {/* Header */}
+      <Box mb="2rem" width="100%">
       </Box>
-      <BuildingDrop/>
+      {/* Building Drop Form */}
+      <Box width="100%" maxWidth="600px">
+        <BuildingDrop />
+      </Box>
     </Box>
   );
 };

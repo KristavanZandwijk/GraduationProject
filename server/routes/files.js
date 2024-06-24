@@ -41,4 +41,15 @@ router.get('/user/:userId', verifyToken, async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  try {
+    const { relatedTo } = req.query;
+    const query = relatedTo ? { relatedTo } : {};
+    const files = await File.find(query);
+    res.status(200).json(files);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 export default router;

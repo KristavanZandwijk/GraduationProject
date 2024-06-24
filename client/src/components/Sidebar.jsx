@@ -99,7 +99,13 @@ const navItems = [
     icon: <AdminPanelSettingsOutlined />,
   },
 ];
-const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile, }) => {
+
+const Sidebar = ({
+  drawerWidth,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  isNonMobile,
+}) => {
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
   const navigate = useNavigate(); // Initialize useNavigate hook
@@ -107,7 +113,8 @@ const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile, })
   const user = useSelector((state) => state.user);
   const fullName = `${user.firstName} ${user.lastName}`;
   const role = user.role;
-  const {picturePath} = useSelector((state) => state.user);
+  const { picturePath } = useSelector((state) => state.user);
+  const dataSpaceID = user.dataSpaceID; // Assuming dataSpaceID is part of the user object
 
   useEffect(() => {
     setActive(pathname.substring(1));
@@ -130,7 +137,7 @@ const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile, })
             "& .MuiDrawer-paper": {
               color: theme.palette.secondary[200],
               backgroundColor: theme.palette.background.alt,
-              boxSixing: "border-box",
+              boxSizing: "border-box",
               borderWidth: isNonMobile ? 0 : "0.2px",
               width: drawerWidth,
             },
@@ -166,7 +173,11 @@ const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile, })
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        navigate(`/${lcText}`);
+                        if (text === "PersonalDataSpace") {
+                          navigate(`/personaldataspace/${dataSpaceID}`);
+                        } else {
+                          navigate(`/${lcText}`);
+                        }
                         setActive(lcText);
                       }}
                       sx={{
@@ -204,8 +215,12 @@ const Sidebar = ({ drawerWidth, isSidebarOpen, setIsSidebarOpen, isNonMobile, })
 
           <Box position="relative" bottom="0.2rem">
             <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 1rem 3rem">
-                <UserImage image={picturePath} />
+            <FlexBetween
+              textTransform="none"
+              gap="1rem"
+              m="1.5rem 2rem 1rem 3rem"
+            >
+              <UserImage image={picturePath} />
               <Box textAlign="left">
                 <Typography
                   fontWeight="bold"

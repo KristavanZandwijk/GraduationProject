@@ -36,7 +36,7 @@ function App() {
           <Routes>
           <Route element={<Layout />}>
             <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />}/>
-            <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />} />
+            <Route path="/personaldataspace/:dataspaceID" element={isAuth ? <Personal /> : <Navigate to="/" />} />
             <Route path="/profile/:userId"   element={isAuth ? <ProfilePage /> : <Navigate to="/" />}/>
             <Route path="/buildingdataspace" element={ isAuth ? <BuildingDataSpace /> : <Navigate to="/" />}/>
             <Route path="/buildingdataspace/:buildingDataSpaceID" element={ isAuth ? <BuildingDataSpaceID /> : <Navigate to="/" />}/>

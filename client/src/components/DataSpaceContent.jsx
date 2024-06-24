@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton, Link } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
+import { useTheme } from '@emotion/react';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+  const theme = useTheme();
 
   const fetchFiles = async () => {
     const response = await fetch(`http://localhost:5001/files/user/${_id}`, {
@@ -20,6 +22,16 @@ const FileTable = () => {
   useEffect(() => {
     fetchFiles();
   }, [_id, token]);
+
+  const renderRelatedToLink = (considers, relatedTo) => {
+    if (considers === 'building') {
+      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/buildingdataspace/${relatedTo}`}>{relatedTo}</Link>;
+    }
+    if (considers === 'element') {
+      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/elementdataspace/${relatedTo}`}>{relatedTo}</Link>;
+    }
+    return relatedTo;
+  };
 
   return (
     <Box mt="2rem">
@@ -38,6 +50,8 @@ const FileTable = () => {
               <TableCell>File ID</TableCell>
               <TableCell>File Name</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Related To</TableCell>
+              <TableCell>Related To Data Space ID</TableCell>
               <TableCell>Uploaded At</TableCell>
             </TableRow>
           </TableHead>
@@ -47,6 +61,8 @@ const FileTable = () => {
                 <TableCell>{file.fileID}</TableCell>
                 <TableCell>{file.fileName}</TableCell>
                 <TableCell>{file.description}</TableCell>
+                <TableCell>{file.considers}</TableCell>
+                <TableCell >{renderRelatedToLink(file.considers, file.relatedTo) }</TableCell>
                 <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
               </TableRow>
             ))}

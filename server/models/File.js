@@ -27,9 +27,17 @@ const FileSchema = mongoose.Schema(
             type: String,
             required: true,
         },
+        relatedTo:{
+            type: String,
+        },
+        considers: {
+            type: String,
+            enum: ["element", "building"], // Allowed values 
+        },
     },
     { timestamps: true }
 );
+
 
 const File = mongoose.model("File", FileSchema);
 

@@ -3,6 +3,7 @@ import {
   EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
+  BackupOutlined,
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserImage from "components/UserImage";
@@ -14,13 +15,11 @@ import { useNavigate } from "react-router-dom";
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
+  const [files, setFiles] = useState([]); // State to hold user files
   const { palette } = useTheme();
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
-  const dark = palette.neutral.dark;
-  const medium = palette.neutral.medium;
-  const main = palette.neutral.main;
-  const theme = useTheme ()
+  const theme = useTheme();
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:5001/users/${userId}`, {
@@ -31,9 +30,19 @@ const UserWidget = ({ userId, picturePath }) => {
     setUser(data);
   };
 
+  const fetchFiles = async () => {
+    const response = await fetch(`http://localhost:5001/files/user/${userId}`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
+    setFiles(data);
+  };
+
   useEffect(() => {
     getUser();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchFiles();
+  }, [userId, token]);
 
   if (!user) {
     return null;
@@ -71,7 +80,7 @@ const UserWidget = ({ userId, picturePath }) => {
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={medium}>{friends.length} friends</Typography>
+            <Typography color={palette.neutral.medium}>{friends.length} friends</Typography>
           </Box>
         </FlexBetween>
         <ManageAccountsOutlined />
@@ -82,12 +91,16 @@ const UserWidget = ({ userId, picturePath }) => {
       {/* SECOND ROW */}
       <Box p="1rem 0">
         <Box display="flex" alignItems="center" gap="1rem" mb="0.5rem">
-          <LocationOnOutlined fontSize="large" sx={{ color: theme.palette.secondary[200]}} />
-          <Typography color={medium}>{city}</Typography>
+          <LocationOnOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
+          <Typography color={palette.neutral.medium}>{city}</Typography>
         </Box>
         <Box display="flex" alignItems="center" gap="1rem">
           <WorkOutlineOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
-          <Typography color={medium}>{role}</Typography>
+          <Typography color={palette.neutral.medium}>{role}</Typography>
+        </Box>
+        <Box display="flex" alignItems="center" gap="1rem">
+          <BackupOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
+          <Typography color={palette.neutral.medium}>{files.length} files</Typography>
         </Box>
       </Box>
 

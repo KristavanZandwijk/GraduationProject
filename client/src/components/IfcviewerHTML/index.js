@@ -12,4 +12,4 @@ async function loadIfc(url) {
     viewer.shadowDropper.renderShadow(model.modelID);
 }
 
-loadIfc('http://localhost:1000/JerryHome/Gordelweg33a.ifc');
+loadIfc('server/public/test.ifc');

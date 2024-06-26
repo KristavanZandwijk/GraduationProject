@@ -97,7 +97,7 @@ const FileDrop = ({ picturePath }) => {
             }}
           >
             <MenuItem value="" disabled>
-              Is the file related to an element or a building
+              Is the file related to an element or a building?
             </MenuItem>
             <MenuItem value="element">Element</MenuItem>
             <MenuItem value="building">Building</MenuItem>

@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from 'components/Header';
+import { useTheme } from "@mui/material";
 
 const ElementDataSpaceID = () => {
   const { elementDataSpaceID } = useParams(); // Assuming you use react-router-dom v6
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -26,6 +29,10 @@ const ElementDataSpaceID = () => {
 
     fetchFiles();
   }, [elementDataSpaceID]);
+
+  const handleFileClick = (fileID) => {
+    navigate(`/elementdataspace/${elementDataSpaceID}/${fileID}`); // Navigate to the specified route
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -45,6 +52,7 @@ const ElementDataSpaceID = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>File ID</TableCell>
                 <TableCell>File Name</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>File Path</TableCell>
@@ -54,6 +62,7 @@ const ElementDataSpaceID = () => {
             <TableBody>
               {files.map((file) => (
                 <TableRow key={file._id}>
+                  <TableCell  onClick={() => handleFileClick(file.fileID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.description}</TableCell>
                   <TableCell>{file.filePath}</TableCell>

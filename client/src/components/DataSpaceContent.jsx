@@ -33,11 +33,21 @@ const FileTable = () => {
     return relatedTo;
   };
 
+  const renderFileIDLink = (fileID, considers, relatedTo) => {
+    if (considers === 'building') {
+      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/buildingdataspace/${relatedTo}/${fileID}`}>{fileID}</Link>;
+    }
+    if (considers === 'element') {
+      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/elementdataspace/${relatedTo}/${fileID}`}>{fileID}</Link>;
+    }
+    return fileID;
+  };
+
   return (
     <Box mt="2rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant="h6" gutterBottom>
-          PersonalData Space Content
+          Personal Data Space Content
         </Typography>
         <IconButton onClick={fetchFiles} color="primary">
           <Refresh />
@@ -50,19 +60,19 @@ const FileTable = () => {
               <TableCell>File ID</TableCell>
               <TableCell>File Name</TableCell>
               <TableCell>Description</TableCell>
-              <TableCell>Related To</TableCell>
-              <TableCell>Related To Data Space ID</TableCell>
+              <TableCell>Considers</TableCell>
+              <TableCell>Related To (DataSpaceID)</TableCell>
               <TableCell>Uploaded At</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {files.map((file) => (
               <TableRow key={file.fileID}>
-                <TableCell>{file.fileID}</TableCell>
+                <TableCell>{renderFileIDLink(file.fileID, file.considers, file.relatedTo)}</TableCell>
                 <TableCell>{file.fileName}</TableCell>
                 <TableCell>{file.description}</TableCell>
                 <TableCell>{file.considers}</TableCell>
-                <TableCell >{renderRelatedToLink(file.considers, file.relatedTo) }</TableCell>
+                <TableCell>{renderRelatedToLink(file.considers, file.relatedTo)}</TableCell>
                 <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
               </TableRow>
             ))}

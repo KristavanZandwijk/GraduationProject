@@ -52,4 +52,30 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Route to fetch file by ID
+router.get('/:fileID', verifyToken, async (req, res) => {
+  try {
+    const fileRecord = await File.findOne({ fileID: req.params.fileID });
+    if (!fileRecord) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    const filePath = fileRecord.filePath;
+    const fileContent = fs.readFileSync(path.resolve(filePath), 'utf-8');
+    
+    // Include metadata in the response
+    const metadata = {
+      filename: path.basename(filePath),
+      size: fs.statSync(filePath).size,
+      createdAt: fileRecord.createdAt,
+      owner: fileRecord.personID,
+    };
+
+    res.status(200).json({ content: fileContent, metadata });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 export default router;

@@ -27,6 +27,7 @@ import {
   PersonOutlined,
   AdminPanelSettingsOutlined,
   FolderSharedOutlined,
+  MapOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import FlexBetween from "./FlexBetween";
@@ -39,24 +40,16 @@ const navItems = [
     icon: <HubOutlined />,
   },
   {
-    text: "Personal",
+    text: "Data Spaces",
     icon: null,
   },
   {
-    text: "PersonalDataSpace",
-    icon: <FolderSharedOutlined />,
-  },
-  {
-    text: "Building",
-    icon: null,
+    text: "UrbanScale",
+    icon: <MapOutlined />,
   },
   {
     text: "BuildingDataSpace",
     icon: <AccountBalanceOutlined />,
-  },
-  {
-    text: "Element",
-    icon: null,
   },
   {
     text: "ElementDataSpace",
@@ -87,12 +80,16 @@ const navItems = [
     icon: <FireExtinguisherOutlined />,
   },
   {
-    text: "Settings",
+    text: "Profile",
     icon: null,
   },
   {
     text: "Profile",
     icon: <PersonOutlined />,
+  },
+  {
+    text: "PersonalDataSpace",
+    icon: <FolderSharedOutlined />,
   },
   {
     text: "DataPrivacy",

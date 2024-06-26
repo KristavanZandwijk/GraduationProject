@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate hook
 import Header from 'components/Header';
+import { useTheme} from "@mui/material";
+
 
 const BuildingDataSpaceID = () => {
   const { buildingDataSpaceID } = useParams(); // Assuming you use react-router-dom v6
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize useNavigate hook
+  const theme = useTheme();
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -26,6 +30,10 @@ const BuildingDataSpaceID = () => {
 
     fetchFiles();
   }, [buildingDataSpaceID]);
+
+  const handleFileClick = (fileID) => {
+    navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`); // Navigate to the specified route
+  };
 
   if (loading) {
     return <CircularProgress />;
@@ -45,18 +53,22 @@ const BuildingDataSpaceID = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>File ID</TableCell>
                 <TableCell>File Name</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>File Path</TableCell>
+                <TableCell>Owned by</TableCell>
                 <TableCell>Uploaded At</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {files.map((file) => (
-                <TableRow key={file._id}>
+                <TableRow key={file._id} >
+                  <TableCell onClick={() => handleFileClick(file.fileID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.description}</TableCell>
                   <TableCell>{file.filePath}</TableCell>
+                  <TableCell>{file.personID}</TableCell>
                   <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
                 </TableRow>
               ))}

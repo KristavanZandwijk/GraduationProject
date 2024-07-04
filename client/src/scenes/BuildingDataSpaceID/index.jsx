@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import { Box, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox } from '@mui/material';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate hook
+import { useParams, useNavigate } from 'react-router-dom';
 import Header from 'components/Header';
-import { useTheme} from "@mui/material";
-
+import { useTheme } from "@mui/material";
+import IFCViewer from 'components/IFCViewer/IFCViewer';
 
 const BuildingDataSpaceID = () => {
-  const { buildingDataSpaceID } = useParams(); // Assuming you use react-router-dom v6
+  const { buildingDataSpaceID } = useParams();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const [selectedFilepaths, setSelectedFilepaths] = useState([]);
+  const navigate = useNavigate();
   const theme = useTheme();
 
   useEffect(() => {
@@ -32,7 +33,15 @@ const BuildingDataSpaceID = () => {
   }, [buildingDataSpaceID]);
 
   const handleFileClick = (fileID) => {
-    navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`); // Navigate to the specified route
+    navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`);
+  };
+
+  const handleCheckboxChange = (event, filepath) => {
+    if (event.target.checked) {
+      setSelectedFilepaths(prevState => [...prevState, filepath]);
+    } else {
+      setSelectedFilepaths(prevState => prevState.filter(path => path !== filepath));
+    }
   };
 
   if (loading) {
@@ -53,6 +62,7 @@ const BuildingDataSpaceID = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>Visualize IFC</TableCell>
                 <TableCell>File ID</TableCell>
                 <TableCell>File Name</TableCell>
                 <TableCell>Description</TableCell>
@@ -63,7 +73,15 @@ const BuildingDataSpaceID = () => {
             </TableHead>
             <TableBody>
               {files.map((file) => (
-                <TableRow key={file._id} >
+                <TableRow key={file._id}>
+                  <TableCell>
+                    {file.filePath.endsWith('.ifc') && (
+                      <Checkbox
+                        checked={selectedFilepaths.includes(file.filePath)}
+                        onChange={(event) => handleCheckboxChange(event, file.filePath)}
+                      />
+                    )}
+                  </TableCell>
                   <TableCell onClick={() => handleFileClick(file.fileID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.description}</TableCell>
@@ -78,6 +96,9 @@ const BuildingDataSpaceID = () => {
       ) : (
         <Typography mt="2rem">Unfortunately, there are no files related to this dataspace yet.</Typography>
       )}
+      <Box flex="1" height="80vh">
+        <IFCViewer selectedFilepaths={selectedFilepaths} />
+      </Box>
     </Box>
   );
 };

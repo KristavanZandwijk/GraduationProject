@@ -28,6 +28,8 @@ import {
   AdminPanelSettingsOutlined,
   FolderSharedOutlined,
   MapOutlined,
+  WorkOutlineOutlined,
+  FactoryOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import FlexBetween from "./FlexBetween";
@@ -54,6 +56,18 @@ const navItems = [
   {
     text: "ElementDataSpace",
     icon: <DoorFrontOutlined />,
+  },
+  {
+    text: 'Organization(s)',
+    icon: null,
+  },
+  {
+    text: 'CompanyInformation',
+    icon: <WorkOutlineOutlined/>,
+  },
+  {
+    text: 'CompanyDataSpace',
+    icon: <FactoryOutlined/>,
   },
   {
     text: "Features",

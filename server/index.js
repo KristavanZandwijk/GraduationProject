@@ -13,14 +13,18 @@ import userRoutes from "./routes/users.js";
 import postRoutes from "./routes/posts.js";
 import fileRoutes from "./routes/files.js";
 import buildingRoutes from "./routes/building.js";
+import companyRoutes from "./routes/company.js";
 import elementRoutes from "./routes/element.js";
 import newBuildingRoutes from "./routes/newBuilding.js";
 import newElementRoutes from "./routes/newElement.js";
+import newCompanyRoutes from "./routes/newCompany.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
 import Element from "./models/Elements.js";
 import { elements } from "./data/index.js";
+import Company from "./models/Company.js";
+import { companies } from "./data/index.js";
 
 
 /* CONFIGURATIONS */
@@ -61,6 +65,8 @@ app.use("/buildings", buildingRoutes);
 app.use("/elements", elementRoutes);
 app.use("/newbuildings", newBuildingRoutes);
 app.use("/newelements", newElementRoutes);
+app.use("/newcompanys", newCompanyRoutes);
+app.use("/companies", companyRoutes);
 
 
 /* MONGOOSE SETUP */
@@ -76,5 +82,6 @@ mongoose
     // Post.insertMany(posts);
     //Building.insertMany(buildings);
     //Element.insertMany(elements);
+    //Company.insertMany(companies);
   })
   .catch((error) => console.log(`${error} did not connect`));

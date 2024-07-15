@@ -1,3 +1,4 @@
+//Setting up the environment
 1.	Installation necessary software:
     a.	Visual studio code
         i.	Including the extensons: github, live server
@@ -27,3 +28,14 @@
         i.	npm run start
     b.	Server side
         i.	npm run dev
+
+
+
+//Sources & Explanation Code
+1. General set-up: https://www.youtube.com/watch?v=0cPCMIuDk2I&list=LL&index=28&t=9836s
+2. JSON web token authorization: https://www.youtube.com/watch?v=K8YELRmUb5o&t=18307s
+3. IFC viewer usin that open company:
+    Course IFC.js: https://www.notion.so/ifcjs/Frontend-BIM-Stack-2023-2nd-edition-9a0e2594a3e84667b2b9d24130299193
+    Examples & Explanation code that open company: https://docs.thatopen.com/intro
+    Github page that open company: https://github.com/ThatOpen/engine_components
+    

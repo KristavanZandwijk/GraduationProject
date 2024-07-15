@@ -20,6 +20,7 @@
     "@thatopen/components": "^2.0.19",
     "@thatopen/ui": "^2.0.8",
     "@xeokit/xeokit-sdk": "^2.6.25",
+    "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "express": "^4.19.2",
     "formik": "^2.4.6",

@@ -17,7 +17,7 @@ import EmergencyPlans from "scenes/EmergencyPlans";
 import DataPrivacy from "scenes/DataPrivacy";
 import Personal from "scenes/Personal"
 import Profile from "scenes/Profile";
-import ProfilePage from "scenes/ProfilePage";
+import ProfilePage from "scenes/profilePage";
 import NewBuilding from "scenes/NewBuilding";
 import NewElement from "scenes/NewElement";
 import BuildingDataSpaceID from "scenes/BuildingDataSpaceID";

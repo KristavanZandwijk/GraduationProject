@@ -11,6 +11,7 @@ const initialState = {
   elements: [],
   companies: [],
   projects: [],
+  users:[],
 };
 
 export const authSlice = createSlice({
@@ -57,6 +58,12 @@ export const authSlice = createSlice({
     setProjects: (state, action) => {
       state.projects = action.payload;
     },
+
+    setUsers: (state, action) => {
+      state.projects = action.payload;
+    },
+
+
     setElements: (state, action) => {
       state.elements = action.payload;
     },
@@ -111,6 +118,7 @@ export const {
   setLogout,
   setFriends,
   setEmployees,
+  setUsers,
   setPosts,
   setPost,
   setFiles,

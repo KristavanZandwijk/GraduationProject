@@ -6,12 +6,12 @@ import { useTheme } from '@emotion/react';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
-  const { _id } = useSelector((state) => state.user);
+  const { personID, dataSpaceID } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const theme = useTheme();
 
   const fetchFiles = async () => {
-    const response = await fetch(`http://localhost:5001/files/user/${_id}`, {
+    const response = await fetch(`http://localhost:5001/files`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -21,27 +21,7 @@ const FileTable = () => {
 
   useEffect(() => {
     fetchFiles();
-  }, [_id, token]);
-
-  const renderRelatedToLink = (considers, relatedTo) => {
-    if (considers === 'building') {
-      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/buildingdataspace/${relatedTo}`}>{relatedTo}</Link>;
-    }
-    if (considers === 'element') {
-      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/elementdataspace/${relatedTo}`}>{relatedTo}</Link>;
-    }
-    return relatedTo;
-  };
-
-  const renderFileIDLink = (fileID, considers, relatedTo) => {
-    if (considers === 'building') {
-      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/buildingdataspace/${relatedTo}/${fileID}`}>{fileID}</Link>;
-    }
-    if (considers === 'element') {
-      return <Link style={{ cursor: 'pointer', color: theme.palette.secondary.main }} href={`http://localhost:3000/elementdataspace/${relatedTo}/${fileID}`}>{fileID}</Link>;
-    }
-    return fileID;
-  };
+  }, [token]);
 
   return (
     <Box mt="2rem">
@@ -59,23 +39,25 @@ const FileTable = () => {
             <TableRow>
               <TableCell>File ID</TableCell>
               <TableCell>File Name</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Considers</TableCell>
-              <TableCell>Related To (DataSpaceID)</TableCell>
+              <TableCell>File Description</TableCell>
+              <TableCell>File Considers</TableCell>
+              <TableCell>File Owned By</TableCell>
               <TableCell>Uploaded At</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {files.map((file) => (
-              <TableRow key={file.fileID}>
-                <TableCell>{renderFileIDLink(file.fileID, file.considers, file.relatedTo)}</TableCell>
-                <TableCell>{file.fileName}</TableCell>
-                <TableCell>{file.description}</TableCell>
-                <TableCell>{file.considers}</TableCell>
-                <TableCell>{renderRelatedToLink(file.considers, file.relatedTo)}</TableCell>
-                <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
-              </TableRow>
-            ))}
+            {files
+              .filter((file) => file.personalDataSpaceID === dataSpaceID)
+              .map((file) => (
+                <TableRow key={file.fileID}>
+                  <TableCell>{file.fileID}</TableCell>
+                  <TableCell>{file.fileName}</TableCell>
+                  <TableCell>{file.fileDescription}</TableCell>
+                  <TableCell>{file.considers}</TableCell>
+                  <TableCell>{file.hasOwner}</TableCell>
+                  <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

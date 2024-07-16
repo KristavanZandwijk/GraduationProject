@@ -4,20 +4,23 @@ import File from "../models/File.js";
 
 export const createFile = async (req, res) => {
   try {
-    const { description, fileID, relatedTo, considers } = req.body; // Extract considers from request body
+    const {fileID, fileName, fileDescription, hasOwner, considers, elementDataSpaceID, buildingDataSpaceID, companyDataSpaceID, relatedToProject } = req.body; // Extract considers from request body
     const user = req.userData;
     const filePath = path.join('public', 'assets', 'dataSpaces', user.dataSpaceID, req.file.filename);
 
     const newFile = new File({
-      userId: user._id,
       personID: user.personID,
-      dataSpaceID: user.dataSpaceID,
+      personalDataSpaceID: user.dataSpaceID,
       fileID: fileID, // Use the provided fileID
       fileName: req.file.originalname,
       filePath: filePath,
-      description: description, // Set description here
-      relatedTo: relatedTo,
+      hasOwner: hasOwner,
+      fileDescription: fileDescription, // Set description here
       considers: considers, // Add considers field here
+      elementDataSpaceID: elementDataSpaceID,
+      buildingDataSpaceID: buildingDataSpaceID,
+      companyDataSpaceID: companyDataSpaceID,
+      relatedToProject: relatedToProject,
     });
 
     await newFile.save();

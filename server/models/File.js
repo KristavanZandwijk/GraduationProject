@@ -2,19 +2,6 @@ import mongoose from "mongoose";
 
 const FileSchema = mongoose.Schema(
     {
-        userId:{
-            type: String, 
-            required: true, 
-        },
-        personID:{
-            type: String,
-            required: true,
-        },
-        dataSpaceID:{
-            type: String,
-            required: true,
-        },
-        description: String,
         fileID:{
             type: String, 
             required: true,
@@ -27,12 +14,32 @@ const FileSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        relatedTo:{
+        fileDescription:{
             type: String,
+            required: true,
+        },
+        hasOwner:{
+            type: String,
+            required: true,
         },
         considers: {
             type: String,
-            enum: ["element", "building"], // Allowed values 
+            enum: ["element", "building", "project"], // Allowed values 
+        },
+        personalDataSpaceID:{
+            type:String,
+        },
+        elementDataSpaceID:{
+            type: String,
+        },
+        buildingDataSpaceID:{
+            type: String,
+        },
+        companyDataSpaceID:{
+            type: String,
+        },     
+        relatedToProject:{
+            type: String,
         },
     },
     { timestamps: true }

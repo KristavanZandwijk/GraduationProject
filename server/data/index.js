@@ -82,3 +82,36 @@ export const companies = [
     __v: 0,
   },
 ];
+
+export const projects = [
+  {
+    projectID: "ATLASRENOVATION",
+    projectName: "Renovation of Atlas",
+    projectDescription: "This project is about the renovation of Atlas, which is the head building at the campus of the Eindhoven Univeristy of Technology",
+    companies: [
+      {
+        companyID: "Witte2024"
+      },
+      {
+        companyID: "TUE12345"
+      },
+    ],
+    employees:[
+      {
+        personID: "personJerry"
+      },
+      {
+        personID: "personIngrid"
+      },
+      {
+        personID: "personHasti"
+      },
+    ],
+    clients: [
+      {
+        personID: "personKrista"
+      },
+    ],
+    files: [],
+  }
+]

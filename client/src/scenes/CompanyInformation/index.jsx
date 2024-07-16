@@ -40,6 +40,10 @@ const CompanyInformation = () => {
     navigate('/newcompany');
   };
 
+  const handleNewProjectClick = () => {
+    navigate('/newproject');
+  };
+
   return (
     <Box m="1.5rem 2.5rem" height="100vh" display="flex">
       <Box flex="1" ml={4}>
@@ -49,6 +53,9 @@ const CompanyInformation = () => {
         />
         <Button variant="contained" color="primary" onClick={handleNewCompanyClick}>
           Create New Company
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
+          Create New Project
         </Button>
         <Grid container spacing={2} mt={3}>
           <Grid item xs={12} md={4}>

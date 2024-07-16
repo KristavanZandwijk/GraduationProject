@@ -10,6 +10,7 @@ const initialState = {
   buildings: [],
   elements: [],
   companies: [],
+  projects: [],
 };
 
 export const authSlice = createSlice({
@@ -34,7 +35,6 @@ export const authSlice = createSlice({
         console.error('user friends non-existent :(');
       }
     },
-
     setEmployees: (state, action) => {
       if (state.company) {
         state.company.employees = action.payload.employees;
@@ -51,9 +51,11 @@ export const authSlice = createSlice({
     setBuildings: (state, action) => {
       state.buildings = action.payload;
     },
-
     setCompanies: (state, action) => {
       state.companies = action.payload;
+    },
+    setProjects: (state, action) => {
+      state.projects = action.payload;
     },
     setElements: (state, action) => {
       state.elements = action.payload;
@@ -79,13 +81,19 @@ export const authSlice = createSlice({
       });
       state.buildings = updatedBuildings;
     },
-
     setCompany: (state, action) => {
       const updatedCompanies = state.companies.map((company) => {
         if (company._id === action.payload.company._id) return action.payload.company;
         return company;
       });
       state.companies = updatedCompanies;
+    },
+    setProject: (state, action) => {
+      const updatedProjects = state.projects.map((project) => {
+        if (project._id === action.payload.project._id) return action.payload.project;
+        return project;
+      });
+      state.projects = updatedProjects;
     },
     setElement: (state, action) => {
       const updatedElements = state.elements.map((element) => {
@@ -112,7 +120,9 @@ export const {
   setBuilding,
   setElement,
   setCompany,
+  setProject,
   setCompanies,
+  setProjects,
 } = authSlice.actions;
 
 export default authSlice.reducer;

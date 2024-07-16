@@ -27,6 +27,7 @@ import UrbanScale from "scenes/UrbanScale";
 import CompanyInformation from "scenes/CompanyInformation";
 import CompanyDataSpace from "scenes/CompanyDataSpace";
 import NewCompany from "scenes/NewCompany";
+import NewProject from "scenes/NewProject";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -62,6 +63,7 @@ function App() {
             <Route path="/urbanscale" element={isAuth ? <UrbanScale /> : <Navigate to="/" />}/>
             <Route path="/companyinformation" element={isAuth ? <CompanyInformation /> : <Navigate to="/" />}/>
             <Route path="/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />}/>
+            <Route path="/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />}/>
             <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />}/>
 
           </Route>

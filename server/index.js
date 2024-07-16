@@ -14,6 +14,7 @@ import postRoutes from "./routes/posts.js";
 import fileRoutes from "./routes/files.js";
 import buildingRoutes from "./routes/building.js";
 import companyRoutes from "./routes/company.js";
+import projectRoutes from "./routes/project.js";
 import elementRoutes from "./routes/element.js";
 import newBuildingRoutes from "./routes/newBuilding.js";
 import newElementRoutes from "./routes/newElement.js";
@@ -22,9 +23,11 @@ import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
 import Element from "./models/Elements.js";
-import { elements } from "./data/index.js";
+import { elements, projects } from "./data/index.js";
 import Company from "./models/Company.js";
-import { companies } from "./data/index.js";
+import { companies} from "./data/index.js";
+import Project from "./models/Project.js";
+import newProjectRoutes from "./routes/newProject.js";
 
 
 /* CONFIGURATIONS */
@@ -67,6 +70,8 @@ app.use("/newbuildings", newBuildingRoutes);
 app.use("/newelements", newElementRoutes);
 app.use("/newcompanys", newCompanyRoutes);
 app.use("/companies", companyRoutes);
+app.use("/projects", projectRoutes);
+app.use("/newprojects", newProjectRoutes);
 
 
 /* MONGOOSE SETUP */
@@ -83,5 +88,6 @@ mongoose
     //Building.insertMany(buildings);
     //Element.insertMany(elements);
     //Company.insertMany(companies);
+    //Project.insertMany(projects);
   })
   .catch((error) => console.log(`${error} did not connect`));

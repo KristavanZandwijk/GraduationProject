@@ -20,6 +20,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
   const theme = useTheme();
+  const companies = useSelector((state) => state.companies || []);
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:5001/users/${userId}`, {
@@ -55,6 +56,7 @@ const UserWidget = ({ userId, picturePath }) => {
     role,
     friends,
   } = user;
+
 
   return (
     <WidgetWrapper>

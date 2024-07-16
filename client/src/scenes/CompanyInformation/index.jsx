@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
-import { Box, Button, CircularProgress, Typography, Grid, Paper, useTheme } from '@mui/material';
+import { Box, Button, Typography, Grid, Paper, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import Header from 'components/Header';
+import Header from 'components/Header'; // Assuming Header component is defined correctly and imported
 import axios from 'axios';
 import { setCompanies } from 'state';
-import { useNavigate } from 'react-router-dom';
-import UserImage from 'components/UserImage';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
+import UserImage from 'components/UserImage'; // Assuming this is used elsewhere in the component
 
 const CompanyInformation = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize useNavigate hook
   const companies = useSelector((state) => state.companies || []);
   const user = useSelector((state) => state.user);
   const theme = useTheme();
@@ -40,61 +40,54 @@ const CompanyInformation = () => {
     navigate('/newcompany');
   };
 
-  const handleNewProjectClick = () => {
-    navigate('/newproject');
-  };
-
   return (
-    <Box m="1.5rem 2.5rem" height="100vh" display="flex">
-      <Box flex="1" ml={4}>
-        <Header
-          title="Company Information"
-          subtitle="This page will show the meta data of your company."
-        />
-        <Button variant="contained" color="primary" onClick={handleNewCompanyClick}>
+    <Box m="1.5rem 2.5rem" height="100vh">
+      <Header
+        title="Company Information"
+        subtitle="This page will show the meta data of your company."
+      />
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <Button variant="contained" color="primary" onClick={handleNewCompanyClick} sx={{ mr: 2 }}>
           Create New Company
         </Button>
-        <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
-          Create New Project
-        </Button>
-        <Grid container spacing={2} mt={3}>
-          <Grid item xs={12} md={4}>
-            <Box display="flex" justifyContent="center">
-              {filteredCompanies.length > 0 && (
-                <UserImage image={filteredCompanies[0].picturePath} size="400px" />
+      </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4}>
+          <Box display="flex" justifyContent="center">
+            {filteredCompanies.length > 0 && (
+              <UserImage image={filteredCompanies[0].picturePath} size="400px" />
+            )}
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} md={8}>
+          <Paper elevation={3} sx={{ borderRadius: 10 }}>
+            <Box p={3}>
+              <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
+                Company Information
+              </Typography>
+              {filteredCompanies.length > 0 ? (
+                <>
+                  <Typography variant="subtitle1">
+                    <strong>Company Name:</strong> {filteredCompanies[0].companyName}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Country:</strong> {filteredCompanies[0].country}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>City:</strong> {filteredCompanies[0].city}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Data Space ID:</strong> {filteredCompanies[0].companyDataSpaceID}
+                  </Typography>
+                </>
+              ) : (
+                <Typography>No companies found for this user.</Typography>
               )}
             </Box>
-          </Grid>
-
-          <Grid item xs={12} md={8}>
-            <Paper elevation={3} sx={{ borderRadius: 10 }}>
-              <Box p={3}>
-                <Typography color={theme.palette.secondary[200]} fontWeight="bold" variant="h5" gutterBottom>
-                  Company Information
-                </Typography>
-                {filteredCompanies.length > 0 ? (
-                  <>
-                    <Typography variant="subtitle1">
-                      <strong>Company Name:</strong> {filteredCompanies[0].companyName}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      <strong>Country:</strong> {filteredCompanies[0].country}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      <strong>City:</strong> {filteredCompanies[0].city}
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      <strong>Data Space ID:</strong> {filteredCompanies[0].companyDataSpaceID}
-                    </Typography>
-                  </>
-                ) : (
-                  <Typography>No companies found for this user.</Typography>
-                )}
-              </Box>
-            </Paper>
-          </Grid>
+          </Paper>
         </Grid>
-      </Box>
+      </Grid>
     </Box>
   );
 };

@@ -6,7 +6,6 @@ import { setBuildings } from '../../state';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import BuildingTable from 'components/BuildingInformation';
-import IfcViewer from 'components/Viewer';
 
 const BuildingDataSpace = () => {
   const dispatch = useDispatch();
@@ -54,9 +53,6 @@ const BuildingDataSpace = () => {
         ) : (
           <BuildingTable buildings={filteredBuildings} />
         )}
-      </Box>
-      <Box mt={3} height="600px"> {/* Adjust the height as needed */}
-        <IfcViewer />
       </Box>
     </Box>
   );

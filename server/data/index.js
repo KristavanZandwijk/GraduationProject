@@ -113,5 +113,30 @@ export const projects = [
       },
     ],
     files: [],
+  },
+  {
+    projectID: "Homejsdwpf",
+    projectName: "Renovation of Jerry's home",
+    projectDescription: "This project is about the renovation of Jerry's Home!",
+    companies: [
+      {
+        companyID: "Witte2024"
+      },
+    ],
+    employees:[
+      {
+        personID: "personJerry"
+      },
+      {
+        personID: "personIngrid"
+      },
+    ],
+    clients: [
+      {
+        personID: "personJerry"
+      },
+    ],
+    files: [
+    ],
   }
 ]

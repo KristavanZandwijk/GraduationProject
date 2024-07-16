@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Header from 'components/Header';
-import MapViewer from 'components/Map/MapViewer';
+import MapViewer from 'components/MapViewer';
 
 const UrbanScale = () => {
   return (

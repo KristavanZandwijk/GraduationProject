@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from 'components/Header';
 import { useTheme } from "@mui/material";
-import IFCViewer from 'components/IFCViewer/IFCViewer';
+import IFCViewer from 'components/IFCViewer';
 
 const BuildingDataSpaceID = () => {
   const { buildingDataSpaceID } = useParams();

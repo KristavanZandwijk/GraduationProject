@@ -54,20 +54,12 @@ const navItems = [
     icon: <AccountBalanceOutlined />,
   },
   {
-    text: "ElementDataSpace",
-    icon: <DoorFrontOutlined />,
-  },
-  {
-    text: 'Organization(s)',
-    icon: null,
-  },
-  {
-    text: 'CompanyInformation',
-    icon: <WorkOutlineOutlined/>,
-  },
-  {
     text: 'CompanyDataSpace',
     icon: <FactoryOutlined/>,
+  },
+  {
+    text: "ElementDataSpace",
+    icon: <DoorFrontOutlined />,
   },
   {
     text: "Features",
@@ -92,6 +84,14 @@ const navItems = [
   {
     text: "EmergencyPlans",
     icon: <FireExtinguisherOutlined />,
+  },
+  {
+    text: 'Organization(s)',
+    icon: null,
+  },
+  {
+    text: 'CompanyInformation',
+    icon: <WorkOutlineOutlined/>,
   },
   {
     text: "Profile",

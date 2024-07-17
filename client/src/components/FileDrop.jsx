@@ -22,7 +22,7 @@ import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
-import state, { setFiles, setBuildings, setElements, setCompanies, setProjects } from 'state'; // Update the imports accordingly
+import { setFiles, setBuildings, setElements, setCompanies, setProjects } from 'state'; // Update the imports accordingly
 import axios from 'axios';
 
 const FileDrop = ({ picturePath }) => {
@@ -51,7 +51,6 @@ const FileDrop = ({ picturePath }) => {
   const medium = theme.palette.neutral.medium;
 
   useEffect(() => {
-    
     const fetchBuildings = async () => {
       try {
         const response = await axios.get('http://localhost:5001/buildings', {
@@ -154,9 +153,9 @@ const FileDrop = ({ picturePath }) => {
             sx={{
               width: '100%',
               backgroundColor: theme.palette.primary.default,
-              borderRadius: '2rem',
-              padding: '1rem 2rem',
-              border: `2px solid ${theme.palette.secondary[100]}`,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
             }}
           />
           <InputBase
@@ -166,9 +165,9 @@ const FileDrop = ({ picturePath }) => {
             sx={{
               width: '100%',
               backgroundColor: theme.palette.primary.default,
-              borderRadius: '2rem',
-              padding: '1rem 2rem',
-              border: `2px solid ${theme.palette.secondary[100]}`,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
             }}
           />
           <InputBase
@@ -178,9 +177,9 @@ const FileDrop = ({ picturePath }) => {
             sx={{
               width: '100%',
               backgroundColor: theme.palette.primary.default,
-              borderRadius: '2rem',
-              padding: '1rem 2rem',
-              border: `2px solid ${theme.palette.secondary[100]}`,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
             }}
           />
           <Select
@@ -190,9 +189,9 @@ const FileDrop = ({ picturePath }) => {
             sx={{
               width: '100%',
               backgroundColor: theme.palette.primary.default,
-              borderRadius: '2rem',
-              padding: '1rem 2rem',
-              border: `2px solid ${theme.palette.secondary[100]}`,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
             }}
           >
             <MenuItem value="" disabled>
@@ -204,103 +203,99 @@ const FileDrop = ({ picturePath }) => {
           </Select>
 
           {considers === 'element' && (
-            <>
-              <Select
-                value={elementDataSpaceID}
-                onChange={(e) => setElementDataSpaceID(e.target.value)}
-                displayEmpty
-                sx={{
-                  width: '100%',
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: '2rem',
-                  padding: '1rem 2rem',
-                  border: `2px solid ${theme.palette.secondary[100]}`,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select Element Data Space ID
+            <Select
+              value={elementDataSpaceID}
+              onChange={(e) => setElementDataSpaceID(e.target.value)}
+              displayEmpty
+              sx={{
+                width: '100%',
+                backgroundColor: theme.palette.primary.default,
+                borderRadius: '1rem',
+                padding: '0.75rem 1.5rem',
+                border: `1px solid ${theme.palette.secondary[100]}`,
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select Element Data Space ID
+              </MenuItem>
+              {elements.map((element) => (
+                <MenuItem key={element._id} value={element.elementDataSpaceID}>
+                  {`${element.elementDataSpaceID} - ${element.elementName}`}
                 </MenuItem>
-                {elements.map((element) => (
-                  <MenuItem key={element._id} value={element.elementDataSpaceID}>
-                    {`${element.elementDataSpaceID} - ${element.elementName}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </>
+              ))}
+            </Select>
           )}
 
           {considers === 'building' && (
-            <>
-              <Select
-                value={buildingDataSpaceID}
-                onChange={(e) => setBuildingDataSpaceID(e.target.value)}
-                displayEmpty
-                sx={{
-                  width: '100%',
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: '2rem',
-                  padding: '1rem 2rem',
-                  border: `2px solid ${theme.palette.secondary[100]}`,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select Building Data Space ID
+            <Select
+              value={buildingDataSpaceID}
+              onChange={(e) => setBuildingDataSpaceID(e.target.value)}
+              displayEmpty
+              sx={{
+                width: '100%',
+                backgroundColor: theme.palette.primary.default,
+                borderRadius: '1rem',
+                padding: '0.75rem 1.5rem',
+                border: `1px solid ${theme.palette.secondary[100]}`,
+              }}
+            >
+              <MenuItem value="" disabled>
+                Select Building Data Space ID
+              </MenuItem>
+              {buildings.map((building) => (
+                <MenuItem key={building._id} value={building.buildingDataSpaceID}>
+                  {`${building.buildingDataSpaceID} - ${building.buildingName}`}
                 </MenuItem>
-                {buildings.map((building) => (
-                  <MenuItem key={building._id} value={building.buildingDataSpaceID}>
-                    {`${building.buildingDataSpaceID} - ${building.buildingName}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </>
+              ))}
+            </Select>
           )}
 
           {considers === 'project' && (
             <>
-            <Select
-              value={companyDataSpaceID}
-              onChange={(e) => setCompanyDataSpaceID(e.target.value)}
-              displayEmpty
-              sx={{
-                width: '100%',
-                backgroundColor: theme.palette.primary.default,
-                borderRadius: '2rem',
-                padding: '1rem 2rem',
-                border: `2px solid ${theme.palette.secondary[100]}`,
-              }}
-            >
-              <MenuItem value="" disabled>
-                Select Company
-              </MenuItem>
-              {companies.map((company) => (
-                <MenuItem key={company._id} value={company.companyDataSpaceID}>
-                  {`${company.companyDataSpaceID} - ${company.companyName}`}
+              <Select
+                value={companyDataSpaceID}
+                onChange={(e) => setCompanyDataSpaceID(e.target.value)}
+                displayEmpty
+                sx={{
+                  width: '100%',
+                  backgroundColor: theme.palette.primary.default,
+                  borderRadius: '1rem',
+                  padding: '0.75rem 1.5rem',
+                  border: `1px solid ${theme.palette.secondary[100]}`,
+                }}
+              >
+                <MenuItem value="" disabled>
+                  Select Company
                 </MenuItem>
-              ))}
-            </Select>
-            <Select
-              value={relatedToProject}
-              onChange={(e) => setRelatedToProject(e.target.value)}
-              displayEmpty
-              sx={{
-                width: '100%',
-                backgroundColor: theme.palette.primary.default,
-                borderRadius: '2rem',
-                padding: '1rem 2rem',
-                border: `2px solid ${theme.palette.secondary[100]}`,
-              }}
-            >
-              <MenuItem value="" disabled>
-                Select Project
-              </MenuItem>
-              {projects.map((project) => (
-                <MenuItem key={project._id} value={project.projectID}>
-                  {`${project.projectID} - ${project.projectName}`}
+                {companies.map((company) => (
+                  <MenuItem key={company._id} value={company.companyDataSpaceID}>
+                    {`${company.companyDataSpaceID} - ${company.companyName}`}
+                  </MenuItem>
+                ))}
+              </Select>
+              <Select
+                value={relatedToProject}
+                onChange={(e) => setRelatedToProject(e.target.value)}
+                displayEmpty
+                sx={{
+                  width: '100%',
+                  backgroundColor: theme.palette.primary.default,
+                  borderRadius: '1rem',
+                  padding: '0.75rem 1.5rem',
+                  border: `1px solid ${theme.palette.secondary[100]}`,
+                }}
+              >
+                <MenuItem value="" disabled>
+                  Select Project
                 </MenuItem>
-              ))}
-            </Select>
-          </>
-        )}
+                {projects.map((project) => (
+                  <MenuItem key={project._id} value={project.projectID}>
+                    {`${project.projectID} - ${project.projectName}`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </>
+          )}
         </Box>
       </FlexBetween>
       {isData && (
@@ -325,14 +320,14 @@ const FileDrop = ({ picturePath }) => {
               <FlexBetween>
                 <Box
                   {...getRootProps()}
-                  border={`2px dashed ${theme.palette.secondary[100]}`}
+                  border={`1px dashed ${theme.palette.secondary[100]}`}
                   p="1rem"
                   width="100%"
                   sx={{ '&:hover': { cursor: 'pointer' } }}
                 >
                   <input {...getInputProps()} />
                   {!data ? (
-                    <p>Add File Here. Only one at a time!</p>
+                    <Typography>Add File Here. Only one at a time!</Typography>
                   ) : (
                     <FlexBetween>
                       <Typography>{data.name}</Typography>

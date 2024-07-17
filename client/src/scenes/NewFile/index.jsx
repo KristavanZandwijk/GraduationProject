@@ -2,10 +2,9 @@ import React from 'react';
 import { Box } from '@mui/material';
 import Header from 'components/Header';
 import FileDrop from 'components/FileDrop';
-import FileTable from 'components/DataSpaceContent';
 import { useSelector } from 'react-redux';
 
-const Personal = () => {
+const NewFile = () => {
 const { picturePath } = useSelector((state) => state.user);
 
 return (
@@ -14,7 +13,7 @@ return (
 <Box flex="0 0 auto">
 <Header
        title="Personal Data Space"
-       subtitle="Here you can upload the data to your personal server."
+       subtitle="Here you can upload the data to your personal data space."
      />
 </Box>
 
@@ -22,13 +21,8 @@ return (
   <Box flex="1" mt="1rem">
     <FileDrop picturePath={picturePath} />
   </Box>
-  
-  {/* FileTable Component */}
-  <Box flex="1" mt="1rem">
-    <FileTable />
-  </Box>
 </Box>
 );
 };
 
-export default Personal;
+export default NewFile;

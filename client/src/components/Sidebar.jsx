@@ -30,6 +30,7 @@ import {
   MapOutlined,
   WorkOutlineOutlined,
   FactoryOutlined,
+  FileUploadOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 import FlexBetween from "./FlexBetween";
@@ -62,8 +63,16 @@ const navItems = [
     icon: <DoorFrontOutlined />,
   },
   {
+    text: "PersonalDataSpace",
+    icon: <FolderSharedOutlined />,
+  },
+  {
     text: "Features",
     icon: null,
+  },
+  { 
+    text: "DataUpload",
+    icon: <FileUploadOutlined/>,
   },
   {
     text: "SearchFunction",
@@ -100,10 +109,6 @@ const navItems = [
   {
     text: "Profile",
     icon: <PersonOutlined />,
-  },
-  {
-    text: "PersonalDataSpace",
-    icon: <FolderSharedOutlined />,
   },
   {
     text: "DataPrivacy",

@@ -15,7 +15,7 @@ import ElementPassport from "scenes/ElementPassport";
 import ElementReuse from "scenes/ElementReuse";
 import EmergencyPlans from "scenes/EmergencyPlans";
 import DataPrivacy from "scenes/DataPrivacy";
-import Personal from "scenes/Personal"
+import Personal from "scenes/PersonalDataSpace"
 import Profile from "scenes/Profile";
 import ProfilePage from "scenes/profilePage";
 import NewBuilding from "scenes/NewBuilding";
@@ -28,6 +28,7 @@ import CompanyDataSpace from "scenes/CompanyDataSpace";
 import NewCompany from "scenes/NewCompany";
 import NewProject from "scenes/NewProject";
 import CompanyInfoPage from "scenes/CompanyInformation";
+import NewFile from "scenes/NewFile";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -65,6 +66,7 @@ function App() {
             <Route path="/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />}/>
             <Route path="/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />}/>
             <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />}/>
+            <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />}/>
 
           </Route>
             <Route path="/" element={<LoginPage />} />

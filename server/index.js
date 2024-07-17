@@ -73,7 +73,7 @@ app.use("/companies", companyRoutes);
 app.use("/projects", projectRoutes);
 app.use("/newprojects", newProjectRoutes);
 
-
+//is this ignored?
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;
 mongoose

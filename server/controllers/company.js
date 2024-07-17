@@ -30,35 +30,3 @@ export const getCompanyEmployees = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-/* UPDATE */
-export const addRemoveEmployee = async (req, res) => {
-  try {
-    const { companyID, employeeID } = req.params;
-    const company = await Company.findById(companyID);
-    const employee = await User.findById(employeeID);
-
-    if (!company || !employee) {
-      return res.status(404).json({ message: "Company or employee not found" });
-    }
-
-    if (company.employees.includes(employeeID)) {
-      company.employees = company.employees.filter(companyID => companyID !== employeeID);
-      employee.employees = employee.employees.filter(companyID => companyID !== companyID);
-    } else {
-      company.employees.push(employeeID);
-      employee.employees.push(companyID);
-    }
-    await company.save();
-    await employee.save();
-
-    const employees = await Promise.all(company.employees.map(companyID => User.findById(companyID)));
-    const formattedEmployees = employees.map(({ personID, firstName, lastName, city, country, picturePath }) => ({
-      personID, firstName, lastName, city, country, picturePath
-    }));
-
-    res.status(200).json(formattedEmployees);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};

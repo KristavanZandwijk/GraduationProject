@@ -22,7 +22,7 @@ import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFiles, setBuildings, setElements, setCompanies, setProjects } from 'state'; // Update the imports accordingly
+import { setFiles, setBuildings, setElements, setCompanies, setProjects, setUsers } from 'state'; // Update the imports accordingly
 import axios from 'axios';
 
 const FileDrop = ({ picturePath }) => {
@@ -46,6 +46,7 @@ const FileDrop = ({ picturePath }) => {
   const elements = useSelector((state) => state.elements || []); // Add state for elements
   const companies = useSelector((state) => state.companies || []); // Add state for companies
   const projects = useSelector((state) => state.projects || []);
+  const users = useSelector((state) => state.users|| []);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
   const mediumMain = theme.palette.neutral.mediumMain;
   const medium = theme.palette.neutral.medium;
@@ -95,10 +96,22 @@ const FileDrop = ({ picturePath }) => {
       }
     };
 
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error('Failed to fetch Users:', error);
+      }
+    };
+
     fetchBuildings();
     fetchElements();
     fetchCompanies();
     fetchProjects();
+    fetchUsers();
   }, [dispatch, token]);
 
   const generateFileID = () => {
@@ -170,10 +183,10 @@ const FileDrop = ({ picturePath }) => {
               border: `1px solid ${theme.palette.secondary[100]}`,
             }}
           />
-          <InputBase
-            placeholder="Add the owner of the file (use the personID of the owner)"
-            onChange={(e) => setHasOwner(e.target.value)}
+          <Select
             value={hasOwner}
+            onChange={(e) => setHasOwner(e.target.value)}
+            displayEmpty
             sx={{
               width: '100%',
               backgroundColor: theme.palette.primary.default,
@@ -181,7 +194,17 @@ const FileDrop = ({ picturePath }) => {
               padding: '0.75rem 1.5rem',
               border: `1px solid ${theme.palette.secondary[100]}`,
             }}
-          />
+          >
+            <MenuItem value="" disabled>
+              Select Owner of the file
+            </MenuItem>
+            {users.map((user) => (
+              <MenuItem key={user.personID} value={user.personID}>
+                {`${user.personID} - ${user.firstName} ${user.lastName}`}
+              </MenuItem>
+            ))}
+          </Select>
+
           <Select
             value={considers}
             onChange={(e) => setConsiders(e.target.value)}

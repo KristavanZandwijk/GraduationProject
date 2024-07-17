@@ -30,10 +30,6 @@ const CompanySchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    clients:{
-      type: Array,
-      default: [],
-    },
     city: {
       type: String,
       required: true,

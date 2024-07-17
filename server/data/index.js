@@ -48,8 +48,11 @@ export const companies = [
         personID: "personHasti"
       }, 
     ],
-    projects: [],  // Added to match the schema
-    clients: [],    // Added to match the schema
+    projects: [
+      {
+        projectID:"ATLASRENOVATION"
+      },
+    ],  // Added to match the schema
     createdAt: 1115211422,
     updatedAt: 1115211422, 
     __v: 0,
@@ -60,7 +63,7 @@ export const companies = [
     companyName: "Witteveen + Bos",
     city: "Deventer",
     country: "The Netherlands",
-    picturePath: "info4.png",
+    picturePath: "witteveenbos.jpg",
     employees: [
       { 
         personID: "personIngrid"
@@ -75,8 +78,11 @@ export const companies = [
         personID: "personGerda"
       },  
     ],
-    projects: [],  // Added to match the schema
-    clients: [],    // Added to match the schema
+    projects: [
+      {
+        projectID: "Homejsdwpf"
+      },
+    ],
     createdAt: 1115211422,
     updatedAt: 1115211422,
     __v: 0,

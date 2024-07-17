@@ -36,13 +36,6 @@ export const authSlice = createSlice({
         console.error('user friends non-existent :(');
       }
     },
-    setEmployees: (state, action) => {
-      if (state.company) {
-        state.company.employees = action.payload.employees;
-      } else {
-        console.error('company employees non-existent :(');
-      }
-    },
     setPosts: (state, action) => {
       state.posts = action.payload.posts;
     },
@@ -60,7 +53,7 @@ export const authSlice = createSlice({
     },
 
     setUsers: (state, action) => {
-      state.projects = action.payload;
+      state.users = action.payload;
     },
 
 
@@ -117,7 +110,6 @@ export const {
   setLogin,
   setLogout,
   setFriends,
-  setEmployees,
   setUsers,
   setPosts,
   setPost,

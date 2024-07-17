@@ -1,18 +1,19 @@
 import React, { useEffect } from 'react';
-import { Box, Button, Typography, Grid, Paper, useTheme } from '@mui/material';
+import { Box, Button, Grid, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import Header from 'components/Header'; // Assuming Header component is defined correctly and imported
+import Header from 'components/Header';
 import axios from 'axios';
 import { setCompanies } from 'state';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
-import UserImage from 'components/UserImage'; // Assuming this is used elsewhere in the component
+import { useNavigate } from 'react-router-dom';
+import EmployeeList from 'components/EmployeesWidget';
+import BasicCompanyInfoWidget from 'components/CompnayInformationWidget';
+import ProjectList from 'components/ProjectsWidget';
 
 const CompanyInformation = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
   const companies = useSelector((state) => state.companies || []);
   const user = useSelector((state) => state.user);
-  const theme = useTheme();
   const token = useSelector((state) => state.token);
 
   useEffect(() => {
@@ -52,40 +53,39 @@ const CompanyInformation = () => {
         </Button>
       </Box>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Box display="flex" justifyContent="center">
+        {/* Basic Company Info Section */}
+        <Grid item xs={12}>
+          <Box mt={3} mx="auto" justifyContent="left" >
             {filteredCompanies.length > 0 && (
-              <UserImage image={filteredCompanies[0].picturePath} size="400px" />
+              <BasicCompanyInfoWidget company={filteredCompanies[0]} />
             )}
           </Box>
         </Grid>
 
-        <Grid item xs={12} md={8}>
-          <Paper elevation={3} sx={{ borderRadius: 10 }}>
-            <Box p={3}>
-              <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
-                Company Information
-              </Typography>
-              {filteredCompanies.length > 0 ? (
-                <>
-                  <Typography variant="subtitle1">
-                    <strong>Company Name:</strong> {filteredCompanies[0].companyName}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Country:</strong> {filteredCompanies[0].country}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>City:</strong> {filteredCompanies[0].city}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Data Space ID:</strong> {filteredCompanies[0].companyDataSpaceID}
-                  </Typography>
-                </>
-              ) : (
-                <Typography>No companies found for this user.</Typography>
-              )}
-            </Box>
-          </Paper>
+        {/* Employees Section */}
+        <Grid item xs={12}>
+          <Box mt={3} mx="auto" justifyContent="left">
+            {filteredCompanies.length > 0 ? (
+              <EmployeeList employees={filteredCompanies[0].employees} />
+            ) : (
+              <Box p={3}>
+                <Typography>No employees found for this user.</Typography>
+              </Box>
+            )}
+          </Box>
+        </Grid>
+
+        {/* Projects Section */}
+        <Grid item xs={12}>
+          <Box mt={2} mx="auto" justifyContent="right">
+            {filteredCompanies.length > 0 ? (
+              <ProjectList projects={filteredCompanies[0].projects} />
+            ) : (
+              <Box p={3}>
+                <Typography>No projects found for this user.</Typography>
+              </Box>
+            )}
+          </Box>
         </Grid>
       </Grid>
     </Box>

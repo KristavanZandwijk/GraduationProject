@@ -32,6 +32,10 @@ const BuildingSchema = new mongoose.Schema(
             type: Array,
             default: [],
         },
+        hasProjects:{
+            type: Array,
+            default: [],
+        },
         buildingName: {
             type: String,
             required: true,

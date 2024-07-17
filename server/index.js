@@ -23,11 +23,12 @@ import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
 import Element from "./models/Elements.js";
-import { elements, projects } from "./data/index.js";
+import { elements, projects, buildings } from "./data/index.js";
 import Company from "./models/Company.js";
 import { companies} from "./data/index.js";
 import Project from "./models/Project.js";
 import newProjectRoutes from "./routes/newProject.js";
+import Building from "./models/Building.js";
 
 
 /* CONFIGURATIONS */
@@ -68,12 +69,12 @@ app.use("/buildings", buildingRoutes);
 app.use("/elements", elementRoutes);
 app.use("/newbuildings", newBuildingRoutes);
 app.use("/newelements", newElementRoutes);
-app.use("/newcompanys", newCompanyRoutes);
+app.use("/newcompanies", newCompanyRoutes);
 app.use("/companies", companyRoutes);
 app.use("/projects", projectRoutes);
 app.use("/newprojects", newProjectRoutes);
 
-//is this ignored?
+
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;
 mongoose
@@ -88,6 +89,6 @@ mongoose
     //Building.insertMany(buildings);
     //Element.insertMany(elements);
     //Company.insertMany(companies);
-    //Project.insertMany(projects);
+   //Project.insertMany(projects);
   })
   .catch((error) => console.log(`${error} did not connect`));

@@ -127,6 +127,14 @@ const CompanyDataSpace = () => {
                       <li key={client.personID}>{client.personID}</li>
                     ))}
                   </ul>
+                  <Typography variant="subtitle1">
+                    <strong>Buildngs Involved:</strong>
+                  </Typography>
+                  <ul>
+                    {project.relatesTo.map((relateTo) => (
+                      <li key={relateTo.buildingID}>{relateTo.buildingID}</li>
+                    ))}
+                  </ul>
                 </Box>
               </Paper>
             </Grid>

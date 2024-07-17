@@ -27,6 +27,9 @@ const ProjectSchema = new mongoose.Schema(
     files:{
         type: Array,
     },
+    relatesTo: {
+        type: Array,
+    },
   },
   { timestamps: true }
 );

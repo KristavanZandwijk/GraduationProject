@@ -14,15 +14,7 @@ const ElementSchema = new mongoose.Schema(
             min: 5,
             max: 15,
         },
-        hasBuilding:{
-            type: String,
-            required: true,
-        },
-         hasFiles:{
-            type: Array,
-            default: [],
-        },
-         isPartOf:{
+         isPartOfBuilding:{
             type: Array,
             default: [],
         },

@@ -24,18 +24,6 @@ const BuildingSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        hasFiles:{
-            type: Array,
-            default: [],
-        },
-        hasElements:{
-            type: Array,
-            default: [],
-        },
-        hasProjects:{
-            type: Array,
-            default: [],
-        },
         buildingName: {
             type: String,
             required: true,

@@ -26,10 +26,6 @@ const CompanySchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    projects: {
-      type: Array,
-      default: [],
-    },
     city: {
       type: String,
       required: true,

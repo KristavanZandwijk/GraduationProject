@@ -9,33 +9,6 @@ export const buildings = [
     hasOwner: "personKrista",
     buildingName: "Atlas",
     buildingLocation: "TU/e campus Eindhoven",
-    hasFiles:[
-      {
-        fileID: "file1"
-      },
-      {
-        fileID: "file2"
-      }
-    ],
-    hasElements: [
-      {
-        elementID: "element1"
-      },
-      {
-        elementID: "element2"
-      },
-      {
-        elementID: "element3"
-      },
-    ],
-    hasProjects: [
-      {
-        projectID: "project1"
-      },
-      {
-        projectID: "project2"
-      },
-    ],
     createdAt: 1115211422,
     updatedAt: 1115211422,
     __v: 0,
@@ -46,37 +19,14 @@ export const elements = [
   {
     elementID: "ele12345",
     elementDataSpaceID: "edsp12345",
-    hasBuilding: "sdkjhsfh",
+    isPartOfBuilding: [
+    {
+      buildingID: "Atlas1234"
+    },
+  ],
     hasOwner: "personIngrid",
     elementName: "Element A",
     elementLocation: "TU/e campus Eindhoven",
-    hasFiles:[
-      {
-        fileID: "file3"
-      },
-      {
-        fileID: "file4"
-      }
-    ],
-    hasElements: [
-      {
-        elementID: "element4"
-      },
-      {
-        elementID: "element5"
-      },
-      {
-        elementID: "element6"
-      },
-    ],
-    hasProjects: [
-      {
-        projectID: "project3"
-      },
-      {
-        projectID: "project4"
-      },
-    ],
     createdAt: 1115211422,
     updatedAt: 1115211422,
     __v: 0,
@@ -102,14 +52,6 @@ export const companies = [
         personID: "personHasti"
       }, 
     ],
-    projects: [
-      {
-        projectID:"project1"
-      },
-      {
-        projectID: "project2"
-      },
-    ],  // Added to match the schema
     createdAt: 1115211422,
     updatedAt: 1115211422, 
     __v: 0,
@@ -134,14 +76,6 @@ export const companies = [
       {
         personID: "personGerda"
       },  
-    ],
-    projects: [
-      {
-        projectID: "project3"
-      },
-      {
-        projectID: "project4"
-      },
     ],
     createdAt: 1115211422,
     updatedAt: 1115211422,
@@ -178,16 +112,10 @@ export const projects = [
         personID: "personKrista"
       },
     ],
-    files: [
+    relatesTo: [
       {
-        fileID: "file1"
-      },
-      {
-        fileID: "file2"
-      },
-      {
-        fileID: "file3"
-      },
+      buildingID: "Atlas123"
+      }
     ],
   },
   {
@@ -212,12 +140,9 @@ export const projects = [
         personID: "personJerry"
       },
     ],
-    files: [
+    relatesTo: [
       {
-        fileID: "file3"
-      },
-      {
-        fileID: "file4"
+        buildingID: "JerryHome"
       },
     ],
   }

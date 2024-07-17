@@ -29,6 +29,7 @@ import NewCompany from "scenes/NewCompany";
 import NewProject from "scenes/NewProject";
 import CompanyInfoPage from "scenes/CompanyInformation";
 import NewFile from "scenes/NewFile";
+import ProjectDataSpace from "scenes/ProjectDataSpace";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -66,6 +67,7 @@ function App() {
             <Route path="/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />}/>
             <Route path="/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />}/>
             <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />}/>
+            <Route path="/companydataspace/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />}/>
             <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />}/>
 
           </Route>

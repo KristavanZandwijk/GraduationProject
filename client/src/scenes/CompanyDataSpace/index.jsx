@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Box, Button, Typography, Grid, Paper, useTheme } from '@mui/material';
+import { Box, Button, Typography, Grid, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
 import { useNavigate } from 'react-router-dom';
+import ProjectInfo from 'components/ProjectInformationWidget';
 
 const CompanyDataSpace = () => {
   const dispatch = useDispatch();
@@ -83,60 +84,11 @@ const CompanyDataSpace = () => {
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
             <Grid item xs={12} sm={6} md={4} key={project.projectID}>
-              <Paper elevation={3} sx={{ borderRadius: 10 }}>
-                <Box p={2}>
-                  <Typography
-                    variant="subtitle1"
-                    onClick={() => handleProjectClick(project.projectID)}
-                    sx={{ cursor: 'pointer', color: theme.palette.secondary.main }}
-                  >
-                    <strong>Project Name:</strong> {project.projectName}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Project ID:</strong> {project.projectID}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Description:</strong> {project.projectDescription}
-                  </Typography>
-                  <Typography variant="subtitle1">
-                    <strong>Companies Involved:</strong>
-                  </Typography>
-                  <ul>
-                    {project.companies.map((company) => {
-                      const companyInfo = companies.find(c => c.companyID === company.companyID);
-                      return (
-                        <li key={company.companyID}>
-                          {companyInfo ? companyInfo.companyName : company.companyID}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <Typography variant="subtitle1">
-                    <strong>Employees Involved:</strong>
-                  </Typography>
-                  <ul>
-                    {project.employees.map((employee) => (
-                      <li key={employee.personID}>{employee.personID}</li>
-                    ))}
-                  </ul>
-                  <Typography variant="subtitle1">
-                    <strong>Clients Involved:</strong>
-                  </Typography>
-                  <ul>
-                    {project.clients.map((client) => (
-                      <li key={client.personID}>{client.personID}</li>
-                    ))}
-                  </ul>
-                  <Typography variant="subtitle1">
-                    <strong>Buildngs Involved:</strong>
-                  </Typography>
-                  <ul>
-                    {project.relatesTo.map((relateTo) => (
-                      <li key={relateTo.buildingID}>{relateTo.buildingID}</li>
-                    ))}
-                  </ul>
-                </Box>
-              </Paper>
+              <ProjectInfo
+                project={project}
+                companies={companies}
+                handleProjectClick={handleProjectClick}
+              />
             </Grid>
           ))
         ) : (

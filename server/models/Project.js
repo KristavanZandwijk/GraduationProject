@@ -24,9 +24,6 @@ const ProjectSchema = new mongoose.Schema(
     clients:{
         type: Array,
     },
-    files:{
-        type: Array,
-    },
     relatesTo: {
         type: Array,
     },

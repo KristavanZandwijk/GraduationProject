@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton, Link } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
   const { personID, dataSpaceID } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const fetchFiles = async () => {
@@ -22,6 +24,16 @@ const FileTable = () => {
   useEffect(() => {
     fetchFiles();
   }, [token]);
+
+  const handleRowClick = (file) => {
+    if (file.considers === 'building') {
+      navigate(`/buildingdataspace/${file.buildingDataSpaceID}`);
+    } else if (file.considers === 'element') {
+      navigate(`/elementdataspace/${file.elementDataSpaceID}`);
+    } else if (file.considers === 'project') {
+      navigate(`/companydataspace/${file.relatedToProject}`);
+    }
+  };
 
   return (
     <Box mt="2rem">
@@ -51,14 +63,14 @@ const FileTable = () => {
             {files
               .filter((file) => file.personalDataSpaceID === dataSpaceID)
               .map((file) => (
-                <TableRow key={file.fileID}>
+                <TableRow key={file.fileID} onClick={() => handleRowClick(file)} style={{ cursor: 'pointer' }}>
                   <TableCell>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.fileDescription}</TableCell>
                   <TableCell>{file.hasOwner}</TableCell>
                   <TableCell>{file.personalDataSpaceID}</TableCell>
                   <TableCell>{file.considers}</TableCell>
-                  <TableCell>
+                  <TableCell style={{ color: theme.palette.secondary.main }}>
                     {file.considers === 'building' && file.buildingDataSpaceID}
                     {file.considers === 'element' && file.elementDataSpaceID}
                     {file.considers === 'project' && (

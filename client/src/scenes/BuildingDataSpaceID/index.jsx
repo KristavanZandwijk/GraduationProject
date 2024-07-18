@@ -19,7 +19,7 @@ const BuildingDataSpaceID = () => {
     const fetchFiles = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/files`, {
-          params: { relatedTo: buildingDataSpaceID }
+          params: { buildingDataSpaceID: buildingDataSpaceID }
         });
         setFiles(response.data);
       } catch (err) {
@@ -65,9 +65,8 @@ const BuildingDataSpaceID = () => {
                 <TableCell>Visualize IFC</TableCell>
                 <TableCell>File ID</TableCell>
                 <TableCell>File Name</TableCell>
-                <TableCell>Description</TableCell>
-                <TableCell>File Path</TableCell>
-                <TableCell>Owned by</TableCell>
+                <TableCell>File Description</TableCell>
+                <TableCell>File is Owned by</TableCell>
                 <TableCell>Uploaded At</TableCell>
               </TableRow>
             </TableHead>
@@ -84,9 +83,8 @@ const BuildingDataSpaceID = () => {
                   </TableCell>
                   <TableCell onClick={() => handleFileClick(file.fileID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
-                  <TableCell>{file.description}</TableCell>
-                  <TableCell>{file.filePath}</TableCell>
-                  <TableCell>{file.personID}</TableCell>
+                  <TableCell>{file.fileDescription}</TableCell>
+                  <TableCell>{file.hasOwner}</TableCell>
                   <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
                 </TableRow>
               ))}

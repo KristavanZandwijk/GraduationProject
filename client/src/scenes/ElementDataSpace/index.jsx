@@ -29,10 +29,6 @@ const ElementDataSpace = () => {
     fetchElements();
   }, [dispatch, token]);
 
-  const filteredElements = Array.isArray(elements) 
-    ? elements.filter(element => element.hasOwner === personID) 
-    : [];
-
   const handleNewElementClick = () => {
     navigate('/newelement');
   };
@@ -46,12 +42,10 @@ const ElementDataSpace = () => {
         </Button>
       </Box>
       <Box mt={3}>
-        {elements.length === 0 ? (
-          <CircularProgress />
-        ) : filteredElements.length === 0 ? (
-          <Typography variant="h6">You unfortunately do not own any elements (yet).</Typography>
+        {elements.length === 0 ?(
+          <Typography variant="h6">There are unfortunately no elements to show (yet).</Typography>
         ) : (
-          <ElementTable elements={filteredElements} />
+          <ElementTable elements={elements} />
         )}
       </Box>
     </Box>

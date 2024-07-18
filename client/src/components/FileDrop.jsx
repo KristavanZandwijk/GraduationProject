@@ -39,6 +39,8 @@ const FileDrop = ({ picturePath }) => {
   const [buildingDataSpaceID, setBuildingDataSpaceID] = useState('');
   const [companyDataSpaceID, setCompanyDataSpaceID] = useState('');
   const [hasOwner, setHasOwner] = useState('');
+  const [readableBy, setReadableBy] = useState('');
+  const [adjustableBy, setAdjustableBy] = useState('');
   const theme = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -128,6 +130,8 @@ const FileDrop = ({ picturePath }) => {
     formData.append('elementDataSpaceID', elementDataSpaceID);
     formData.append('buildingDataSpaceID', buildingDataSpaceID);
     formData.append('companyDataSpaceID', companyDataSpaceID);
+    formData.append('readableBy', readableBy);
+    formData.append('adjustableBy', adjustableBy)
     if (data) {
       formData.append('data', data);
       formData.append('filePath', data.name);
@@ -152,6 +156,8 @@ const FileDrop = ({ picturePath }) => {
     setRelatedToElement('');
     setRelatedToBuilding('');
     setRelatedToProject('');
+    setAdjustableBy([]);
+    setReadableBy([]);
   };
 
   return (
@@ -197,6 +203,50 @@ const FileDrop = ({ picturePath }) => {
           >
             <MenuItem value="" disabled>
               Select Owner of the file
+            </MenuItem>
+            {users.map((user) => (
+              <MenuItem key={user.personID} value={user.personID}>
+                {`${user.personID} - ${user.firstName} ${user.lastName}`}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            value={readableBy}
+            onChange={(e) => setReadableBy(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select who can read the file
+            </MenuItem>
+            {users.map((user) => (
+              <MenuItem key={user.personID} value={user.personID}>
+                {`${user.personID} - ${user.firstName} ${user.lastName}`}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            value={adjustableBy}
+            onChange={(e) => setAdjustableBy(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select who can adjust the file
             </MenuItem>
             {users.map((user) => (
               <MenuItem key={user.personID} value={user.personID}>

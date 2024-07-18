@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Header from 'components/Header';
 import {
   Box,
@@ -6,20 +6,50 @@ import {
   CircularProgress,
   Grid,
   Paper,
+  TextField,
+  Button,
   useTheme,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import UserImage from 'components/UserImage';
+import { updateUser } from 'state';
 
 const Profile = () => {
   const { palette } = useTheme();
   const user = useSelector((state) => state.user);
   const { picturePath } = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token); // Get the token from the Redux store
   const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(user);
 
   if (!user) {
     return <CircularProgress />;
   }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSave = async (token) => {
+    const response = await fetch(`http://localhost:5001/users/${user._id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Include the token in the request
+      },
+      body: JSON.stringify(formData),
+    }); 
+  
+    if (response.ok) {
+      const updatedUser = await response.json();
+      dispatch(updateUser(updatedUser)); // Update the user in the Redux store
+      setIsEditing(false);
+    }
+  };
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -45,36 +75,107 @@ const Profile = () => {
               <Typography color={theme.palette.secondary[200]} fontWeight="bold" variant="h5" gutterBottom>
                 Profile Information
               </Typography>
-              <Typography variant="subtitle1">
-                <strong>First name:</strong> {user.firstName}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Last name:</strong> {user.lastName}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Email:</strong> {user.email}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Phone number:</strong> {user.phoneNumber}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Country:</strong> {user.country}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>City:</strong> {user.city}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Role:</strong> {user.role}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Role ID:</strong> {user.roleID}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Personal ID:</strong> {user.personID}
-              </Typography>
-              <Typography variant="subtitle1">
-                <strong>Data Space ID:</strong> {user.dataSpaceID}
-              </Typography>
+              {isEditing ? (
+                <>
+                  <TextField
+                    label="First Name"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Last Name"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={formData.phoneNumber}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="Country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <TextField
+                    label="City"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  {/* Add more fields as needed */}
+                  <Box mt={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleSave(token)}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="secondary"
+                      onClick={() => setIsEditing(false)}
+                      sx={{ ml: 2 }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </>
+              ) : (
+                <>
+                  <Typography variant="subtitle1">
+                    <strong>First name:</strong> {user.firstName}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Last name:</strong> {user.lastName}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Email:</strong> {user.email}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Phone number:</strong> {user.phoneNumber}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>Country:</strong> {user.country}
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <strong>City:</strong> {user.city}
+                  </Typography>
+                  {/* Add more fields as needed */}
+                  <Box mt={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      Edit
+                    </Button>
+                  </Box>
+                </>
+              )}
             </Box>
           </Paper>
         </Grid>

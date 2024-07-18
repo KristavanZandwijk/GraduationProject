@@ -11,7 +11,7 @@ const initialState = {
   elements: [],
   companies: [],
   projects: [],
-  users:[],
+  users: [],
 };
 
 export const authSlice = createSlice({
@@ -51,12 +51,9 @@ export const authSlice = createSlice({
     setProjects: (state, action) => {
       state.projects = action.payload;
     },
-
     setUsers: (state, action) => {
       state.users = action.payload;
     },
-
-
     setElements: (state, action) => {
       state.elements = action.payload;
     },
@@ -69,38 +66,41 @@ export const authSlice = createSlice({
     },
     setFile: (state, action) => {
       const updatedFiles = state.files.map((file) => {
-        if (file._id === action.payload.file._id) return action.payload.file;
+        if (file._id === action.payload._id) return action.payload;
         return file;
       });
       state.files = updatedFiles;
     },
     setBuilding: (state, action) => {
       const updatedBuildings = state.buildings.map((building) => {
-        if (building._id === action.payload.building._id) return action.payload.building;
+        if (building._id === action.payload._id) return action.payload;
         return building;
       });
       state.buildings = updatedBuildings;
     },
     setCompany: (state, action) => {
       const updatedCompanies = state.companies.map((company) => {
-        if (company._id === action.payload.company._id) return action.payload.company;
+        if (company._id === action.payload._id) return action.payload;
         return company;
       });
       state.companies = updatedCompanies;
     },
     setProject: (state, action) => {
       const updatedProjects = state.projects.map((project) => {
-        if (project._id === action.payload.project._id) return action.payload.project;
+        if (project._id === action.payload._id) return action.payload;
         return project;
       });
       state.projects = updatedProjects;
     },
-    setElement: (state, action) => {
-      const updatedElements = state.elements.map((element) => {
-        if (element._id === action.payload.element._id) return action.payload.element;
-        return element;
+    setUser: (state, action) => {
+      const updatedUsers = state.users.map((user) => {
+        if (user._id === action.payload._id) return action.payload;
+        return user;
       });
-      state.elements = updatedElements;
+      state.users = updatedUsers;
+    },
+    updateUser: (state, action) => { // Add updateUser reducer
+      state.user = action.payload;
     },
   },
 });
@@ -110,19 +110,20 @@ export const {
   setLogin,
   setLogout,
   setFriends,
-  setUsers,
   setPosts,
-  setPost,
   setFiles,
-  setFile,
   setBuildings,
-  setElements,
-  setBuilding,
-  setElement,
-  setCompany,
-  setProject,
   setCompanies,
   setProjects,
+  setUsers,
+  setElements,
+  setPost,
+  setFile,
+  setBuilding,
+  setCompany,
+  setProject,
+  setUser,
+  updateUser,
 } = authSlice.actions;
 
 export default authSlice.reducer;

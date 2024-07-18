@@ -69,7 +69,6 @@ const File = () => {
             <Typography>Filename: {metadata.filename}</Typography>
             <Typography>Size: {metadata.size} bytes</Typography>
             <Typography>Created At: {new Date(metadata.createdAt).toLocaleString()}</Typography>
-            <Typography>Data Owner: {(metadata.owner)}</Typography>
           </Box>
         )}
         <Box maxWidth="100%" sx={{

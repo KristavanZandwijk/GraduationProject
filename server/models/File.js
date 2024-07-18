@@ -41,6 +41,12 @@ const FileSchema = mongoose.Schema(
         relatedToProject:{
             type: String,
         },
+        readableBy: {
+            type: Array,
+        }, 
+        adjustableBy: {
+            type: Array,
+        },
     },
     { timestamps: true }
 );

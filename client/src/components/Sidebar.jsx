@@ -41,6 +41,7 @@ const navItems = [
   {
     text: "Home",
     icon: <HubOutlined />,
+    path: "/home",
   },
   {
     text: "Data Spaces",
@@ -49,58 +50,70 @@ const navItems = [
   {
     text: "UrbanScale",
     icon: <MapOutlined />,
+    path: "/urbanscale",
   },
   {
     text: "BuildingDataSpace",
     icon: <AccountBalanceOutlined />,
+    path: "/buildingdataspace",
   },
   {
-    text: 'CompanyDataSpace',
-    icon: <FactoryOutlined/>,
+    text: "CompanyDataSpace",
+    icon: <FactoryOutlined />,
+    path: "/companydataspace",
   },
   {
     text: "ElementDataSpace",
     icon: <DoorFrontOutlined />,
+    path: "/elementdataspace",
   },
   {
     text: "PersonalDataSpace",
     icon: <FolderSharedOutlined />,
+    path: "/personaldataspace",
   },
   {
     text: "Features",
     icon: null,
   },
-  { 
+  {
     text: "DataUpload",
-    icon: <FileUploadOutlined/>,
+    icon: <FileUploadOutlined />,
+    path: "/dataupload",
   },
   {
     text: "SearchFunction",
     icon: <SearchOutlined />,
+    path: "/searchfunction",
   },
   {
     text: "ProjectLearning",
     icon: <LocalLibraryOutlined />,
+    path: "/projectlearning",
   },
   {
     text: "ElementPassport",
     icon: <FingerprintOutlined />,
+    path: "/elementpassport",
   },
   {
     text: "ElementReuse",
     icon: <RecyclingOutlined />,
+    path: "/elementreuse",
   },
   {
     text: "EmergencyPlans",
     icon: <FireExtinguisherOutlined />,
+    path: "/emergencyplans",
   },
   {
-    text: 'Organization(s)',
+    text: "Organization(s)",
     icon: null,
   },
   {
-    text: 'CompanyInformation',
-    icon: <WorkOutlineOutlined/>,
+    text: "CompanyInformation",
+    icon: <WorkOutlineOutlined />,
+    path: "/companyinformation",
   },
   {
     text: "Profile",
@@ -109,10 +122,12 @@ const navItems = [
   {
     text: "Profile",
     icon: <PersonOutlined />,
+    path: "/profile",
   },
   {
     text: "DataPrivacy",
     icon: <AdminPanelSettingsOutlined />,
+    path: "/dataprivacy",
   },
 ];
 
@@ -133,7 +148,7 @@ const Sidebar = ({
   const dataSpaceID = user.dataSpaceID; // Assuming dataSpaceID is part of the user object
 
   useEffect(() => {
-    setActive(pathname.substring(1));
+    setActive(pathname);
   }, [pathname]);
 
   const handleProfileClick = () => {
@@ -175,7 +190,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {navItems.map(({ text, icon, path }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
@@ -183,7 +198,8 @@ const Sidebar = ({
                     </Typography>
                   );
                 }
-                const lcText = text.toLowerCase();
+
+                const isActive = pathname.startsWith(path);
 
                 return (
                   <ListItem key={text} disablePadding>
@@ -192,36 +208,31 @@ const Sidebar = ({
                         if (text === "PersonalDataSpace") {
                           navigate(`/personaldataspace/${dataSpaceID}`);
                         } else {
-                          navigate(`/${lcText}`);
+                          navigate(path);
                         }
-                        setActive(lcText);
+                        setActive(path);
                       }}
                       sx={{
-                        backgroundColor:
-                          active === lcText
-                            ? theme.palette.secondary[500]
-                            : "transparent",
-                        color:
-                          active === lcText
-                            ? theme.palette.primary[600]
-                            : theme.palette.secondary[100],
+                        backgroundColor: isActive
+                          ? theme.palette.secondary[500]
+                          : "transparent",
+                        color: isActive
+                          ? theme.palette.primary[600]
+                          : theme.palette.secondary[100],
                       }}
                     >
                       <ListItemIcon
                         sx={{
                           ml: "1rem",
-                          color:
-                            active === lcText
-                              ? theme.palette.primary[600]
-                              : theme.palette.secondary[200],
+                          color: isActive
+                            ? theme.palette.primary[600]
+                            : theme.palette.secondary[200],
                         }}
                       >
                         {icon}
                       </ListItemIcon>
                       <ListItemText primary={text} />
-                      {active === lcText && (
-                        <ChevronRightOutlined sx={{ ml: "auto" }} />
-                      )}
+                      {isActive && <ChevronRightOutlined sx={{ ml: "auto" }} />}
                     </ListItemButton>
                   </ListItem>
                 );

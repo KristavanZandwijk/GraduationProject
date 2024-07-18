@@ -40,8 +40,10 @@ const FileTable = () => {
               <TableCell>File ID</TableCell>
               <TableCell>File Name</TableCell>
               <TableCell>File Description</TableCell>
-              <TableCell>File Considers</TableCell>
               <TableCell>File Owned By</TableCell>
+              <TableCell>Uploaded on Personal Data Space</TableCell>
+              <TableCell>File Considers</TableCell>
+              <TableCell>Stored in Data Space (projectID)</TableCell>
               <TableCell>Uploaded At</TableCell>
             </TableRow>
           </TableHead>
@@ -53,8 +55,19 @@ const FileTable = () => {
                   <TableCell>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.fileDescription}</TableCell>
-                  <TableCell>{file.considers}</TableCell>
                   <TableCell>{file.hasOwner}</TableCell>
+                  <TableCell>{file.personalDataSpaceID}</TableCell>
+                  <TableCell>{file.considers}</TableCell>
+                  <TableCell>
+                    {file.considers === 'building' && file.buildingDataSpaceID}
+                    {file.considers === 'element' && file.elementDataSpaceID}
+                    {file.considers === 'project' && (
+                      <>
+                        <div>{file.companyDataSpaceID}</div>
+                        <div>{file.relatedToProject}</div>
+                      </>
+                    )}
+                  </TableCell>
                   <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
                 </TableRow>
               ))}

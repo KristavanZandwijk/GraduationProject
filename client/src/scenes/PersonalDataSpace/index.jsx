@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import Header from 'components/Header';
-import FileTable from 'components/DataSpaceContent';
+import FileTable from 'components/FilesInformation';
 import { useSelector } from 'react-redux';
 
 const Personal = () => {

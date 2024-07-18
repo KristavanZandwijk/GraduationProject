@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
@@ -15,6 +15,8 @@ const CompanyInformation = () => {
   const companies = useSelector((state) => state.companies || []);
   const user = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+  const [projects, setProjects] = useState([]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -28,7 +30,31 @@ const CompanyInformation = () => {
       }
     };
 
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/projects', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setProjects(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      }
+    };
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsers(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+
     fetchCompanies();
+    fetchProjects();
+    fetchUsers();
   }, [dispatch, token]);
 
   const filteredCompanies = Array.isArray(companies)
@@ -40,6 +66,20 @@ const CompanyInformation = () => {
   const handleNewCompanyClick = () => {
     navigate('/newcompany');
   };
+
+  const selectedCompany = filteredCompanies[0];
+  const filteredProjects = selectedCompany
+    ? projects.filter(project =>
+        project.companies.some(comp => comp.companyID === selectedCompany.companyID)
+      )
+    : [];
+
+  const companyEmployees = selectedCompany
+    ? selectedCompany.employees.map(employee => {
+        const userDetails = users.find(user => user.personID === employee.personID);
+        return { ...employee, ...userDetails };
+      })
+    : [];
 
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
@@ -55,9 +95,9 @@ const CompanyInformation = () => {
       <Grid container spacing={2}>
         {/* Basic Company Info Section */}
         <Grid item xs={12}>
-          <Box mt={3} mx="auto" justifyContent="left" >
-            {filteredCompanies.length > 0 && (
-              <BasicCompanyInfoWidget company={filteredCompanies[0]} />
+          <Box mt={3} mx="auto" justifyContent="left">
+            {selectedCompany && (
+              <BasicCompanyInfoWidget company={selectedCompany} />
             )}
           </Box>
         </Grid>
@@ -65,8 +105,8 @@ const CompanyInformation = () => {
         {/* Employees Section */}
         <Grid item xs={12}>
           <Box mt={3} mx="auto" justifyContent="left">
-            {filteredCompanies.length > 0 ? (
-              <EmployeeList employees={filteredCompanies[0].employees} />
+            {selectedCompany ? (
+              <EmployeeList employees={companyEmployees} />
             ) : (
               <Box p={3}>
                 <Typography>No employees found for this user.</Typography>
@@ -78,8 +118,8 @@ const CompanyInformation = () => {
         {/* Projects Section */}
         <Grid item xs={12}>
           <Box mt={2} mx="auto" justifyContent="right">
-            {filteredCompanies.length > 0 ? (
-              <ProjectList projects={filteredCompanies[0].projects} />
+            {selectedCompany ? (
+              <ProjectList projects={filteredProjects} />
             ) : (
               <Box p={3}>
                 <Typography>No projects found for this user.</Typography>

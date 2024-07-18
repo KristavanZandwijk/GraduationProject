@@ -7,12 +7,12 @@ const EmployeeList = ({ employees }) => {
   return (
     <Paper elevation={3} sx={{ borderRadius: 10 }}>
       <Box p={3}>
-      <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
+        <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
           Employees
         </Typography>
         {employees.map((employee, index) => (
           <Typography key={index} variant="subtitle1">
-            {employee.personID}
+            {employee.firstName} {employee.lastName} - {employee.personID}
           </Typography>
         ))}
       </Box>

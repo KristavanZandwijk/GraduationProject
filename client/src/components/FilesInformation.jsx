@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton, Link } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -35,6 +35,17 @@ const FileTable = () => {
     }
   };
 
+  const handleFileClick = (file) => {
+    if (file.considers === 'building') {
+      navigate(`/buildingdataspace/${file.buildingDataSpaceID}/${file.fileID}`);
+    } else if (file.considers === 'element') {
+      navigate(`/elementdataspace/${file.elementDataSpaceID}/${file.fileID}`);
+    } else if (file.considers === 'project') {
+      navigate(`/companydataspace/${file.relatedToProject}/${file.fileID}`);
+    }
+  };
+
+
   return (
     <Box mt="2rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -63,14 +74,14 @@ const FileTable = () => {
             {files
               .filter((file) => file.personalDataSpaceID === dataSpaceID)
               .map((file) => (
-                <TableRow key={file.fileID} onClick={() => handleRowClick(file)} style={{ cursor: 'pointer' }}>
-                  <TableCell>{file.fileID}</TableCell>
+                <TableRow key={file.fileID}>
+                  <TableCell onClick={() => handleFileClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.fileDescription}</TableCell>
                   <TableCell>{file.hasOwner}</TableCell>
                   <TableCell>{file.personalDataSpaceID}</TableCell>
                   <TableCell>{file.considers}</TableCell>
-                  <TableCell style={{ color: theme.palette.secondary.main }}>
+                  <TableCell onClick={() => handleRowClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
                     {file.considers === 'building' && file.buildingDataSpaceID}
                     {file.considers === 'element' && file.elementDataSpaceID}
                     {file.considers === 'project' && (

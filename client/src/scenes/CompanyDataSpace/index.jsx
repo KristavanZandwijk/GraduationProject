@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Typography, Grid, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
@@ -15,6 +15,9 @@ const CompanyDataSpace = () => {
   const user = useSelector((state) => state.user);
   const theme = useTheme();
   const token = useSelector((state) => state.token);
+
+  const [users, setUsers] = useState([]);
+  const [buildings, setBuildings] = useState([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -39,8 +42,32 @@ const CompanyDataSpace = () => {
       }
     };
 
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsers(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+
+    const fetchBuildings = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/buildings/all', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBuildings(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch buildings:', error);
+      }
+    };
+
     fetchCompanies();
     fetchProjects();
+    fetchUsers();
+    fetchBuildings();
   }, [dispatch, token]);
 
   const filteredCompanies = Array.isArray(companies)
@@ -87,6 +114,8 @@ const CompanyDataSpace = () => {
               <ProjectInfo
                 project={project}
                 companies={companies}
+                users={users}
+                buildings={buildings}
                 handleProjectClick={handleProjectClick}
               />
             </Grid>

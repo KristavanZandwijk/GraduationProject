@@ -1,8 +1,23 @@
 import React from 'react';
 import { Box, Typography, Paper, useTheme } from '@mui/material';
 
-const ProjectInfo = ({ project, companies, handleProjectClick }) => {
+const ProjectInfo = ({ project, companies, users, buildings, handleProjectClick }) => {
   const theme = useTheme();
+
+  const getCompanyName = (companyID) => {
+    const company = companies.find(c => c.companyID === companyID);
+    return company ? company.companyName : companyID;
+  };
+
+  const getUserName = (personID) => {
+    const user = users.find(u => u.personID === personID);
+    return user ? `${user.firstName} ${user.lastName}` : personID;
+  };
+
+  const getBuildingName = (buildingID) => {
+    const building = buildings.find(b => b.buildingID === buildingID);
+    return building ? building.buildingName : buildingID;
+  };
 
   return (
     <Paper elevation={3} sx={{ borderRadius: 10 }}>
@@ -24,21 +39,18 @@ const ProjectInfo = ({ project, companies, handleProjectClick }) => {
           <strong>Companies Involved:</strong>
         </Typography>
         <ul>
-          {project.companies.map((company) => {
-            const companyInfo = companies.find(c => c.companyID === company.companyID);
-            return (
-              <li key={company.companyID}>
-                {companyInfo ? companyInfo.companyName : company.companyID}
-              </li>
-            );
-          })}
+          {project.companies.map((company) => (
+            <li key={company.companyID}>
+              {getCompanyName(company.companyID)} - {company.companyID}
+            </li>
+          ))}
         </ul>
         <Typography variant="subtitle1">
           <strong>Employees Involved:</strong>
         </Typography>
         <ul>
           {project.employees.map((employee) => (
-            <li key={employee.personID}>{employee.personID}</li>
+            <li key={employee.personID}>{getUserName(employee.personID)} - {employee.personID}</li>
           ))}
         </ul>
         <Typography variant="subtitle1">
@@ -46,7 +58,7 @@ const ProjectInfo = ({ project, companies, handleProjectClick }) => {
         </Typography>
         <ul>
           {project.clients.map((client) => (
-            <li key={client.personID}>{client.personID}</li>
+            <li key={client.personID}>{getUserName(client.personID)} - {client.personID}</li>
           ))}
         </ul>
         <Typography variant="subtitle1">
@@ -54,7 +66,7 @@ const ProjectInfo = ({ project, companies, handleProjectClick }) => {
         </Typography>
         <ul>
           {project.relatesTo.map((relateTo) => (
-            <li key={relateTo.buildingID}>{relateTo.buildingID}</li>
+            <li key={relateTo.buildingID}>{getBuildingName(relateTo.buildingID)} - {relateTo.buildingID}</li>
           ))}
         </ul>
       </Box>

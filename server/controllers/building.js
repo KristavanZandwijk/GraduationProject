@@ -16,3 +16,18 @@ export const getUserBuildings = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const getAllBuildings = async (req, res) => {
+  try {
+    const buildings = await Building.find({ });
+
+    if (!buildings.length) {
+      return res.status(404).json({ message: "No buildings found at all" });
+    }
+
+    res.status(200).json(buildings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

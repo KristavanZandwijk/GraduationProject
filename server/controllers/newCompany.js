@@ -2,7 +2,7 @@ import Company from '../models/Company.js';
 
 export const createCompany = async (req, res) => {
   try {
-    const {companyID, companyDataSpaceID, companyName, city, country } = req.body;
+    const {companyID, companyDataSpaceID, companyName, city, country, employees } = req.body;
 
     const newCompany = new Company({
       companyID,
@@ -10,6 +10,8 @@ export const createCompany = async (req, res) => {
       companyName,
       city,
       country,
+      employees,
+      
     });
 
     await newCompany.save();

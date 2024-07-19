@@ -4,23 +4,28 @@ import {
   LocationOnOutlined,
   WorkOutlineOutlined,
   BackupOutlined,
+  HomeWorkOutlined,
+  AssignmentIndOutlined,
 } from "@mui/icons-material";
 import { Box, Typography, Divider, useTheme } from "@mui/material";
 import UserImage from "components/UserImage";
 import FlexBetween from "components/FlexBetween";
 import WidgetWrapper from "components/WidgetWrapper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
-  const [files, setFiles] = useState([]); // State to hold user files
+  const [files, setFiles] = useState([]);
   const { palette } = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const theme = useTheme();
   const companies = useSelector((state) => state.companies || []);
+  const projects = useSelector((state) => state.projects || []);
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:5001/users/${userId}`, {
@@ -40,23 +45,56 @@ const UserWidget = ({ userId, picturePath }) => {
     setFiles(data);
   };
 
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/companies', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch({ type: 'SET_COMPANIES', payload: Array.isArray(response.data) ? response.data : [] });
+    } catch (error) {
+      console.error('Failed to fetch companies:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/projects', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch({ type: 'SET_PROJECTS', payload: Array.isArray(response.data) ? response.data : [] });
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    }
+  };
+
   useEffect(() => {
-    getUser();
+    fetchCompanies();
+    fetchProjects();
     fetchFiles();
-  }, [userId, token]);
+    getUser(); 
+  }, [dispatch, userId, token]);
 
   if (!user) {
     return null;
   }
+
+  const userCompanyIds = companies
+    .filter(company => company.employees.some(employee => employee.personID === user.personID))
+    .map(company => company.companyID);
+
+    const filteredProjects = Array.isArray(projects)
+    ? projects.filter(project =>
+        project.employees.some(employee => employee.personID === user.personID)
+      )
+    : [];
 
   const {
     firstName,
     lastName,
     city,
     role,
-    friends,
+    email
   } = user;
-
 
   return (
     <WidgetWrapper>
@@ -82,10 +120,10 @@ const UserWidget = ({ userId, picturePath }) => {
             >
               {firstName} {lastName}
             </Typography>
-            <Typography color={palette.neutral.medium}>{friends.length} friends</Typography>
+            <Typography color={palette.neutral.medium}>{email}</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined />
+        <ManageAccountsOutlined onClick={() => navigate(`/profile`)} /> {/* Added onClick */}
       </FlexBetween>
 
       <Divider />
@@ -100,10 +138,20 @@ const UserWidget = ({ userId, picturePath }) => {
           <WorkOutlineOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
           <Typography color={palette.neutral.medium}>{role}</Typography>
         </Box>
-        <Box display="flex" alignItems="center" gap="1rem">
-          <BackupOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
-          <Typography color={palette.neutral.medium}>{files.length} files</Typography>
-        </Box>
+        {Array.isArray(companies) && companies
+          .filter(company => company.employees.some(employee => employee.personID === user.personID))
+          .map((company, index) => (
+            <Box key={index} display="flex" alignItems="center" gap="1rem">
+              <HomeWorkOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
+              <Typography color={palette.neutral.medium}>{company.companyName}</Typography>
+            </Box>
+        ))}
+        {Array.isArray(filteredProjects) && filteredProjects.map((project, index) => (
+          <Box key={index} display="flex" alignItems="center" gap="1rem">
+            <AssignmentIndOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
+            <Typography color={palette.neutral.medium}>{project.projectName}</Typography>
+          </Box>
+        ))}
       </Box>
 
       <Divider />

@@ -2,3 +2,5 @@
 
 22-07-2024 15:27:28 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240722_152718/_262191
 22-07-2024 15:27:35 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240722_152725/_262191
+22-07-2024 16:33:17 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240722_163307/_262191
+22-07-2024 16:36:22 ERROR RDFWriter:250 - *ERROR 4*: Entity in IFC files has more attributes than it is allowed have: IfcOrganization_2

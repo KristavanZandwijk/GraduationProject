@@ -29,6 +29,7 @@ import { companies} from "./data/index.js";
 import Project from "./models/Project.js";
 import newProjectRoutes from "./routes/newProject.js";
 import Building from "./models/Building.js";
+import dataPrivacyRoutes from "./routes/dataPrivacy.js";
 
 
 /* CONFIGURATIONS */
@@ -73,6 +74,7 @@ app.use("/newcompanies", newCompanyRoutes);
 app.use("/companies", companyRoutes);
 app.use("/projects", projectRoutes);
 app.use("/newprojects", newProjectRoutes);
+app.use('/api/convert', dataPrivacyRoutes);
 
 
 /* MONGOOSE SETUP */

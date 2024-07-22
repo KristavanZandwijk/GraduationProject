@@ -1,0 +1,4 @@
+22-07-2024 15:27:04 ERROR IfcSpfReader:239 - Unrecognised EXPRESS schema: . File should be in IFC4x3_RC1, IFC4X1, IFC4 or IFC2X3 schema. Quitting.
+
+22-07-2024 15:27:28 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240722_152718/_262191
+22-07-2024 15:27:35 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240722_152725/_262191

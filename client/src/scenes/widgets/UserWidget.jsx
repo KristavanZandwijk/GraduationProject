@@ -1,6 +1,4 @@
 import {
-  ManageAccountsOutlined,
-  EditOutlined,
   LocationOnOutlined,
   WorkOutlineOutlined,
   BackupOutlined,
@@ -123,7 +121,6 @@ const UserWidget = ({ userId, picturePath }) => {
             <Typography color={palette.neutral.medium}>{email}</Typography>
           </Box>
         </FlexBetween>
-        <ManageAccountsOutlined onClick={() => navigate(`/profile`)} /> {/* Added onClick */}
       </FlexBetween>
 
       <Divider />

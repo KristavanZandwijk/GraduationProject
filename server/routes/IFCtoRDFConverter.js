@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from 'multer';
-import { convertIfcToRdf } from '../controllers/dataPrivacy.js';
+import { convertIfcToRdf } from '../controllers/IFCtoRDFConverter.js';
 
 const router = express.Router();
 

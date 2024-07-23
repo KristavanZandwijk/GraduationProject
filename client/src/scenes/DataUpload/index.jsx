@@ -10,7 +10,7 @@ const NewFile = () => {
   const navigate = useNavigate();
 
   const handleConverterClick = () => {
-    navigate('/IFCtoRDFConverter');
+    navigate('/dataupload/IFCtoRDFConverter');
   };
 
   return (

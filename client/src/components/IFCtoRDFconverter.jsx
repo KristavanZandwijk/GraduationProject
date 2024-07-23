@@ -1,18 +1,31 @@
-// src/components/IFCtoRDFConverter.js
-
 import React, { useState, useRef } from 'react';
 import { Box, Button, Typography, useTheme, Divider } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
 
 const IFCtoRDFConverter = () => {
   const [ifcFile, setIfcFile] = useState(null);
+  const [ttlFilePath, setTtlFilePath] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const theme = useTheme();
+  const token = useSelector((state) => state.token);
 
   const fileInputRef = useRef(null);
 
   const handleIfcFileChange = (e) => {
-    setIfcFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file && file.name.split('.').pop().toLowerCase() === 'ifc') {
+      setIfcFile(file);
+      setTtlFilePath(null);
+      setError('');
+    } else {
+      setIfcFile(null);
+      setTtlFilePath(null);
+      setError('Only .ifc files are allowed.');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = null;
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -32,14 +45,17 @@ const IFCtoRDFConverter = () => {
     formData.append('ttlFileName', ttlFileName);
 
     try {
-      const response = await fetch('http://localhost:5001/api/convert', {
+      const response = await fetch('http://localhost:5001/converter', {
         method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
       if (response.ok) {
         const result = await response.json();
-        alert(`Conversion successful: ${result.ttlFilePath}`);
+        setTtlFilePath(result.ttlFilePath);
         setIfcFile(null);
         setError('');
         if (fileInputRef.current) {
@@ -116,6 +132,11 @@ const IFCtoRDFConverter = () => {
           {loading ? 'Converting...' : 'Convert'}
         </Button>
       </form>
+      {ttlFilePath && (
+        <Box mt="2rem">
+          <Typography variant="h6">Conversion successful!</Typography>
+        </Box>
+      )}
     </Box>
   );
 };

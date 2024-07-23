@@ -70,7 +70,7 @@ function App() {
             <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />}/>
             <Route path="/companydataspace/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />}/>
             <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />}/>
-            <Route path="/IFCtoRDFConverter" element={isAuth ? <IFCtoRDFConverter/> : <Navigate to="/" />}/>
+            <Route path="/dataupload/IFCtoRDFConverter" element={isAuth ? <IFCtoRDFConverter/> : <Navigate to="/" />}/>
 
           </Route>
             <Route path="/" element={<LoginPage />} />

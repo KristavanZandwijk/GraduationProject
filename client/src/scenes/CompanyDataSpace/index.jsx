@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, Grid, useTheme, MenuItem, Select } from '@mui/material';
+import { Box, Button, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
 import { useNavigate } from 'react-router-dom';
-import ProjectInfo from 'components/ProjectInformationWidget';
+import CompanySelect from 'components/CompanySelect'; // Import the new component
 
 const CompanyDataSpace = () => {
   const dispatch = useDispatch();
@@ -17,7 +17,6 @@ const CompanyDataSpace = () => {
   const token = useSelector((state) => state.token);
 
   const [users, setUsers] = useState([]);
-  const [buildings, setBuildings] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState('');
 
   useEffect(() => {
@@ -79,15 +78,6 @@ const CompanyDataSpace = () => {
     navigate('/newproject');
   };
 
-  const handleCompanyChange = (event) => {
-    const companyID = event.target.value;
-    navigate(`/companydataspace/${companyID}`);
-  };
-
-  const handleProjectClick = (projectID) => {
-    navigate(`/companydataspace/${projectID}`);
-  };
-
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
@@ -100,27 +90,10 @@ const CompanyDataSpace = () => {
         </Button> */}
       </Box>
 
-      <Box mb={2}>
-        <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
-          Select Company
-        </Typography>
-        <Select
-          fullWidth
-          value={selectedCompany}
-          onChange={handleCompanyChange}
-          displayEmpty
-        >
-          <MenuItem value="" disabled>
-            Select a company
-          </MenuItem>
-          {filteredCompanies.map(company => (
-            <MenuItem key={company.companyID} value={company.companyID}>
-              {company.companyName}
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
-      {/* You might want to add content here, like the ProjectInfo component */}
+      <CompanySelect 
+        selectedCompany={selectedCompany} 
+        setSelectedCompany={setSelectedCompany}
+      />
     </Box>
   );
 };

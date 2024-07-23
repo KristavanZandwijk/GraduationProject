@@ -6,8 +6,9 @@ import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
 import { useNavigate } from 'react-router-dom';
 import ProjectInfo from 'components/ProjectInformationWidget';
+import CompanySelect from 'components/CompanySelect'; // Import the new component
 
-const CompanyDataSpace = () => {
+const CompanyDataSpaceID = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const companies = useSelector((state) => state.companies || []);
@@ -18,6 +19,7 @@ const CompanyDataSpace = () => {
 
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState('');
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -70,39 +72,52 @@ const CompanyDataSpace = () => {
     fetchBuildings();
   }, [dispatch, token]);
 
+  const companyID = window.location.pathname.split('/').pop();
+
+  // Filter companies and projects based on the selected company
   const filteredCompanies = Array.isArray(companies)
     ? companies.filter(company =>
-        company.employees.some(employee => employee.personID === user.personID)
-      )
+        company.companyID === companyID && company.employees.some(employee => employee.personID === user.personID))
     : [];
-
-  const userCompanyIds = filteredCompanies.map(company => company.companyID);
 
   const filteredProjects = Array.isArray(projects)
     ? projects.filter(project =>
-        project.companies.some(company => userCompanyIds.includes(company.companyID))
-      )
+        project.companies.some(company => company.companyID === companyID) &&
+        project.employees.some(employee => employee.personID === user.personID))
     : [];
 
-  const handleNewProjectClick = () => {
-    navigate('/newproject');
-  };
-
   const handleProjectClick = (projectID) => {
-    navigate(`/companydataspace/${projectID}`);
+    navigate(`/companydataspace/${companyID}/${projectID}`);
   };
 
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
         title="Company Data Space"
-        subtitle="This page will show an overview of the projects of the company. Click on the project name to navigate to the specific project data space."
+        subtitle={
+          <>
+            This page shows the projects of company{' '}
+            <Typography component="span" fontWeight="bold">
+              {filteredCompanies.length > 0 ? filteredCompanies[0].companyName : 'N/A'}
+            </Typography>{' '}
+            where you{' '}
+            <Typography component="span" fontWeight="bold">
+              ({user.firstName} {user.lastName})
+            </Typography>{' '}
+            are registered as an employee.
+          </>
+        }
       />
       <Box display="flex" justifyContent="flex-end" mb={1}>
-        <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
+        <Button variant="contained" color="primary" onClick={() => navigate('/newproject')}>
           Create New Project
         </Button>
       </Box>
+
+      <CompanySelect 
+        selectedCompany={selectedCompany} 
+        setSelectedCompany={setSelectedCompany}
+      />
 
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
         Company Projects
@@ -128,4 +143,4 @@ const CompanyDataSpace = () => {
   );
 };
 
-export default CompanyDataSpace;
+export default CompanyDataSpaceID;

@@ -5,9 +5,7 @@ import Header from 'components/Header';
 import axios from 'axios';
 import { setCompanies } from 'state';
 import { useNavigate } from 'react-router-dom';
-import EmployeeList from 'components/EmployeesWidget';
-import BasicCompanyInfoWidget from 'components/CompnayInformationWidget';
-import ProjectList from 'components/ProjectsWidget';
+import CombinedCompanyInfoWidget from 'components/CompnayInformationWidget';
 
 const CompanyInformation = () => {
   const dispatch = useDispatch();
@@ -67,20 +65,6 @@ const CompanyInformation = () => {
     navigate('/newcompany');
   };
 
-  const selectedCompany = filteredCompanies[0];
-  const filteredProjects = selectedCompany
-    ? projects.filter(project =>
-        project.companies.some(comp => comp.companyID === selectedCompany.companyID)
-      )
-    : [];
-
-  const companyEmployees = selectedCompany
-    ? selectedCompany.employees.map(employee => {
-        const userDetails = users.find(user => user.personID === employee.personID);
-        return { ...employee, ...userDetails };
-      })
-    : [];
-
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
@@ -92,42 +76,36 @@ const CompanyInformation = () => {
           Create New Company
         </Button>
       </Box>
-      <Grid container spacing={2}>
-        {/* Basic Company Info Section */}
-        <Grid item xs={12}>
-          <Box mt={3} mx="auto" justifyContent="left">
-            {selectedCompany && (
-              <BasicCompanyInfoWidget company={selectedCompany} />
-            )}
-          </Box>
-        </Grid>
+      {filteredCompanies.length > 0 ? (
+        <Grid container spacing={2}>
+          {filteredCompanies.map((company) => {
+            const filteredProjects = projects.filter(project =>
+              project.companies.some(comp => comp.companyID === company.companyID)
+            );
 
-        {/* Employees Section */}
-        <Grid item xs={12}>
-          <Box mt={3} mx="auto" justifyContent="left">
-            {selectedCompany ? (
-              <EmployeeList employees={companyEmployees} />
-            ) : (
-              <Box p={3}>
-                <Typography>No employees found for this user.</Typography>
-              </Box>
-            )}
-          </Box>
-        </Grid>
+            const companyEmployees = company.employees.map(employee => {
+              const userDetails = users.find(user => user.personID === employee.personID);
+              return { ...employee, ...userDetails };
+            });
 
-        {/* Projects Section */}
-        <Grid item xs={12}>
-          <Box mt={2} mx="auto" justifyContent="right">
-            {selectedCompany ? (
-              <ProjectList projects={filteredProjects} />
-            ) : (
-              <Box p={3}>
-                <Typography>No projects found for this user.</Typography>
-              </Box>
-            )}
-          </Box>
+            return (
+              <Grid item xs={12} sm={6} md={4} key={company.companyID}>
+                <Box mt={3} mx="auto">
+                  <CombinedCompanyInfoWidget
+                    company={company}
+                    projects={filteredProjects}
+                    employees={companyEmployees}
+                  />
+                </Box>
+              </Grid>
+            );
+          })}
         </Grid>
-      </Grid>
+      ) : (
+        <Box p={3}>
+          <Typography>No companies found for this user.</Typography>
+        </Box>
+      )}
     </Box>
   );
 };

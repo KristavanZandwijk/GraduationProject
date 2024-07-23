@@ -6,6 +6,7 @@ import { verifyToken } from "../middleware/auth.js";
 const router = express.Router();
 
 /* READ */
+router.get("/", verifyToken, getCompanyProjects);
 router.get("/:projectID", verifyToken, getCompanyProjects);
 
 

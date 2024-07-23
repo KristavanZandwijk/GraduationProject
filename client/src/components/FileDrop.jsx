@@ -53,68 +53,7 @@ const FileDrop = ({ picturePath }) => {
   const mediumMain = theme.palette.neutral.mediumMain;
   const medium = theme.palette.neutral.medium;
 
-  useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/buildings', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch buildings:', error);
-      }
-    };
-
-    const fetchElements = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/elements', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setElements(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch elements:', error);
-      }
-    };
-
-    const fetchCompanies = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/companies', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch companies:', error);
-      }
-    };
-
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/projects', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      }
-    };
-
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/users', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch Users:', error);
-      }
-    };
-
-    fetchBuildings();
-    fetchElements();
-    fetchCompanies();
-    fetchProjects();
-    fetchUsers();
-  }, [dispatch, token]);
+  
 
   const generateFileID = () => {
     return Math.random().toString(36).substr(2, 10).toUpperCase();

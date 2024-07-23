@@ -31,6 +31,7 @@ import CompanyInfoPage from "scenes/CompanyInformation";
 import NewFile from "scenes/DataUpload";
 import ProjectDataSpace from "scenes/ProjectDataSpace";
 import IFCtoRDFConverter from "scenes/IFCtoRDFConverter";
+import CompanyDataSpaceID from "scenes/CompanyDataSpaceID";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -68,7 +69,8 @@ function App() {
             <Route path="/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />}/>
             <Route path="/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />}/>
             <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />}/>
-            <Route path="/companydataspace/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />}/>
+            <Route path="/companydataspace/:companyID" element={isAuth ? <CompanyDataSpaceID /> : <Navigate to="/" />}/>
+            <Route path="/companydataspace/:companyID/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />}/>
             <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />}/>
             <Route path="/dataupload/IFCtoRDFConverter" element={isAuth ? <IFCtoRDFConverter/> : <Navigate to="/" />}/>
 

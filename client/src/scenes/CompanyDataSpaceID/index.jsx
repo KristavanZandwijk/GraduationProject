@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, Grid, useTheme, MenuItem, Select } from '@mui/material';
+import { Box, Button, Typography, Grid, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import axios from 'axios';
@@ -18,7 +18,6 @@ const CompanyDataSpace = () => {
 
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState('');
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -54,9 +53,21 @@ const CompanyDataSpace = () => {
       }
     };
 
+    const fetchBuildings = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/buildings/all', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBuildings(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch buildings:', error);
+      }
+    };
+
     fetchCompanies();
     fetchProjects();
     fetchUsers();
+    fetchBuildings();
   }, [dispatch, token]);
 
   const filteredCompanies = Array.isArray(companies)
@@ -65,23 +76,16 @@ const CompanyDataSpace = () => {
       )
     : [];
 
-  const filteredProjects = projects.filter(project =>
-    project.companies.some(comp => filteredCompanies.map(company => company.companyID).includes(comp.companyID))
-  );
+  const userCompanyIds = filteredCompanies.map(company => company.companyID);
 
-  useEffect(() => {
-    if (filteredCompanies.length === 1) {
-      navigate(`/companydataspace/${filteredCompanies[0].companyID}`);
-    }
-  }, [filteredCompanies, navigate]);
+  const filteredProjects = Array.isArray(projects)
+    ? projects.filter(project =>
+        project.companies.some(company => userCompanyIds.includes(company.companyID))
+      )
+    : [];
 
   const handleNewProjectClick = () => {
     navigate('/newproject');
-  };
-
-  const handleCompanyChange = (event) => {
-    const companyID = event.target.value;
-    navigate(`/companydataspace/${companyID}`);
   };
 
   const handleProjectClick = (projectID) => {
@@ -91,36 +95,35 @@ const CompanyDataSpace = () => {
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
-        title="Select a company to go to Data Space."
-        subtitle="" // You might want to provide a meaningful subtitle or remove it
+        title="Company Data Space"
+        subtitle="This page will show an overview of the projects of the company. Click on the project name to navigate to the specific project data space."
       />
       <Box display="flex" justifyContent="flex-end" mb={1}>
-        {/* <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
+        <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
           Create New Project
-        </Button> */}
+        </Button>
       </Box>
 
-      <Box mb={2}>
-        <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
-          Select Company
-        </Typography>
-        <Select
-          fullWidth
-          value={selectedCompany}
-          onChange={handleCompanyChange}
-          displayEmpty
-        >
-          <MenuItem value="" disabled>
-            Select a company
-          </MenuItem>
-          {filteredCompanies.map(company => (
-            <MenuItem key={company.companyID} value={company.companyID}>
-              {company.companyName}
-            </MenuItem>
-          ))}
-        </Select>
-      </Box>
-      {/* You might want to add content here, like the ProjectInfo component */}
+      <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
+        Company Projects
+      </Typography>
+      <Grid container spacing={2}>
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
+            <Grid item xs={12} sm={6} md={4} key={project.projectID}>
+              <ProjectInfo
+                project={project}
+                companies={companies}
+                users={users}
+                buildings={buildings}
+                handleProjectClick={handleProjectClick}
+              />
+            </Grid>
+          ))
+        ) : (
+          <Typography>No projects found for this company.</Typography>
+        )}
+      </Grid>
     </Box>
   );
 };

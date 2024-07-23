@@ -2,6 +2,17 @@ import React, { useState, useRef } from 'react';
 import { Box, Button, Typography, useTheme, Divider } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 
+// Utility function to generate a unique 8-character filename
+const generateUniqueFilename = (extension = 'ttl') => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  const charactersLength = characters.length;
+  for (let i = 0; i < 8; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return `${result}.${extension}`;
+};
+
 const IFCtoRDFConverter = () => {
   const [ifcFile, setIfcFile] = useState(null);
   const [ttlFilePath, setTtlFilePath] = useState(null);
@@ -41,7 +52,9 @@ const IFCtoRDFConverter = () => {
 
     const formData = new FormData();
     formData.append('ifcFile', ifcFile);
-    const ttlFileName = ifcFile.name.replace(/\.[^/.]+$/, '') + '.ttl';
+
+    // Generate a unique filename
+    const ttlFileName = generateUniqueFilename();
     formData.append('ttlFileName', ttlFileName);
 
     try {

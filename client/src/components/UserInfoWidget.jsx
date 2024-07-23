@@ -1,5 +1,4 @@
-// UserWidget.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,37 +11,93 @@ import {
 import { useSelector, useDispatch } from 'react-redux';
 import UserImage from 'components/UserImage';
 import { updateUser } from 'state';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const UserWidget = () => {
   const { palette } = useTheme();
   const user = useSelector((state) => state.user);
   const { picturePath } = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token); // Get the token from the Redux store
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user);
+  const [companies, setCompanies] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [filteredCompanies, setFilteredCompanies] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/companies', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const companies = Array.isArray(response.data) ? response.data : [];
+        setCompanies(companies);
+        const filteredCompanies = companies.filter(company =>
+          company.employees.some(employee => employee.personID === user.personID)
+        );
+        setFilteredCompanies(filteredCompanies);
+      } catch (error) {
+        console.error('Failed to fetch companies:', error);
+      }
+    };
+
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/projects', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const projects = Array.isArray(response.data) ? response.data : [];
+        setProjects(projects);
+        const filteredProjects = projects.filter(project =>
+          project.employees.some(employee => employee.personID === user.personID)
+        );
+        setFilteredProjects(filteredProjects);
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      }
+    };
+
+    fetchCompanies();
+    fetchProjects();
+  }, [dispatch, token, user.personID]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = async (token) => {
-    const response = await fetch(`http://localhost:5001/users/${user._id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`, // Include the token in the request
-      },
-      body: JSON.stringify(formData),
-    });
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`http://localhost:5001/users/${user._id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
-    if (response.ok) {
-      const updatedUser = await response.json();
-      dispatch(updateUser(updatedUser)); // Update the user in the Redux store
-      setIsEditing(false);
+      if (response.ok) {
+        const updatedUser = await response.json();
+        dispatch(updateUser(updatedUser));
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Failed to update user:', error);
     }
+  };
+
+  const handleCompanyClick = (companyID) => {
+    navigate(`/companydataspace/${companyID}`);
+  };
+
+  const handleProjectClick = (companyID, projectID) => {
+    navigate(`/companydataspace/${companyID}/${projectID}`);
   };
 
   return (
@@ -112,12 +167,11 @@ const UserWidget = () => {
                     fullWidth
                     margin="normal"
                   />
-                  {/* Add more fields as needed */}
                   <Box mt={2}>
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleSave(token)}
+                      onClick={handleSave}
                     >
                       Save
                     </Button>
@@ -160,7 +214,6 @@ const UserWidget = () => {
                   <Typography variant="subtitle1">
                     <strong>Personal Data Space ID:</strong> {user.dataSpaceID}
                   </Typography>
-                  {/* Add more fields as needed */}
                   <Box mt={2}>
                     <Button
                       variant="contained"
@@ -176,6 +229,58 @@ const UserWidget = () => {
           </Paper>
         </Grid>
       </Grid>
+
+      {/* Companies section */}
+      <Box mt={3}>
+        <Typography color={palette.secondary[200]} fontWeight="bold" variant="h6" gutterBottom>
+          Companies
+        </Typography>
+        {filteredCompanies.length > 0 ? (
+          filteredCompanies.map((company) => (
+            <Paper
+              key={company.companyID}
+              elevation={2}
+              sx={{ p: 2, mb: 2, cursor: 'pointer' }}
+              onClick={() => handleCompanyClick(company.companyID)}
+            >
+              <Typography variant="subtitle1">
+                <strong>Company Name:</strong> {company.companyName}
+              </Typography>
+              <Typography variant="subtitle2">
+                <strong>Company ID:</strong> {company.companyID}
+              </Typography>
+            </Paper>
+          ))
+        ) : (
+          <Typography>No companies associated with this user.</Typography>
+        )}
+      </Box>
+
+      {/* Projects section */}
+      <Box mt={3}>
+        <Typography color={palette.secondary[200]} fontWeight="bold" variant="h6" gutterBottom>
+          Projects
+        </Typography>
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project) => (
+            <Paper
+              key={project.projectID}
+              elevation={2}
+              sx={{ p: 2, mb: 2, cursor: 'pointer' }}
+              onClick={() => handleProjectClick(project.companyID, project.projectID)}
+            >
+              <Typography variant="subtitle1">
+                <strong>Project Name:</strong> {project.projectName}
+              </Typography>
+              <Typography variant="subtitle2">
+                <strong>Project ID:</strong> {project.projectID}
+              </Typography>
+            </Paper>
+          ))
+        ) : (
+          <Typography>No projects associated with this user.</Typography>
+        )}
+      </Box>
     </Box>
   );
 };

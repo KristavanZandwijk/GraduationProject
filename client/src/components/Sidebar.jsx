@@ -32,7 +32,7 @@ import {
   FactoryOutlined,
   FileUploadOutlined,
 } from "@mui/icons-material";
-import { useLocation, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
+import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
 import UserImage from "./UserImage";
@@ -56,6 +56,7 @@ const navItems = [
     text: "BuildingDataSpace",
     icon: <AccountBalanceOutlined />,
     path: "/buildingdataspace",
+    disabled: true, // Add a 'disabled' property
   },
   {
     text: "CompanyDataSpace",
@@ -139,13 +140,13 @@ const Sidebar = ({
 }) => {
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate hook
+  const navigate = useNavigate();
   const theme = useTheme();
   const user = useSelector((state) => state.user);
   const fullName = `${user.firstName} ${user.lastName}`;
   const role = user.role;
   const { picturePath } = useSelector((state) => state.user);
-  const dataSpaceID = user.dataSpaceID; // Assuming dataSpaceID is part of the user object
+  const dataSpaceID = user.dataSpaceID;
 
   useEffect(() => {
     setActive(pathname);
@@ -190,7 +191,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon, path }) => {
+              {navItems.map(({ text, icon, path, disabled }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
@@ -205,12 +206,14 @@ const Sidebar = ({
                   <ListItem key={text} disablePadding>
                     <ListItemButton
                       onClick={() => {
-                        if (text === "PersonalDataSpace") {
-                          navigate(`/personaldataspace/${dataSpaceID}`);
-                        } else {
-                          navigate(path);
+                        if (!disabled) {
+                          if (text === "PersonalDataSpace") {
+                            navigate(`/personaldataspace/${dataSpaceID}`);
+                          } else {
+                            navigate(path);
+                          }
+                          setActive(path);
                         }
-                        setActive(path);
                       }}
                       sx={{
                         backgroundColor: isActive
@@ -219,6 +222,8 @@ const Sidebar = ({
                         color: isActive
                           ? theme.palette.primary[600]
                           : theme.palette.secondary[100],
+                        pointerEvents: disabled ? "none" : "auto", // Disable click without changing color
+                        opacity: disabled ? 1 : 1, // Keep the same opacity
                       }}
                     >
                       <ListItemIcon

@@ -7,7 +7,6 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { themeSettings } from "./theme";
 import Layout from "scenes/layout";
-import BuildingDataSpace from "scenes/BuildingDataSpace";
 import ElementDataSpace from "scenes/ElementDataSpace";
 import SearchFunction from "scenes/SearchFunction";
 import ProjectLearning from "scenes/ProjectLearning";
@@ -48,7 +47,6 @@ function App() {
               <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />} />
               <Route path="/personaldataspace/:dataspaceID" element={isAuth ? <Personal /> : <Navigate to="/" />} />
               <Route path="/home/:userId" element={isAuth ? <ProfilePage /> : <Navigate to="/" />} />
-              <Route path="/buildingdataspace" element={isAuth ? <BuildingDataSpace /> : <Navigate to="/" />} />
               <Route path="/buildingdataspace/:buildingDataSpaceID" element={isAuth ? <BuildingDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/buildingdataspace/:buildingDataSpaceID/:fileID" element={isAuth ? <File /> : <Navigate to="/" />} />
               <Route path="/elementdataspace" element={isAuth ? <ElementDataSpace /> : <Navigate to="/" />} />

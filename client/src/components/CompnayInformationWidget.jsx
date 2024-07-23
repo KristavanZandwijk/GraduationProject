@@ -1,20 +1,30 @@
 import React from 'react';
 import { Box, Paper, Typography, useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import UserImage from 'components/UserImage'; // Import UserImage component
 
 const CombinedCompanyInfoWidget = ({ company, projects, employees }) => {
   const theme = useTheme();
+  const navigate = useNavigate(); // Initialize navigate
+
+  const handleCompanyNameClick = (companyID) => {
+    navigate(`/companydataspace/${companyID}`);
+  };
 
   return (
     <Paper elevation={3} sx={{ borderRadius: 10 }}>
-      <Box p={3}>
+      <Box 
+        p={3} 
+        onClick={() => handleCompanyNameClick(company.companyID)}
+        sx={{ cursor: 'pointer' }} // Change cursor to pointer when hovering over this Box
+      >
         <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
           Company Information
         </Typography>
         <Box display="flex" alignItems="center" mb={2}>
           <UserImage image={company.picturePath} size="100px" /> {/* Render UserImage component with company picture */}
           <Box ml={2}>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" >
               <strong>Company Name:</strong> {company.companyName}
             </Typography>
             <Typography variant="subtitle1">

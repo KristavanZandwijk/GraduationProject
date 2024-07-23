@@ -65,11 +65,12 @@ const CompanyInformation = () => {
     navigate('/newcompany');
   };
 
+
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
         title="Company Information"
-        subtitle="This page will show the meta data of your company."
+        subtitle="This page shows the meta data of all companies where you are registered as an employee. Click on the company to navigate to the company data space."
       />
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="primary" onClick={handleNewCompanyClick} sx={{ mr: 2 }}>

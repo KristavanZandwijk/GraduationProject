@@ -110,6 +110,10 @@ export const authSlice = createSlice({
     setTtlFileName: (state, action) => {
       state.ttlFileName= action.payload;
     },
+
+    setIFCFiles: (state, action) => {
+      state.IFCFiles= action.payload;
+    },
   },
 });
 
@@ -134,6 +138,7 @@ export const {
   updateUser,
   setIfcFile,
   setTtlFileName,
+  setIFCFiles
 } = authSlice.actions;
 
 export default authSlice.reducer;

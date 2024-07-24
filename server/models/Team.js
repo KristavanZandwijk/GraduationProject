@@ -1,22 +1,25 @@
 import mongoose from "mongoose";
 
-const ProjectSchema = new mongoose.Schema(
+const TeamSchema = new mongoose.Schema(
   {
-    projectID:{
+    teamID:{
         type: String,
         required: true,
         min: 5,
         max: 15,
     },
-    projectName: {
+    teamName: {
         type: String,
         required: true,
     },
-    projectDescription:{
+    teamDataSpaceID:{
         type: String,
-    },
-    company:{
-        type: String,
+        required: true,
+        min: 5,
+        max: 15,
+      },
+    companies:{
+        type: Array,
     },
     employees: {
         type: Array,
@@ -24,12 +27,12 @@ const ProjectSchema = new mongoose.Schema(
     clients:{
         type: Array,
     },
-    relatesTo: {
+    projects: {
         type: Array,
     },
   },
   { timestamps: true }
 );
 
-const Project = mongoose.model("Project", ProjectSchema);
-export default Project;
+const Team = mongoose.model("Team", TeamSchema);
+export default Team;

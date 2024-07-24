@@ -31,6 +31,7 @@ import {
   WorkOutlineOutlined,
   FactoryOutlined,
   FileUploadOutlined,
+  Diversity3Outlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
@@ -44,7 +45,7 @@ const navItems = [
     path: "/home",
   },
   {
-    text: "Data Spaces",
+    text: "Data Spaces Public",
     icon: null,
   },
   {
@@ -59,14 +60,27 @@ const navItems = [
     disabled: true, // Add a 'disabled' property
   },
   {
+    text: "ElementDataSpace",
+    icon: <DoorFrontOutlined />,
+    path: "/elementdataspace",
+  },
+  {
+    text: "Data Spaces Shared",
+    icon: null,
+  },
+  {
     text: "CompanyDataSpace",
     icon: <FactoryOutlined />,
     path: "/companydataspace",
   },
   {
-    text: "ElementDataSpace",
-    icon: <DoorFrontOutlined />,
-    path: "/elementdataspace",
+    text: "TeamDataSpace",
+    icon: <Diversity3Outlined />,
+    path: "/teamdataspace",
+  },
+  {
+    text: "Data Spaces Private",
+    icon: null,
   },
   {
     text: "PersonalDataSpace",

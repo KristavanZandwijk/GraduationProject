@@ -24,7 +24,7 @@ const FileSchema = mongoose.Schema(
         },
         considers: {
             type: String,
-            enum: ["element", "building", "project"], // Allowed values 
+            enum: ["element", "building"],
         },
         personalDataSpaceID:{
             type:String,
@@ -37,15 +37,16 @@ const FileSchema = mongoose.Schema(
         },
         companyDataSpaceID:{
             type: String,
-        },     
+        },
+        relatedToTeam:{
+            type: String,
+        },    
         relatedToProject:{
             type: String,
         },
-        readableBy: {
-            type: Array,
-        }, 
-        adjustableBy: {
-            type: Array,
+        status: {
+            type: String,
+            enum: ["private", "sharedCompany", "sharedTeam", "public"], // Allowed values 
         },
     },
     { timestamps: true }

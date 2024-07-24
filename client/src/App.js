@@ -31,6 +31,9 @@ import NewFile from "scenes/DataUpload";
 import ProjectDataSpace from "scenes/ProjectDataSpace";
 import IFCtoRDFConverter from "scenes/IFCtoRDFConverter";
 import CompanyDataSpaceID from "scenes/CompanyDataSpaceID";
+import TeamDataSpaces from "scenes/TeamDataSpace";
+import TeamDataSpaceID from "scenes/TeamDataSpaceID";
+import NewTeam from "scenes/NewTeam";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -45,32 +48,45 @@ function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />} />
-              <Route path="/personaldataspace/:dataspaceID" element={isAuth ? <Personal /> : <Navigate to="/" />} />
               <Route path="/home/:userId" element={isAuth ? <ProfilePage /> : <Navigate to="/" />} />
+              
+              <Route path="/urbanscale/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
+              <Route path="/urbanscale" element={isAuth ? <UrbanScale /> : <Navigate to="/" />} />
+              
               <Route path="/buildingdataspace/:buildingDataSpaceID" element={isAuth ? <BuildingDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/buildingdataspace/:buildingDataSpaceID/:fileID" element={isAuth ? <File /> : <Navigate to="/" />} />
+              
               <Route path="/elementdataspace" element={isAuth ? <ElementDataSpace /> : <Navigate to="/" />} />
               <Route path="/elementdataspace/:elementDataSpaceID" element={isAuth ? <ElementDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/elementdataspace/:elementDataSpaceID/:fileID" element={isAuth ? <File /> : <Navigate to="/" />} />
-              <Route path="/searchfunction" element={isAuth ? <SearchFunction /> : <Navigate to="/" />} />
-              <Route path="/projectlearning" element={isAuth ? <ProjectLearning /> : <Navigate to="/" />} />
-              <Route path="/elementpassport" element={isAuth ? <ElementPassport /> : <Navigate to="/" />} />
-              <Route path="/elementreuse" element={isAuth ? <ElementReuse /> : <Navigate to="/" />} />
-              <Route path="/emergencyplans" element={isAuth ? <EmergencyPlans /> : <Navigate to="/" />} />
-              <Route path="/dataprivacy" element={isAuth ? <DataPrivacy /> : <Navigate to="/" />} />
-              <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />} />
-              <Route path="/profile" element={isAuth ? <Profile /> : <Navigate to="/" />} />
-              <Route path="/urbanscale/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
               <Route path="/elementdataspace/newelement" element={isAuth ? <NewElement /> : <Navigate to="/" />} />
-              <Route path="/urbanscale" element={isAuth ? <UrbanScale /> : <Navigate to="/" />} />
+
               <Route path="/companyinformation" element={isAuth ? <CompanyInfoPage /> : <Navigate to="/" />} />
               <Route path="/companyinformation/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />} />
               <Route path="/companydataspace/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />} />
               <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />} />
               <Route path="/companydataspace/:companyID" element={isAuth ? <CompanyDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/companydataspace/:companyID/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />} />
+
+              <Route path="/teamdataspace" element={isAuth ? <TeamDataSpaces /> : <Navigate to="/" />} />
+              <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceID /> : <Navigate to="/" />} />
+              <Route path="/teamdataspace/newteam" element={isAuth ? <NewTeam /> : <Navigate to="/" />} />
+
+
               <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />} />
               <Route path="/dataupload/IFCtoRDFConverter" element={isAuth ? <IFCtoRDFConverter /> : <Navigate to="/" />} />
+              <Route path="/searchfunction" element={isAuth ? <SearchFunction /> : <Navigate to="/" />} />
+              <Route path="/projectlearning" element={isAuth ? <ProjectLearning /> : <Navigate to="/" />} />
+              <Route path="/elementpassport" element={isAuth ? <ElementPassport /> : <Navigate to="/" />} />
+              <Route path="/elementreuse" element={isAuth ? <ElementReuse /> : <Navigate to="/" />} />
+              <Route path="/emergencyplans" element={isAuth ? <EmergencyPlans /> : <Navigate to="/" />} />
+              <Route path="/dataprivacy" element={isAuth ? <DataPrivacy /> : <Navigate to="/" />} />
+             
+              <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />} />
+              <Route path="/profile" element={isAuth ? <Profile /> : <Navigate to="/" />} />
+              <Route path="/personaldataspace/:dataspaceID" element={isAuth ? <Personal /> : <Navigate to="/" />} />
+              
+ 
             </Route>
             <Route path="/" element={<LoginPage />} />
           </Routes>

@@ -29,9 +29,8 @@ const FileDrop = ({ picturePath }) => {
   const dispatch = useDispatch();
   const [isData, setIsData] = useState(false);
   const [data, setData] = useState(null);
-  const [relatedToElement, setRelatedToElement] = useState('');
-  const [relatedToBuilding, setRelatedToBuilding] = useState('');
   const [relatedToProject, setRelatedToProject] = useState('');
+  const [relatedToTeam, setRelatedToTeam] = useState('');
   const [fileDescription, setFileDescription] = useState('');
   const [fileName, setFileName] = useState('');
   const [considers, setConsiders] = useState('');
@@ -39,8 +38,10 @@ const FileDrop = ({ picturePath }) => {
   const [buildingDataSpaceID, setBuildingDataSpaceID] = useState('');
   const [companyDataSpaceID, setCompanyDataSpaceID] = useState('');
   const [hasOwner, setHasOwner] = useState('');
-  const [readableBy, setReadableBy] = useState('');
-  const [adjustableBy, setAdjustableBy] = useState('');
+  const [status, setStatus] = useState('');
+  const [teams, setTeams] = useState([]); // Add teams state variable
+  const [relatedToElement, setRelatedToElement] = useState(''); // Add relatedToElement state variable
+  const [relatedToBuilding, setRelatedToBuilding] = useState(''); // Add relatedToBuilding state variable
   const theme = useTheme();
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
@@ -48,12 +49,10 @@ const FileDrop = ({ picturePath }) => {
   const elements = useSelector((state) => state.elements || []); // Add state for elements
   const companies = useSelector((state) => state.companies || []); // Add state for companies
   const projects = useSelector((state) => state.projects || []);
-  const users = useSelector((state) => state.users|| []);
+  const users = useSelector((state) => state.users || []);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
   const mediumMain = theme.palette.neutral.mediumMain;
   const medium = theme.palette.neutral.medium;
-
-  
 
   const generateFileID = () => {
     return Math.random().toString(36).substr(2, 10).toUpperCase();
@@ -61,42 +60,46 @@ const FileDrop = ({ picturePath }) => {
 
   const handleFile = async () => {
     const formData = new FormData();
-    formData.append('fileDescription', fileDescription);
+
     formData.append('fileName', fileName);
+    formData.append('fileDescription', fileDescription);
     formData.append('hasOwner', hasOwner);
     formData.append('considers', considers);
     formData.append('relatedToProject', relatedToProject);
+    formData.append('relatedToTeam', relatedToTeam);
     formData.append('elementDataSpaceID', elementDataSpaceID);
     formData.append('buildingDataSpaceID', buildingDataSpaceID);
     formData.append('companyDataSpaceID', companyDataSpaceID);
-    formData.append('readableBy', readableBy);
-    formData.append('adjustableBy', adjustableBy)
+    formData.append('status', status);
     if (data) {
       formData.append('data', data);
       formData.append('filePath', data.name);
       formData.append('fileID', generateFileID());
     }
 
-    const response = await fetch('http://localhost:5001/files', {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
-      body: formData,
-    });
-    const files = await response.json();
-    dispatch(setFiles({ files }));
-    setData(null);
-    setFileDescription(''); // Clear description after file upload
-    setFileName('');
-    setHasOwner('');
-    setConsiders('');
-    setElementDataSpaceID('');
-    setBuildingDataSpaceID('');
-    setCompanyDataSpaceID('');
-    setRelatedToElement('');
-    setRelatedToBuilding('');
-    setRelatedToProject('');
-    setAdjustableBy([]);
-    setReadableBy([]);
+    try {
+      const response = await fetch('http://localhost:5001/files', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      const files = await response.json();
+      dispatch(setFiles({ files }));
+      setData(null);
+      setFileDescription(''); // Clear description after file upload
+      setFileName('');
+      setHasOwner('');
+      setConsiders('');
+      setElementDataSpaceID('');
+      setBuildingDataSpaceID('');
+      setCompanyDataSpaceID('');
+      setRelatedToElement('');
+      setRelatedToBuilding('');
+      setRelatedToTeam('');
+      setStatus('');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   };
 
   return (
@@ -149,51 +152,6 @@ const FileDrop = ({ picturePath }) => {
               </MenuItem>
             ))}
           </Select>
-
-          <Select
-            value={readableBy}
-            onChange={(e) => setReadableBy(e.target.value)}
-            displayEmpty
-            sx={{
-              width: '100%',
-              backgroundColor: theme.palette.primary.default,
-              borderRadius: '1rem',
-              padding: '0.75rem 1.5rem',
-              border: `1px solid ${theme.palette.secondary[100]}`,
-            }}
-          >
-            <MenuItem value="" disabled>
-              Select who can read the file
-            </MenuItem>
-            {users.map((user) => (
-              <MenuItem key={user.personID} value={user.personID}>
-                {`${user.personID} - ${user.firstName} ${user.lastName}`}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <Select
-            value={adjustableBy}
-            onChange={(e) => setAdjustableBy(e.target.value)}
-            displayEmpty
-            sx={{
-              width: '100%',
-              backgroundColor: theme.palette.primary.default,
-              borderRadius: '1rem',
-              padding: '0.75rem 1.5rem',
-              border: `1px solid ${theme.palette.secondary[100]}`,
-            }}
-          >
-            <MenuItem value="" disabled>
-              Select who can adjust the file
-            </MenuItem>
-            {users.map((user) => (
-              <MenuItem key={user.personID} value={user.personID}>
-                {`${user.personID} - ${user.firstName} ${user.lastName}`}
-              </MenuItem>
-            ))}
-          </Select>
-
           <Select
             value={considers}
             onChange={(e) => setConsiders(e.target.value)}
@@ -207,11 +165,10 @@ const FileDrop = ({ picturePath }) => {
             }}
           >
             <MenuItem value="" disabled>
-              Is the file related to an element, building, or project?
+              Is the file related to an element or building?
             </MenuItem>
             <MenuItem value="element">Element</MenuItem>
             <MenuItem value="building">Building</MenuItem>
-            <MenuItem value="project">Project</MenuItem>
           </Select>
 
           {considers === 'element' && (
@@ -261,53 +218,89 @@ const FileDrop = ({ picturePath }) => {
               ))}
             </Select>
           )}
-
-          {considers === 'project' && (
-            <>
-              <Select
-                value={companyDataSpaceID}
-                onChange={(e) => setCompanyDataSpaceID(e.target.value)}
-                displayEmpty
-                sx={{
-                  width: '100%',
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  border: `1px solid ${theme.palette.secondary[100]}`,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select Company
-                </MenuItem>
-                {companies.map((company) => (
-                  <MenuItem key={company._id} value={company.companyDataSpaceID}>
-                    {`${company.companyDataSpaceID} - ${company.companyName}`}
-                  </MenuItem>
-                ))}
-              </Select>
-              <Select
-                value={relatedToProject}
-                onChange={(e) => setRelatedToProject(e.target.value)}
-                displayEmpty
-                sx={{
-                  width: '100%',
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: '1rem',
-                  padding: '0.75rem 1.5rem',
-                  border: `1px solid ${theme.palette.secondary[100]}`,
-                }}
-              >
-                <MenuItem value="" disabled>
-                  Select Project
-                </MenuItem>
-                {projects.map((project) => (
-                  <MenuItem key={project._id} value={project.projectID}>
-                    {`${project.projectID} - ${project.projectName}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </>
-          )}
+          <Select
+            value={companyDataSpaceID}
+            onChange={(e) => setCompanyDataSpaceID(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select Company
+            </MenuItem>
+            {companies.map((company) => (
+              <MenuItem key={company._id} value={company.companyDataSpaceID}>
+                {`${company.companyDataSpaceID} - ${company.companyName}`}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
+            value={relatedToProject}
+            onChange={(e) => setRelatedToProject(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select Project
+            </MenuItem>
+            {projects.map((project) => (
+              <MenuItem key={project._id} value={project.projectID}>
+                {`${project.projectID} - ${project.projectName}`}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
+            value={relatedToTeam}
+            onChange={(e) => setRelatedToTeam(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select Team
+            </MenuItem>
+            {teams.map((team) => (
+              <MenuItem key={team._id} value={team.teamID}>
+                {`${team.teamID} - ${team.teamName}`}
+              </MenuItem>
+            ))}
+          </Select>
+          <Select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            displayEmpty
+            sx={{
+              width: '100%',
+              backgroundColor: theme.palette.primary.default,
+              borderRadius: '1rem',
+              padding: '0.75rem 1.5rem',
+              border: `1px solid ${theme.palette.secondary[100]}`,
+            }}
+          >
+            <MenuItem value="" disabled>
+              What is the sharing status of the file?
+            </MenuItem>
+            <MenuItem value="private">Private</MenuItem>
+            <MenuItem value="sharedCompany">Shared within project team within the company</MenuItem>
+            <MenuItem value="sharedTeam">Shared with entire team (also with the employees of other companies)</MenuItem>
+            <MenuItem value="public">Shared with everyone</MenuItem>
+          </Select>
         </Box>
       </FlexBetween>
       {isData && (
@@ -375,8 +368,9 @@ const FileDrop = ({ picturePath }) => {
         </FlexBetween>
 
         {isNonMobileScreens ? (
-          <>
-          </>
+          <FlexBetween gap="0.25rem">
+            <MoreHorizOutlined sx={{ color: theme.palette.secondary.main }} />
+          </FlexBetween>
         ) : (
           <FlexBetween gap="0.25rem">
             <MoreHorizOutlined sx={{ color: theme.palette.secondary.main }} />

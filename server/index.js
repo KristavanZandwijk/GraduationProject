@@ -19,6 +19,8 @@ import elementRoutes from "./routes/element.js";
 import newBuildingRoutes from "./routes/newBuilding.js";
 import newElementRoutes from "./routes/newElement.js";
 import newCompanyRoutes from "./routes/newCompany.js";
+import newTeamRoutes from "./routes/newTeam.js";
+import teamRoutes from "./routes/team.js";
 import { register } from "./controllers/auth.js";
 import { createPost } from "./controllers/posts.js";
 import { verifyToken } from "./middleware/auth.js";
@@ -75,6 +77,8 @@ app.use("/companies", companyRoutes);
 app.use("/projects", projectRoutes);
 app.use("/newprojects", newProjectRoutes);
 app.use('/converter', IFCtoRDFConverterRoutes);
+app.use('/team', teamRoutes);
+app.use('/newteam', newTeamRoutes);
 
 
 /* MONGOOSE SETUP */

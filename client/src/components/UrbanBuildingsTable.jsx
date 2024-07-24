@@ -3,30 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
-const UrbanBuildingTable = ({ buildings }) => {
+const UrbanBuildingTable = ({ buildings, selectedFilePaths, handleCheckboxChange }) => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [selectedBuildingIDs, setSelectedBuildingIDs] = useState([]);
+
+  if (buildings.length === 0) {
+    return <Typography mt="2rem">Unfortunately, there are no buildings that are accessible by you.</Typography>;
+  }
 
   const handleRowClick = (buildingDataSpaceID) => {
     navigate(`/buildingdataspace/${buildingDataSpaceID}`);
   };
 
-  const handleCheckboxChange = (event, buildingID) => {
-    const isChecked = event.target.checked;
-    setSelectedBuildingIDs(prevSelected => 
-      isChecked 
-        ? [...prevSelected, buildingID] 
-        : prevSelected.filter(id => id !== buildingID)
-    );
-  };
-
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ marginTop: "2rem" }}>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Select</TableCell>
+            <TableCell>Visualize IFC</TableCell>
             <TableCell><Typography variant="h6">Building ID</Typography></TableCell>
             <TableCell><Typography variant="h6">Building Data Space ID</Typography></TableCell>
             <TableCell><Typography variant="h6">Owner ID</Typography></TableCell>
@@ -37,11 +32,13 @@ const UrbanBuildingTable = ({ buildings }) => {
         </TableHead>
         <TableBody>
           {buildings.map((building) => (
-            <TableRow key={building.buildingID}>
+            <TableRow key={building.buildingDataSpaceID}>
               <TableCell>
                 <Checkbox
-                  checked={selectedBuildingIDs.includes(building.buildingID)}
-                  onChange={(event) => handleCheckboxChange(event, building.buildingID)}
+                  checked={selectedFilePaths?.some(filepath => 
+                    filepath.includes(building.buildingDataSpaceID)
+                  )}
+                  onChange={(event) => handleCheckboxChange(event, building.buildingDataSpaceID)}
                 />
               </TableCell>
               <TableCell onClick={() => handleRowClick(building.buildingDataSpaceID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>

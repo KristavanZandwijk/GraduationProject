@@ -74,10 +74,6 @@ const CompanyDataSpace = () => {
     }
   }, [filteredCompanies, navigate]);
 
-  const handleNewProjectClick = () => {
-    navigate('/newproject');
-  };
-
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
@@ -85,9 +81,6 @@ const CompanyDataSpace = () => {
         subtitle="" // You might want to provide a meaningful subtitle or remove it
       />
       <Box display="flex" justifyContent="flex-end" mb={1}>
-        {/* <Button variant="contained" color="primary" onClick={handleNewProjectClick}>
-          Create New Project
-        </Button> */}
       </Box>
 
       <CompanySelect 

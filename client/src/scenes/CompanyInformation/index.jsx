@@ -62,7 +62,7 @@ const CompanyInformation = () => {
     : [];
 
   const handleNewCompanyClick = () => {
-    navigate('/newcompany');
+    navigate('/companyinformation/newcompany');
   };
 
 

@@ -109,7 +109,7 @@ const CompanyDataSpaceID = () => {
         }
       />
       <Box display="flex" justifyContent="flex-end" mb={1}>
-        <Button variant="contained" color="primary" onClick={() => navigate('/newproject')}>
+        <Button variant="contained" color="primary" onClick={() => navigate('/companydataspace/newproject')}>
           Create New Project
         </Button>
       </Box>

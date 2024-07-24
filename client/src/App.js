@@ -60,12 +60,12 @@ function App() {
               <Route path="/dataprivacy" element={isAuth ? <DataPrivacy /> : <Navigate to="/" />} />
               <Route path="/personaldataspace" element={isAuth ? <Personal /> : <Navigate to="/" />} />
               <Route path="/profile" element={isAuth ? <Profile /> : <Navigate to="/" />} />
-              <Route path="/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
-              <Route path="/newelement" element={isAuth ? <NewElement /> : <Navigate to="/" />} />
+              <Route path="/urbanscale/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
+              <Route path="/elementdataspace/newelement" element={isAuth ? <NewElement /> : <Navigate to="/" />} />
               <Route path="/urbanscale" element={isAuth ? <UrbanScale /> : <Navigate to="/" />} />
               <Route path="/companyinformation" element={isAuth ? <CompanyInfoPage /> : <Navigate to="/" />} />
-              <Route path="/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />} />
-              <Route path="/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />} />
+              <Route path="/companyinformation/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />} />
+              <Route path="/companydataspace/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />} />
               <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />} />
               <Route path="/companydataspace/:companyID" element={isAuth ? <CompanyDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/companydataspace/:companyID/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />} />

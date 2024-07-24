@@ -30,7 +30,7 @@ const ElementDataSpace = () => {
   }, [dispatch, token]);
 
   const handleNewElementClick = () => {
-    navigate('/newelement');
+    navigate('/elementdataspace/newelement');
   };
 
   return (

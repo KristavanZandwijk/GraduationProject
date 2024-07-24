@@ -21,9 +21,6 @@ const TeamSchema = new mongoose.Schema(
     companies:{
         type: Array,
     },
-    employees: {
-        type: Array,
-    },
     clients:{
         type: Array,
     },

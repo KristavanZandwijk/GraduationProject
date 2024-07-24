@@ -25,8 +25,7 @@ const TeamDrop = () => {
   const projects = useSelector((state) => state.projects || []);
 
   const [companies, setCompanies] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState([]);
-  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [selectedClient, setSelectedClient] = useState('');
   const [selectedProjects, setSelectedProjects] = useState([]);
 
@@ -90,8 +89,7 @@ const TeamDrop = () => {
       teamID,
       teamName,
       teamDataSpaceID,
-      companies: [{ companyID: selectedCompany }],
-      employees: selectedEmployees.map(employeeID => ({ personID: employeeID })),
+      companies: selectedCompanies.map(companyID => ({ companyID })),
       clients: [{ personID: selectedClient }],
       projects: selectedProjects.map(projectID => ({ projectID })),
     };
@@ -112,8 +110,7 @@ const TeamDrop = () => {
         setTeamID('');
         setTeamName('');
         setTeamDataSpaceID('');
-        setSelectedCompany([]);
-        setSelectedEmployees([]);
+        setSelectedCompanies([]);
         setSelectedClient('');
         setSelectedProjects([]);
       } else {
@@ -180,19 +177,28 @@ const TeamDrop = () => {
           }}
         />
         <Select
-          value={selectedCompany}
-          onChange={(e) => setSelectedCompany(e.target.value)}
+          multiple
+          value={selectedCompanies}
+          onChange={(e) => setSelectedCompanies(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedCompanies.length === 0
+              ? () => <em>Select the involved companies</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
             borderRadius: '1rem',
             padding: '0.75rem 1.5rem',
             border: `1px solid ${theme.palette.secondary[100]}`,
+            '& .MuiSelect-select:empty': {
+              color: theme.palette.text.disabled,
+            },
           }}
         >
           <MenuItem value='' disabled>
-            Select the company
+            <em>Select the companies</em>
           </MenuItem>
           {companies.map((company) => (
             <MenuItem key={company.companyID} value={company.companyID}>
@@ -202,42 +208,27 @@ const TeamDrop = () => {
         </Select>
 
         <Select
-          multiple
-          value={selectedEmployees}
-          onChange={(e) => setSelectedEmployees(e.target.value)}
-          displayEmpty
-          sx={{
-            width: '100%',
-            backgroundColor: theme.palette.primary.default,
-            borderRadius: '1rem',
-            padding: '0.75rem 1.5rem',
-            border: `1px solid ${theme.palette.secondary[100]}`,
-          }}
-        >
-          <MenuItem value='' disabled>
-            Select the Employees
-          </MenuItem>
-          {users.map((user) => (
-            <MenuItem key={user.personID} value={user.personID}>
-              {`${user.personID} - ${user.firstName} ${user.lastName}`}
-            </MenuItem>
-          ))}
-        </Select>
-
-        <Select
           value={selectedClient}
           onChange={(e) => setSelectedClient(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedClient === ''
+              ? () => <em>Select the Client</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
             borderRadius: '1rem',
             padding: '0.75rem 1.5rem',
             border: `1px solid ${theme.palette.secondary[100]}`,
+            '& .MuiSelect-select:empty': {
+              color: theme.palette.text.disabled,
+            },
           }}
         >
           <MenuItem value='' disabled>
-            Select the Client
+            <em>Select the Client</em>
           </MenuItem>
           {users.map((user) => (
             <MenuItem key={user.personID} value={user.personID}>
@@ -251,16 +242,24 @@ const TeamDrop = () => {
           value={selectedProjects}
           onChange={(e) => setSelectedProjects(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedProjects.length === 0
+              ? () => <em>Select the projects that are part of this team</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
             borderRadius: '1rem',
             padding: '0.75rem 1.5rem',
             border: `1px solid ${theme.palette.secondary[100]}`,
+            '& .MuiSelect-select:empty': {
+              color: theme.palette.text.disabled,
+            },
           }}
         >
           <MenuItem value='' disabled>
-            Select the projects that are part of this team
+            <em>Select the projects that are part of this team</em>
           </MenuItem>
           {projects.map((project) => (
             <MenuItem key={project.projectID} value={project.projectID}>
@@ -272,7 +271,7 @@ const TeamDrop = () => {
       </Box>
       <Divider sx={{ margin: '2rem 0' }} />
       <Button
-        disabled={!teamID || !teamName || !teamDataSpaceID || !selectedCompany || !selectedEmployees.length || !selectedClient || !selectedProjects.length}
+        disabled={!teamID || !teamName || !teamDataSpaceID || !selectedCompanies.length || !selectedClient || !selectedProjects.length}
         onClick={handleTeam}
         sx={{
           backgroundColor: theme.palette.secondary[300],

@@ -18,7 +18,7 @@ const CompanySelect = ({ selectedCompany, setSelectedCompany }) => {
   return (
     <Box mb={2}>
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
-        Select Company
+        Select A Company
       </Typography>
       <Select
         fullWidth

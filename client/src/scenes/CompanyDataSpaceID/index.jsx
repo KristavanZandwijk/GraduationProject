@@ -6,7 +6,7 @@ import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
 import { useNavigate } from 'react-router-dom';
 import ProjectInfo from 'components/ProjectInformationWidget';
-import CompanySelect from 'components/CompanySelect'; // Import the new component
+import CompanySelect from 'components/SelectCompany'; // Import the new component
 
 const CompanyDataSpaceID = () => {
   const dispatch = useDispatch();

@@ -77,7 +77,7 @@ app.use("/companies", companyRoutes);
 app.use("/projects", projectRoutes);
 app.use("/newprojects", newProjectRoutes);
 app.use('/converter', IFCtoRDFConverterRoutes);
-app.use('/team', teamRoutes);
+app.use('/teams', teamRoutes);
 app.use('/newteam', newTeamRoutes);
 
 

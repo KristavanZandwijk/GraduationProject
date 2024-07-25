@@ -7,18 +7,22 @@ import { useTheme } from '@emotion/react';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
-  const { personID, dataSpaceID } = useSelector((state) => state.user);
+  const { dataSpaceID } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const navigate = useNavigate();
   const theme = useTheme();
 
   const fetchFiles = async () => {
-    const response = await fetch(`http://localhost:5001/files`, {
-      method: 'GET',
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = await response.json();
-    setFiles(data);
+    try {
+      const response = await fetch(`http://localhost:5001/files`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      setFiles(data);
+    } catch (error) {
+      console.error('Error fetching files:', error);
+    }
   };
 
   useEffect(() => {
@@ -40,11 +44,12 @@ const FileTable = () => {
       navigate(`/buildingdataspace/${file.buildingDataSpaceID}/${file.fileID}`);
     } else if (file.considers === 'element') {
       navigate(`/elementdataspace/${file.elementDataSpaceID}/${file.fileID}`);
-    } else if (file.considers === 'project') {
-      navigate(`/companydataspace/${file.relatedToProject}/${file.fileID}`);
     }
   };
 
+  const handleProjectClick = (file) => {
+    navigate(`/companydataspace/${file.relatedToProject}/${file.fileID}`);
+  };
 
   return (
     <Box mt="2rem">
@@ -67,6 +72,10 @@ const FileTable = () => {
               <TableCell>Uploaded on Personal Data Space</TableCell>
               <TableCell>File Considers</TableCell>
               <TableCell>Stored in Data Space (projectID)</TableCell>
+              <TableCell>Related To Project</TableCell>
+              <TableCell>Part of company Data Space</TableCell>
+              <TableCell>Related To Team</TableCell>
+              <TableCell>Status</TableCell>
               <TableCell>Uploaded At</TableCell>
             </TableRow>
           </TableHead>
@@ -75,7 +84,9 @@ const FileTable = () => {
               .filter((file) => file.personalDataSpaceID === dataSpaceID)
               .map((file) => (
                 <TableRow key={file.fileID}>
-                  <TableCell onClick={() => handleFileClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>{file.fileID}</TableCell>
+                  <TableCell onClick={() => handleFileClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
+                    {file.fileID}
+                  </TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.fileDescription}</TableCell>
                   <TableCell>{file.hasOwner}</TableCell>
@@ -84,13 +95,13 @@ const FileTable = () => {
                   <TableCell onClick={() => handleRowClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
                     {file.considers === 'building' && file.buildingDataSpaceID}
                     {file.considers === 'element' && file.elementDataSpaceID}
-                    {file.considers === 'project' && (
-                      <>
-                        <div>{file.companyDataSpaceID}</div>
-                        <div>{file.relatedToProject}</div>
-                      </>
-                    )}
                   </TableCell>
+                  <TableCell onClick={() => handleProjectClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
+                    {file.relatedToProject}
+                  </TableCell>
+                  <TableCell>{file.companyDataSpaceID}</TableCell>
+                  <TableCell>{file.relatedToTeam}</TableCell>
+                  <TableCell>{file.status}</TableCell>
                   <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
                 </TableRow>
               ))}

@@ -96,6 +96,17 @@ export const authSlice = createSlice({
       });
       state.projects = updatedProjects;
     },
+
+    setTeam: (state, action) => {
+      const updatedTeams = state.teams.map((team) => {
+        if (team._id === action.payload._id) return action.payload;
+        return team;
+      });
+      state.teams = updatedTeams;
+    },
+
+
+
     setUser: (state, action) => {
       const updatedUsers = state.users.map((user) => {
         if (user._id === action.payload._id) return action.payload;
@@ -134,6 +145,7 @@ export const {
   setTeams,
   setUsers,
   setElements,
+  setTeam,
   setPost,
   setFile,
   setBuilding,

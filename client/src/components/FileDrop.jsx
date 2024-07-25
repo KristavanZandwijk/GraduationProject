@@ -22,7 +22,7 @@ import Dropzone from 'react-dropzone';
 import UserImage from 'components/UserImage';
 import WidgetWrapper from 'components/WidgetWrapper';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFiles, setBuildings, setElements, setCompanies, setProjects, setUsers } from 'state'; // Update the imports accordingly
+import { setFiles, setBuildings, setElements, setCompanies, setProjects, setUsers, setTeams } from 'state'; // Update the imports accordingly
 import axios from 'axios';
 
 const FileDrop = ({ picturePath }) => {
@@ -30,7 +30,7 @@ const FileDrop = ({ picturePath }) => {
   const [isData, setIsData] = useState(false);
   const [data, setData] = useState(null);
   const [relatedToProject, setRelatedToProject] = useState('');
-  const [relatedToTeam, setRelatedToTeam] = useState('');
+  const [relatedToTeam, setRelatedToTeam] = useState('');  
   const [fileDescription, setFileDescription] = useState('');
   const [fileName, setFileName] = useState('');
   const [considers, setConsiders] = useState('');
@@ -39,7 +39,6 @@ const FileDrop = ({ picturePath }) => {
   const [companyDataSpaceID, setCompanyDataSpaceID] = useState('');
   const [hasOwner, setHasOwner] = useState('');
   const [status, setStatus] = useState('');
-  const [teams, setTeams] = useState([]); // Add teams state variable
   const [relatedToElement, setRelatedToElement] = useState(''); // Add relatedToElement state variable
   const [relatedToBuilding, setRelatedToBuilding] = useState(''); // Add relatedToBuilding state variable
   const theme = useTheme();
@@ -49,6 +48,7 @@ const FileDrop = ({ picturePath }) => {
   const elements = useSelector((state) => state.elements || []); // Add state for elements
   const companies = useSelector((state) => state.companies || []); // Add state for companies
   const projects = useSelector((state) => state.projects || []);
+  const teams = useSelector((state) => state.teams || []); 
   const users = useSelector((state) => state.users || []);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
   const mediumMain = theme.palette.neutral.mediumMain;
@@ -57,6 +57,23 @@ const FileDrop = ({ picturePath }) => {
   const generateFileID = () => {
     return Math.random().toString(36).substr(2, 10).toUpperCase();
   };
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/teams', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setTeams(response.data));
+        console.log('Teams from API:', response.data);
+      } catch (error) {
+        console.error('Error fetching teams:', error);
+      }
+    };
+  
+    fetchTeams();
+  }, [dispatch, token]);
+  
 
   const handleFile = async () => {
     const formData = new FormData();
@@ -101,6 +118,9 @@ const FileDrop = ({ picturePath }) => {
       console.error('Error uploading file:', error);
     }
   };
+  console.log('Teams:', teams);
+
+
 
   return (
     <WidgetWrapper>
@@ -244,43 +264,50 @@ const FileDrop = ({ picturePath }) => {
             onChange={(e) => setRelatedToProject(e.target.value)}
             displayEmpty
             sx={{
-              width: '100%',
-              backgroundColor: theme.palette.primary.default,
-              borderRadius: '1rem',
-              padding: '0.75rem 1.5rem',
-              border: `1px solid ${theme.palette.secondary[100]}`,
+                width: '100%',
+                backgroundColor: theme.palette.primary.default,
+                borderRadius: '1rem',
+                padding: '0.75rem 1.5rem',
+                border: `1px solid ${theme.palette.secondary[100]}`,
             }}
-          >
+        >
             <MenuItem value="" disabled>
-              Select Project
+                Select Project
             </MenuItem>
             {projects.map((project) => (
-              <MenuItem key={project._id} value={project.projectID}>
-                {`${project.projectID} - ${project.projectName}`}
-              </MenuItem>
+                <MenuItem key={project._id} value={project.projectID}>
+                    {`${project.projectID} - ${project.projectName}`}
+                </MenuItem>
             ))}
-          </Select>
-          <Select
+        </Select>
+        <Select
             value={relatedToTeam}
             onChange={(e) => setRelatedToTeam(e.target.value)}
             displayEmpty
             sx={{
-              width: '100%',
-              backgroundColor: theme.palette.primary.default,
-              borderRadius: '1rem',
-              padding: '0.75rem 1.5rem',
-              border: `1px solid ${theme.palette.secondary[100]}`,
+                width: '100%',
+                backgroundColor: theme.palette.primary.default,
+                borderRadius: '1rem',
+                padding: '0.75rem 1.5rem',
+                border: `1px solid ${theme.palette.secondary[100]}`,
             }}
-          >
+        >
             <MenuItem value="" disabled>
-              Select Team
-            </MenuItem>
-            {teams.map((team) => (
-              <MenuItem key={team._id} value={team.teamID}>
-                {`${team.teamID} - ${team.teamName}`}
-              </MenuItem>
-            ))}
-          </Select>
+                    Select Team
+                </MenuItem>
+                {Array.isArray(teams) && teams.length > 0 ? (
+                    teams.map((team) => (
+                        <MenuItem key={team._id} value={team.teamID}>
+                            {`${team.teamID} - ${team.teamName}`}
+                        </MenuItem>
+                    ))
+                ) : (
+                    <MenuItem value="" disabled>
+                        No teams available
+                    </MenuItem>
+                )}
+            </Select>
+
           <Select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
@@ -299,7 +326,7 @@ const FileDrop = ({ picturePath }) => {
             <MenuItem value="private">Private</MenuItem>
             <MenuItem value="sharedCompany">Shared within project team within the company</MenuItem>
             <MenuItem value="sharedTeam">Shared with entire team (also with the employees of other companies)</MenuItem>
-            <MenuItem value="public">Shared with everyone</MenuItem>
+            <MenuItem value="public">Public</MenuItem>
           </Select>
         </Box>
       </FlexBetween>

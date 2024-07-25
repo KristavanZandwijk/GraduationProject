@@ -1,10 +1,10 @@
 import express from "express";
-import { getUserTeam } from "../controllers/team.js";
+import { getAllTeams } from "../controllers/team.js";
 import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 /* READ */
-router.get("/", verifyToken, getUserTeam);
+router.get("/", verifyToken, getAllTeams);
 
 export default router;

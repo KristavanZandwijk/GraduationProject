@@ -15,8 +15,8 @@ const ProjectSchema = new mongoose.Schema(
     projectDescription:{
         type: String,
     },
-    company:{
-        type: String,
+    companies:{
+        type: Array,
     },
     employees: {
         type: Array,

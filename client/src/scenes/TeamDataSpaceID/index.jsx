@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, Grid } from '@mui/material';
+import { Box, Button, Typography, CircularProgress } from '@mui/material';
 import Header from 'components/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import TeamSelection from 'components/SelectTeam';
 
 const TeamDataSpaceID = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { teamID } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const projects = useSelector((state) => state.projects);
-  const companies = useSelector((state) => state.companies || []);
-  const users = useSelector((state) => state.users || []);
-  const buildings = useSelector((state) => state.buildings || []);
 
   const [teams, setTeams] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedTeam, setSelectedTeam] = useState('');
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -26,7 +24,24 @@ const TeamDataSpaceID = () => {
         const response = await axios.get('http://localhost:5001/teams', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setTeams(Array.isArray(response.data) ? response.data : []);
+        const allTeams = Array.isArray(response.data) ? response.data : [];
+        
+        // Filter teams based on user projects
+        const filteredProjects = Array.isArray(projects)
+          ? projects.filter(project =>
+              project.employees.some(employee => employee.personID === user.personID)
+            )
+          : [];
+
+        const userTeams = Array.isArray(allTeams)
+          ? allTeams.filter(team =>
+              team.projects.some(teamProject =>
+                filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
+              )
+            )
+          : [];
+
+        setTeams(userTeams);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch teams:', error);
@@ -35,31 +50,26 @@ const TeamDataSpaceID = () => {
     };
 
     fetchTeams();
-  }, [token]);
+  }, [token, user.personID, projects]);
 
-  const teamID = window.location.pathname.split('/').pop();
-
-  const filteredProjects = Array.isArray(projects)
-    ? projects.filter(project =>
-        project.employees.some(employee => employee.personID === user.personID)
-      )
-    : [];
-
-  const userTeams = Array.isArray(teams)
-    ? teams.filter(team =>
-        team.projects.some(teamProject =>
-          filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
-        )
-      )
-    : [];
+  useEffect(() => {
+    if (teamID) {
+      const team = teams.find(team => team.teamID === teamID);
+      setSelectedTeam(team);
+    }
+  }, [teamID, teams]);
 
   const handleTeamChange = (event) => {
-    setSelectedTeam(event.target.value);
     navigate(`/teamdataspace/${event.target.value}`);
   };
 
-  const handleProjectClick = (projectID) => {
-    navigate(`/teamdataspace/${teamID}/${projectID}`);
+  const renderArrayItems = (items, property) => {
+    if (!items || items.length === 0) return 'None';
+    return items.map((item, index) => (
+      <Typography key={index} variant="subtitle1">
+        {item[property] || 'Unknown'}
+      </Typography>
+    ));
   };
 
   return (
@@ -68,9 +78,9 @@ const TeamDataSpaceID = () => {
         title="Team Data Spaces"
         subtitle={
           <>
-            This page shows the projects of team{' '}
+            This page shows the details of team{' '}
             <Typography component="span" fontWeight="bold">
-              {userTeams.length > 0 ? userTeams.find(team => team.teamID === teamID)?.teamName : 'N/A'}
+              {selectedTeam?.teamName || 'N/A'}
             </Typography>{' '}
             where you{' '}
             <Typography component="span" fontWeight="bold">
@@ -87,12 +97,44 @@ const TeamDataSpaceID = () => {
       </Box>
 
       <TeamSelection
-        teams={userTeams}
+        teams={teams}
         loading={loading}
-        selectedTeam={selectedTeam}
+        selectedTeam={teamID}
         onTeamChange={handleTeamChange}
       />
 
+      {loading ? (
+        <CircularProgress />
+      ) : selectedTeam ? (
+        <Box mt={4}>
+          <Typography variant="h6" fontWeight="bold">Team Name: {selectedTeam.teamName}</Typography>
+          <Typography variant="h6" fontWeight="bold">Team ID: {selectedTeam.teamID}</Typography>
+          <Typography variant="h6" fontWeight="bold">Data Space ID: {selectedTeam.teamDataSpaceID}</Typography>
+          
+          <Box mt={3}>
+            <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
+              Clients:
+            </Typography>
+            {renderArrayItems(selectedTeam.clients, 'personID')}
+          </Box>
+
+          <Box mt={3}>
+            <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
+              Companies:
+            </Typography>
+            {renderArrayItems(selectedTeam.companies, 'companyID')}
+          </Box>
+
+          <Box mt={3}>
+            <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
+              Projects:
+            </Typography>
+            {renderArrayItems(selectedTeam.projects, 'projectID')}
+          </Box>
+        </Box>
+      ) : (
+        <Typography variant="h6" fontWeight="bold">No team selected or team not found.</Typography>
+      )}
     </Box>
   );
 };

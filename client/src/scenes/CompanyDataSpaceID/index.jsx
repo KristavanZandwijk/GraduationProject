@@ -13,9 +13,9 @@ const CompanyDataSpaceID = () => {
   const navigate = useNavigate();
   const companies = useSelector((state) => state.companies || []);
   const projects = useSelector((state) => state.projects || []);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user || {});
   const theme = useTheme();
-  const token = useSelector((state) => state.token);
+  const token = useSelector((state) => state.token || '');
 
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
@@ -76,13 +76,17 @@ const CompanyDataSpaceID = () => {
 
   // Filter companies and projects based on the selected company
   const filteredCompanies = Array.isArray(companies)
-    ? companies.filter(company =>
-        company.companyID === companyID && company.employees.some(employee => employee.personID === user.personID))
+    ? companies.filter(company => 
+        company && 
+        company.companyID === companyID && 
+        Array.isArray(company.employees) &&
+        company.employees.some(employee => employee.personID === user.personID))
     : [];
 
   const filteredProjects = Array.isArray(projects)
     ? projects.filter(project =>
-        project.companies.some(company => company.companyID === companyID) &&
+        project &&
+        Array.isArray(project.employees) &&
         project.employees.some(employee => employee.personID === user.personID))
     : [];
 

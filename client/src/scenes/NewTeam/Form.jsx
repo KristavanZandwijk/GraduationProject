@@ -36,7 +36,7 @@ const TeamDrop = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/companies', {
+        const response = await axios.get('http://localhost:5001/companies/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCompanies(Array.isArray(response.data) ? response.data : []);
@@ -200,7 +200,7 @@ const TeamDrop = () => {
           <MenuItem value='' disabled>
             <em>Select the companies</em>
           </MenuItem>
-          {companies.map((company) => (
+          {Array.isArray(companies) && companies.map((company) => (
             <MenuItem key={company.companyID} value={company.companyID}>
               {`${company.companyID} - ${company.companyName}`}
             </MenuItem>
@@ -230,7 +230,7 @@ const TeamDrop = () => {
           <MenuItem value='' disabled>
             <em>Select the Client</em>
           </MenuItem>
-          {users.map((user) => (
+          {Array.isArray(users) && users.map((user) => (
             <MenuItem key={user.personID} value={user.personID}>
               {`${user.personID} - ${user.firstName} ${user.lastName}`}
             </MenuItem>
@@ -261,7 +261,7 @@ const TeamDrop = () => {
           <MenuItem value='' disabled>
             <em>Select the projects that are part of this team</em>
           </MenuItem>
-          {projects.map((project) => (
+          {Array.isArray(projects) && projects.map((project) => (
             <MenuItem key={project.projectID} value={project.projectID}>
               {`${project.projectID} - ${project.projectName}`}
             </MenuItem>

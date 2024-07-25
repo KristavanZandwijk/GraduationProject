@@ -22,8 +22,8 @@ const ProjectDrop = () => {
 
   const users = useSelector((state) => state.users || []);
   const buildings = useSelector((state) => state.buildings || []);
+  const companies = useSelector((state) => state.companies || []);
 
-  const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
   const [selectedClient, setSelectedClient] = useState('');
@@ -39,7 +39,7 @@ const ProjectDrop = () => {
         const response = await axios.get('http://localhost:5001/companies', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setCompanies(Array.isArray(response.data) ? response.data : []);
+        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
       } catch (error) {
         console.error('Failed to fetch companies:', error);
       }
@@ -47,7 +47,7 @@ const ProjectDrop = () => {
 
     const fetchBuildings = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/buildings', {
+        const response = await axios.get('http://localhost:5001/buildings/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
@@ -187,6 +187,7 @@ const ProjectDrop = () => {
             </MenuItem>
           ))}
         </Select>
+
 
         <Select
           multiple

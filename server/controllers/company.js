@@ -30,3 +30,19 @@ export const getCompanyEmployees = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const getAllCompanies = async (req, res) => {
+  try {
+    const companies = await Company.find();
+    console.log('Fetched companies:', companies);
+
+    if (!companies.length) {
+      return res.status(404).json({ message: "No companies found." });
+    }
+
+    res.status(200).json(companies);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+

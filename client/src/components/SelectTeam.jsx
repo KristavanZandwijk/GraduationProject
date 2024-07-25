@@ -5,9 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
 
 const TeamSelection = ({ teams, loading, selectedTeam, onTeamChange }) => {
-
-    const theme = useTheme();
-
+  const theme = useTheme();
 
   return (
     <Box mb={2}>
@@ -27,7 +25,7 @@ const TeamSelection = ({ teams, loading, selectedTeam, onTeamChange }) => {
             <CircularProgress size={24} />
           </MenuItem>
         ) : (
-          teams.map((team) => (
+          Array.isArray(teams) && teams.map((team) => (
             <MenuItem key={team.teamID} value={team.teamID}>
               {team.teamName}
             </MenuItem>

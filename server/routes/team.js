@@ -6,5 +6,6 @@ const router = express.Router();
 
 /* READ */
 router.get("/", verifyToken, getAllTeams);
+router.get("/:teamID", verifyToken, getAllTeams);
 
 export default router;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import axios from 'axios';
@@ -25,7 +25,9 @@ const CompanyDataSpace = () => {
         const response = await axios.get('http://localhost:5001/companies', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
+        const companiesData = Array.isArray(response.data) ? response.data : [];
+        dispatch(setCompanies(companiesData));
+        console.log('Fetched companies:', companiesData); // Debugging log
       } catch (error) {
         console.error('Failed to fetch companies:', error);
       }
@@ -36,7 +38,9 @@ const CompanyDataSpace = () => {
         const response = await axios.get('http://localhost:5001/projects', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
+        const projectsData = Array.isArray(response.data) ? response.data : [];
+        dispatch(setProjects(projectsData));
+        console.log('Fetched projects:', projectsData); // Debugging log
       } catch (error) {
         console.error('Failed to fetch projects:', error);
       }
@@ -47,7 +51,9 @@ const CompanyDataSpace = () => {
         const response = await axios.get('http://localhost:5001/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUsers(Array.isArray(response.data) ? response.data : []);
+        const usersData = Array.isArray(response.data) ? response.data : [];
+        setUsers(usersData);
+        console.log('Fetched users:', usersData); // Debugging log
       } catch (error) {
         console.error('Failed to fetch users:', error);
       }
@@ -58,15 +64,29 @@ const CompanyDataSpace = () => {
     fetchUsers();
   }, [dispatch, token]);
 
+  // Filter companies ensuring `user` and `user.personID` are defined
   const filteredCompanies = Array.isArray(companies)
-    ? companies.filter(company =>
-        company.employees.some(employee => employee.personID === user.personID)
+    ? companies.filter(company => 
+        Array.isArray(company.employees) &&
+        company.employees.some(employee => employee.personID === user?.personID)
       )
     : [];
 
-  const filteredProjects = projects.filter(project =>
-    project.companies.some(comp => filteredCompanies.map(company => company.companyID).includes(comp.companyID))
-  );
+  // Log filtered companies to debug
+  console.log('Filtered companies:', filteredCompanies);
+
+  // Filter projects ensuring `filteredCompanies` is valid
+  const filteredProjects = Array.isArray(projects)
+    ? projects.filter(project =>
+        Array.isArray(project.companies) &&
+        project.companies.some(comp => 
+          filteredCompanies.map(company => company.companyID).includes(comp.companyID)
+        )
+      )
+    : [];
+
+  // Log filtered projects to debug
+  console.log('Filtered projects:', filteredProjects);
 
   useEffect(() => {
     if (filteredCompanies.length === 1) {

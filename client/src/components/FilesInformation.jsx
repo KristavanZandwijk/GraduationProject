@@ -75,6 +75,10 @@ const FileTable = () => {
         const updatedFile = await response.json();
         dispatch(updateFile(updatedFile));
         setEditingFileID(null);
+        setSelectedStatus('');
+        fetchFiles();  // Refresh the file list
+      } else {
+        console.error('Failed to update file:', await response.text());
       }
     } catch (error) {
       console.error('Failed to update file:', error);
@@ -166,13 +170,13 @@ const FileTable = () => {
           <TableFooter>
             <TableRow>
               <TableCell colSpan={12}>
-              <Typography variant="caption" color="textSecondary" component="div">
+                <Typography variant="caption" color="textSecondary" component="div">
                   <div>
                     <strong>1. A file could have four types of 'status':</strong>
                     <br />
                     <strong>a. "private":</strong> the file is only accessible by the file owner.
                     <br />
-                    <strong>b. "sharedCompany":</strong> the file is accessible to the employees that are part of the project. See the cmpany Data Space for an overview of the employees. 
+                    <strong>b. "sharedCompany":</strong> the file is accessible to the employees that are part of the project. See the company Data Space for an overview of the employees. 
                     <br />
                     <strong>c. "sharedTeam":</strong> the file is accessible to all employees within the team (this could include multiple companies). See the team data space for an overview of the employees.
                     <br />

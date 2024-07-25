@@ -1,6 +1,6 @@
 // server/routes/files.js
 import express from 'express';
-import { createFile } from '../controllers/files.js';
+import { createFile, updateFile } from '../controllers/files.js';
 import { verifyToken } from '../middleware/auth.js';
 import multer from 'multer';
 import fs from 'fs';
@@ -76,6 +76,10 @@ router.get('/:fileID', verifyToken, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+
+//Update File Data
+router.patch('/:fileID', verifyToken, updateFile);
 
 
 export default router;

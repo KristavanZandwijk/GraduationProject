@@ -69,14 +69,14 @@ const navItems = [
     icon: null,
   },
   {
-    text: "CompanyDataSpace",
-    icon: <FactoryOutlined />,
-    path: "/companydataspace",
-  },
-  {
     text: "TeamDataSpace",
     icon: <Diversity3Outlined />,
     path: "/teamdataspace",
+  },
+  {
+    text: "CompanyDataSpace",
+    icon: <FactoryOutlined />,
+    path: "/companydataspace",
   },
   {
     text: "Data Spaces Private",

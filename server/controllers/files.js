@@ -32,3 +32,15 @@ export const createFile = async (req, res) => {
     res.status(409).json({ message: err.message });
   }
 };
+
+//Update File Status
+export const updateFile = async (req, res) => {
+  try {
+    const { fileID } = req.params;
+    const updatedFile = await File.findOneAndUpdate({ fileID }, req.body, { new: true });
+    res.status(200).json(updatedFile);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+

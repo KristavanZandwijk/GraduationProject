@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, IconButton } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, Paper, Typography, IconButton, Select, MenuItem, Button } from '@mui/material';
 import { Refresh } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
+import { updateFile } from 'state';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
+  const [editingFileID, setEditingFileID] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('');
   const { dataSpaceID } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const navigate = useNavigate();
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const fetchFiles = async () => {
     try {
@@ -51,6 +55,32 @@ const FileTable = () => {
     navigate(`/companydataspace/${file.relatedToProject}/${file.fileID}`);
   };
 
+  const handleEditClick = (fileID, currentStatus) => {
+    setEditingFileID(fileID);
+    setSelectedStatus(currentStatus);
+  };
+
+  const handleSave = async (fileID) => {
+    try {
+      const response = await fetch(`http://localhost:5001/files/${fileID}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: selectedStatus }),
+      });
+
+      if (response.ok) {
+        const updatedFile = await response.json();
+        dispatch(updateFile(updatedFile));
+        setEditingFileID(null);
+      }
+    } catch (error) {
+      console.error('Failed to update file:', error);
+    }
+  };
+
   return (
     <Box mt="2rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -77,6 +107,7 @@ const FileTable = () => {
               <TableCell>Related To Team</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Uploaded At</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -101,11 +132,56 @@ const FileTable = () => {
                   </TableCell>
                   <TableCell>{file.companyDataSpaceID}</TableCell>
                   <TableCell>{file.relatedToTeam}</TableCell>
-                  <TableCell>{file.status}</TableCell>
+                  <TableCell>
+                    {editingFileID === file.fileID ? (
+                      <Select
+                        value={selectedStatus}
+                        onChange={(e) => setSelectedStatus(e.target.value)}
+                        fullWidth
+                      >
+                        <MenuItem value="private">Private</MenuItem>
+                        <MenuItem value="sharedCompany">Shared with Company</MenuItem>
+                        <MenuItem value="sharedTeam">Shared with Team</MenuItem>
+                        <MenuItem value="public">Public</MenuItem>
+                      </Select>
+                    ) : (
+                      file.status
+                    )}
+                  </TableCell>
                   <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
+                  <TableCell>
+                    {editingFileID === file.fileID ? (
+                      <Button onClick={() => handleSave(file.fileID)} color="primary">
+                        Save
+                      </Button>
+                    ) : (
+                      <Button onClick={() => handleEditClick(file.fileID, file.status)} color="secondary">
+                        Edit
+                      </Button>
+                    )}
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={12}>
+              <Typography variant="caption" color="textSecondary" component="div">
+                  <div>
+                    <strong>1. A file could have four types of 'status':</strong>
+                    <br />
+                    <strong>a. "private":</strong> the file is only accessible by the file owner.
+                    <br />
+                    <strong>b. "sharedCompany":</strong> the file is accessible to the employees that are part of the project. See the cmpany Data Space for an overview of the employees. 
+                    <br />
+                    <strong>c. "sharedTeam":</strong> the file is accessible to all employees within the team (this could include multiple companies). See the team data space for an overview of the employees.
+                    <br />
+                    <strong>d. "public":</strong> the file is accessible to everyone who has an account on the AECO Data Space.
+                  </div>
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
     </Box>

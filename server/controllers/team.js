@@ -4,7 +4,6 @@ import Team from "../models/Team.js";
 export const getAllTeams = async (req, res) => {
   try {
     const teams = await Team.find(); // Fetch all teams
-    console.log('Fetched Teams:', teams);
 
     if (!teams.length) {
       return res.status(404).json({ message: "No teams found." });

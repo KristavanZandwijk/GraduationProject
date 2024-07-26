@@ -32,8 +32,9 @@ import ProjectDataSpace from "scenes/ProjectDataSpace";
 import IFCtoRDFConverter from "scenes/IFCtoRDFConverter";
 import CompanyDataSpaceID from "scenes/CompanyDataSpaceID";
 import TeamDataSpaces from "scenes/TeamDataSpace";
-import TeamDataSpaceID from "scenes/TeamDataSpaceID";
+import TeamDataSpaceID from "scenes/TeamDataSpaceID - info";
 import NewTeam from "scenes/NewTeam";
+import TeamDataSpaceIDFiles from "scenes/TeamDataSpaceID";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -70,6 +71,7 @@ function App() {
 
               <Route path="/teamdataspace" element={isAuth ? <TeamDataSpaces /> : <Navigate to="/" />} />
               <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceID /> : <Navigate to="/" />} />
+              <Route path="/teamdataspace/:teamID/:teamDataSpaceID" element={isAuth ? <TeamDataSpaceIDFiles /> : <Navigate to="/" />} />
               <Route path="/teamdataspace/newteam" element={isAuth ? <NewTeam /> : <Navigate to="/" />} />
 
 

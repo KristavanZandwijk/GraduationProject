@@ -8,7 +8,7 @@ import TeamSelection from 'components/SelectTeam';
 import TeamInformationWidget from 'components/TeamInformationWidget';
 import { setCompanies, setProjects, setUsers } from 'state'; // Ensure these actions are defined in your state management
 
-const TeamDataSpaceIDFiles = () => {
+const TeamDataSpaceID = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { teamID } = useParams();
@@ -129,9 +129,21 @@ const TeamDataSpaceIDFiles = () => {
         selectedTeam={teamID}
         onTeamChange={handleTeamChange}
       />
+
+        {loading ? (
+              <CircularProgress />
+            ) : (
+              <TeamInformationWidget
+                selectedTeam={selectedTeam}
+                users={users}
+                companies={companies}
+                projects={projects}
+                handleTeamClick={handleTeamClick} // Ensure this is present
+              />
+            )}
           </Box>
         );
 
 };
 
-export default TeamDataSpaceIDFiles;
+export default TeamDataSpaceID;

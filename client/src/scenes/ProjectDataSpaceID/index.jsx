@@ -3,11 +3,12 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from 'components/Header';
-import DataSpaceTable from 'components/DataSpaceTable'
-import { useTheme } from "@mui/material";
+import DataSpaceTable from 'components/DataSpaceTable';
+import { useTheme } from '@mui/material';
 import IFCViewer from 'components/IFCViewer';
 
-const BuildingDataSpaceID = () => {
+const ProjectDataSpace = () => {
+  const { projectID } = useParams();
   const { buildingDataSpaceID } = useParams();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,10 +20,15 @@ const BuildingDataSpaceID = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/files`, {
-          params: { buildingDataSpaceID: buildingDataSpaceID }
+        const response = await axios.get('http://localhost:5001/files', {
         });
-        setFiles(response.data);
+
+        const allowedStatuses = ['sharedCompany', 'sharedTeam', 'public'];
+        const filteredFiles = response.data.filter(
+          (file) => file.relatedToProject === projectID && allowedStatuses.includes(file.status)
+        );
+
+        setFiles(filteredFiles);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,7 +37,7 @@ const BuildingDataSpaceID = () => {
     };
 
     fetchFiles();
-  }, [buildingDataSpaceID]);
+  }, []);
 
   const handleFileClick = (fileID) => {
     navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`);
@@ -39,9 +45,9 @@ const BuildingDataSpaceID = () => {
 
   const handleCheckboxChange = (event, filepath) => {
     if (event.target.checked) {
-      setSelectedFilepaths(prevState => [...prevState, filepath]);
+      setSelectedFilepaths((prevState) => [...prevState, filepath]);
     } else {
-      setSelectedFilepaths(prevState => prevState.filter(path => path !== filepath));
+      setSelectedFilepaths((prevState) => prevState.filter((path) => path !== filepath));
     }
   };
 
@@ -56,7 +62,10 @@ const BuildingDataSpaceID = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="Building Data Space ID" subtitle="This space shows all information that is stored in this data space." />
+        <Header
+          title="Project Data Space"
+          subtitle="This page shows all information that is linked to the project"
+        />
       </Box>
       <DataSpaceTable
         files={files}
@@ -71,4 +80,4 @@ const BuildingDataSpaceID = () => {
   );
 };
 
-export default BuildingDataSpaceID;
+export default ProjectDataSpace;

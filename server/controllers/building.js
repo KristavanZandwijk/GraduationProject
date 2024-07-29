@@ -1,5 +1,6 @@
 // controllers/building.js
 import Building from "../models/Building.js";
+import File from "../models/File.js";
 
 /* READ */
 export const getUserBuildings = async (req, res) => {
@@ -17,10 +18,11 @@ export const getUserBuildings = async (req, res) => {
   }
 };
 
-
 export const getAllBuildings = async (req, res) => {
   try {
-    const buildings = await Building.find({ });
+    const publicFiles = await File.find({ status: 'public' });
+    const buildingIDs = [...new Set(publicFiles.map(file => file.buildingDataSpaceID))];
+    const buildings = await Building.find({ buildingDataSpaceID: { $in: buildingIDs } });
 
     if (!buildings.length) {
       return res.status(404).json({ message: "No buildings found at all" });

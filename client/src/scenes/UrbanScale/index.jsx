@@ -12,7 +12,6 @@ const UrbanScale = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const buildings = useSelector((state) => state.buildings || []);
-  const { personID } = useSelector((state) => state.user);
   const [selectedBuildingDataSpaceIDs, setSelectedBuildingDataSpaceIDs] = useState([]);
   const [selectedFilePaths, setSelectedFilePaths] = useState([]);
   const [files, setFiles] = useState([]);
@@ -21,7 +20,7 @@ const UrbanScale = () => {
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/buildings', {
+        const response = await axios.get('http://localhost:5001/buildings/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
@@ -35,7 +34,7 @@ const UrbanScale = () => {
         const response = await axios.get('http://localhost:5001/files', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setFiles(response.data.filter(file => file.filePath.endsWith('.ifc')));
+        setFiles(response.data.filter(file => file.filePath.endsWith('.ifc') && file.status === 'public'));
       } catch (error) {
         console.error('Failed to fetch files:', error);
       }
@@ -56,21 +55,17 @@ const UrbanScale = () => {
     }
   };
 
-  const filteredBuildings = Array.isArray(buildings)
-    ? buildings.filter(building => building.hasOwner === personID)
-    : [];
-
-    const handleNewBuildingClick = () => {
-      navigate('/urbanscale/newbuilding');
-    };
+  const handleNewBuildingClick = () => {
+    navigate('/urbanscale/newbuilding');
+  };
 
   return (
     <Box m="1.5rem 2.5rem" height="100vh" display="flex" flexDirection="column">
-        <Header
-          title="Urban Scale"
-          subtitle="This map shows the buildings (ifc files) that are accessible by you."
-        />
-        <Box display="flex" justifyContent="flex-end" mb={2}>
+      <Header
+        title="Urban Scale"
+        subtitle="This map shows the buildings (ifc files) that are accessible by you."
+      />
+      <Box display="flex" justifyContent="flex-end" mb={2}>
         <Button variant="contained" color="primary" onClick={handleNewBuildingClick} sx={{ mr: 2 }}>
           Create New Building
         </Button>
@@ -78,13 +73,13 @@ const UrbanScale = () => {
       <Box mt={3}>
         {buildings.length === 0 ? (
           <CircularProgress />
-        ) : filteredBuildings.length === 0 ? (
-          <Typography variant="h6">You unfortunately do not own any buildings (yet).</Typography>
         ) : (
           <UrbanBuildingTable 
-            buildings={filteredBuildings}
-            selectedFilePaths={selectedFilePaths} 
-            handleCheckboxChange={handleCheckboxChange} />
+          buildings={buildings}
+          selectedBuildingDataSpaceIDs={selectedBuildingDataSpaceIDs}
+          handleCheckboxChange={handleCheckboxChange}
+        />
+
         )}
       </Box>
       <Box flex="1" height="80vh">

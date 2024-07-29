@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox } from '@mui/material';
 import { useTheme } from '@emotion/react';
 
-const UrbanBuildingTable = ({ buildings, selectedFilePaths, handleCheckboxChange }) => {
+const UrbanBuildingTable = ({ buildings, selectedBuildingDataSpaceIDs, handleCheckboxChange }) => {
   const navigate = useNavigate();
   const theme = useTheme();
-  const [selectedBuildingIDs, setSelectedBuildingIDs] = useState([]);
 
   if (buildings.length === 0) {
     return <Typography mt="2rem">Unfortunately, there are no buildings that are accessible by you.</Typography>;
@@ -17,7 +16,7 @@ const UrbanBuildingTable = ({ buildings, selectedFilePaths, handleCheckboxChange
   };
 
   return (
-    <TableContainer component={Paper} sx={{ marginTop: "2rem" }}>
+    <TableContainer component={Paper} sx={{ marginTop: "0rem" }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -35,16 +34,20 @@ const UrbanBuildingTable = ({ buildings, selectedFilePaths, handleCheckboxChange
             <TableRow key={building.buildingDataSpaceID}>
               <TableCell>
                 <Checkbox
-                  checked={selectedFilePaths?.some(filepath => 
-                    filepath.includes(building.buildingDataSpaceID)
-                  )}
+                  checked={selectedBuildingDataSpaceIDs.includes(building.buildingDataSpaceID)}
                   onChange={(event) => handleCheckboxChange(event, building.buildingDataSpaceID)}
                 />
               </TableCell>
-              <TableCell onClick={() => handleRowClick(building.buildingDataSpaceID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
+              <TableCell
+                onClick={() => handleRowClick(building.buildingDataSpaceID)}
+                style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
+              >
                 {building.buildingID}
               </TableCell>
-              <TableCell onClick={() => handleRowClick(building.buildingDataSpaceID)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
+              <TableCell
+                onClick={() => handleRowClick(building.buildingDataSpaceID)}
+                style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
+              >
                 {building.buildingDataSpaceID}
               </TableCell>
               <TableCell>{building.hasOwner}</TableCell>

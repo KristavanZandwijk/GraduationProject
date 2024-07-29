@@ -2,7 +2,7 @@ import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Typography } from '@mui/material';
 import { useTheme } from "@mui/material";
 
-const BuildingDataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheckboxChange }) => {
+const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheckboxChange }) => {
   const theme = useTheme();
 
   if (files.length === 0) {
@@ -19,6 +19,9 @@ const BuildingDataSpaceTable = ({ files, selectedFilepaths, handleFileClick, han
             <TableCell>File Name</TableCell>
             <TableCell>File Description</TableCell>
             <TableCell>File is Owned by</TableCell>
+            <TableCell>Related To Project</TableCell>
+            <TableCell>Related To Team</TableCell>
+            <TableCell>Status of Sharing</TableCell>
             <TableCell>Uploaded At</TableCell>
           </TableRow>
         </TableHead>
@@ -39,6 +42,9 @@ const BuildingDataSpaceTable = ({ files, selectedFilepaths, handleFileClick, han
               <TableCell>{file.fileName}</TableCell>
               <TableCell>{file.fileDescription}</TableCell>
               <TableCell>{file.hasOwner}</TableCell>
+              <TableCell>{file.relatedToProject}</TableCell>
+              <TableCell>{file.relatedToTeam}</TableCell>
+              <TableCell>{file.status}</TableCell>
               <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
             </TableRow>
           ))}
@@ -48,4 +54,4 @@ const BuildingDataSpaceTable = ({ files, selectedFilepaths, handleFileClick, han
   );
 };
 
-export default BuildingDataSpaceTable;
+export default DataSpaceTable;

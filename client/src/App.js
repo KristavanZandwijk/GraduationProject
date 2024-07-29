@@ -28,7 +28,7 @@ import NewCompany from "scenes/NewCompany";
 import NewProject from "scenes/NewProject";
 import CompanyInfoPage from "scenes/CompanyInformation";
 import NewFile from "scenes/DataUpload";
-import ProjectDataSpace from "scenes/ProjectDataSpace";
+import ProjectDataSpace from "scenes/ProjectDataSpaceID";
 import IFCtoRDFConverter from "scenes/IFCtoRDFConverter";
 import CompanyDataSpaceID from "scenes/CompanyDataSpaceID";
 import TeamDataSpaces from "scenes/TeamDataSpace";

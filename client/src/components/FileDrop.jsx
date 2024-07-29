@@ -70,7 +70,20 @@ const FileDrop = ({ picturePath }) => {
         console.error('Error fetching teams:', error);
       }
     };
+
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/projects/employee', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setProjects(response.data));
+        console.log('projects from API:', response.data);
+      } catch (error) {
+        console.error('Error fetching projects:', error);
+      }
+    };
   
+    fetchProjects();
     fetchTeams();
   }, [dispatch, token]);
   

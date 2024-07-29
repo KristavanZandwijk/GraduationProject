@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
-import DataSpaceTable from 'components/DataSpaceTable'
+import DataSpaceTable from 'components/DataSpaceTable';
 import { useTheme } from "@mui/material";
 import IFCViewer from 'components/IFCViewer';
 
 const BuildingDataSpaceID = () => {
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user);
   const { buildingDataSpaceID } = useParams();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -19,10 +23,17 @@ const BuildingDataSpaceID = () => {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/files`, {
-          params: { buildingDataSpaceID: buildingDataSpaceID }
+        const response = await axios.get('http://localhost:5001/files', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-        setFiles(response.data);
+
+        const filteredFiles = response.data.filter(
+          (file) => file.buildingDataSpaceID === buildingDataSpaceID && file.status === 'public'
+        );
+
+        setFiles(filteredFiles);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -31,7 +42,7 @@ const BuildingDataSpaceID = () => {
     };
 
     fetchFiles();
-  }, [buildingDataSpaceID]);
+  }, [buildingDataSpaceID, token]);
 
   const handleFileClick = (fileID) => {
     navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`);

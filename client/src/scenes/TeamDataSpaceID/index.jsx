@@ -57,7 +57,7 @@ const TeamDataSpaceIDFiles = () => {
 
   useEffect(() => {
     fetchTeams();
-  }, [fetchTeams]);
+  }, [fetchTeams]); 
 
   useEffect(() => {
     const fetchFiles = async () => {

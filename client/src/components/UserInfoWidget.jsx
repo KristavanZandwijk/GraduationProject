@@ -21,6 +21,7 @@ const UserWidget = () => {
   const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize useNavigate
+  const theme = useTheme();
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user);
@@ -28,6 +29,7 @@ const UserWidget = () => {
   const [projects, setProjects] = useState([]);
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
+  const [teams, setTeams] = useState([]); // New state for teams
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -62,8 +64,21 @@ const UserWidget = () => {
       }
     };
 
+    const fetchTeams = async () => { // New function to fetch teams
+      try {
+        const response = await axios.get('http://localhost:5001/teams', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const teams = Array.isArray(response.data) ? response.data : [];
+        setTeams(teams);
+      } catch (error) {
+        console.error('Failed to fetch teams:', error);
+      }
+    };
+
     fetchCompanies();
     fetchProjects();
+    fetchTeams(); // Fetch teams
   }, [dispatch, token, user.personID]);
 
   const handleInputChange = (e) => {
@@ -99,6 +114,19 @@ const UserWidget = () => {
   const handleProjectClick = (companyID, projectID) => {
     navigate(`/companydataspace/${companyID}/${projectID}`);
   };
+
+  const handleTeamClick = (teamID) => {
+    navigate(`/teamdataspace/${teamID}`);
+  };
+
+  // Map projects to include team names
+  const projectsWithTeams = filteredProjects.map(project => {
+    const relatedTeams = teams.filter(team => team.projects.some(p => p.projectID === project.projectID));
+    return {
+      ...project,
+      relatedTeams
+    };
+  });
 
   return (
     <Box>
@@ -261,20 +289,39 @@ const UserWidget = () => {
         <Typography color={palette.secondary[200]} fontWeight="bold" variant="h6" gutterBottom>
           Projects
         </Typography>
-        {filteredProjects.length > 0 ? (
-          filteredProjects.map((project) => (
+        {projectsWithTeams.length > 0 ? (
+          projectsWithTeams.map((project) => (
             <Paper
               key={project.projectID}
               elevation={2}
               sx={{ p: 2, mb: 2, cursor: 'pointer' }}
-              onClick={() => handleProjectClick(project.companyID, project.projectID)}
             >
-              <Typography variant="subtitle1">
+              <Typography
+                variant="subtitle1"
+                onClick={() => handleProjectClick(project.companyID, project.projectID)}
+                style={{ cursor: 'pointer'}} // Fixed project click handler
+              >
                 <strong>Project Name:</strong> {project.projectName}
               </Typography>
-              <Typography variant="subtitle2">
+              <Typography variant="subtitle2" mt={1}>
                 <strong>Project ID:</strong> {project.projectID}
               </Typography>
+              {project.relatedTeams.length > 0 && (
+                <Box mt={1}>
+                  {project.relatedTeams.map((team) => (
+                    <Typography
+                      key={team.teamID}
+                      variant="subtitle2"
+                      onClick={() => handleTeamClick(team.teamID)}
+                      style={{ cursor: 'pointer'}}
+                    >
+                       <span style={{ color: theme.palette.secondary.main, fontWeight: 'bold' }}>
+                        Related to Team:
+                      </span> {team.teamName}
+                    </Typography>
+                  ))}
+                </Box>
+              )}
             </Paper>
           ))
         ) : (

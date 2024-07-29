@@ -20,7 +20,6 @@ const Profile = () => {
         subtitle="This page gives an overview of the profile information."
       />
 
-      {/* User widget */}
       <UserWidget />
     </Box>
   );

@@ -32,6 +32,7 @@ import {
   FactoryOutlined,
   FileUploadOutlined,
   Diversity3Outlined,
+  InfoOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
@@ -49,18 +50,18 @@ const navItems = [
     icon: null,
   },
   {
-    text: "UrbanScale",
+    text: "Urban Scale",
     icon: <MapOutlined />,
     path: "/urbanscale",
   },
   {
-    text: "BuildingDataSpace",
+    text: "Building Data Space",
     icon: <AccountBalanceOutlined />,
     path: "/buildingdataspace",
     disabled: true, // Add a 'disabled' property
   },
   {
-    text: "ElementDataSpace",
+    text: "Element Data Space",
     icon: <DoorFrontOutlined />,
     path: "/elementdataspace",
   },
@@ -69,12 +70,12 @@ const navItems = [
     icon: null,
   },
   {
-    text: "TeamDataSpace",
+    text: "Team Data Space",
     icon: <Diversity3Outlined />,
     path: "/teamdataspace",
   },
   {
-    text: "CompanyDataSpace",
+    text: "Company Data Space",
     icon: <FactoryOutlined />,
     path: "/companydataspace",
   },
@@ -83,7 +84,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "PersonalDataSpace",
+    text: "Personal Data Space",
     icon: <FolderSharedOutlined />,
     path: "/personaldataspace",
   },
@@ -92,32 +93,32 @@ const navItems = [
     icon: null,
   },
   {
-    text: "DataUpload",
+    text: "Data Upload",
     icon: <FileUploadOutlined />,
     path: "/dataupload",
   },
   {
-    text: "SearchFunction",
+    text: "Search Function",
     icon: <SearchOutlined />,
     path: "/searchfunction",
   },
   {
-    text: "ProjectLearning",
+    text: "Project Learning",
     icon: <LocalLibraryOutlined />,
     path: "/projectlearning",
   },
   {
-    text: "ElementPassport",
+    text: "Element Passport",
     icon: <FingerprintOutlined />,
     path: "/elementpassport",
   },
   {
-    text: "ElementReuse",
+    text: "Element Reuse",
     icon: <RecyclingOutlined />,
     path: "/elementreuse",
   },
   {
-    text: "EmergencyPlans",
+    text: "Emergency Plans",
     icon: <FireExtinguisherOutlined />,
     path: "/emergencyplans",
   },
@@ -126,7 +127,7 @@ const navItems = [
     icon: null,
   },
   {
-    text: "CompanyInformation",
+    text: "Company Information",
     icon: <WorkOutlineOutlined />,
     path: "/companyinformation",
   },
@@ -140,9 +141,14 @@ const navItems = [
     path: "/profile",
   },
   {
-    text: "DataPrivacy",
+    text: "Data Privacy",
     icon: <AdminPanelSettingsOutlined />,
     path: "/dataprivacy",
+  },
+  {
+    text: "Information",
+    icon: <InfoOutlined />,
+    path: "/information",
   },
 ];
 

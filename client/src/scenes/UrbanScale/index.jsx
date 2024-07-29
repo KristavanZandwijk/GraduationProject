@@ -20,7 +20,7 @@ const UrbanScale = () => {
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/buildings/all', {
+        const response = await axios.get('http://localhost:5001/buildings/urban', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));

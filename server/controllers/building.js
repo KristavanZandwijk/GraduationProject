@@ -18,7 +18,7 @@ export const getUserBuildings = async (req, res) => {
   }
 };
 
-export const getAllBuildings = async (req, res) => {
+export const getUrbanBuildings = async (req, res) => {
   try {
     const publicFiles = await File.find({ status: 'public' });
     const buildingIDs = [...new Set(publicFiles.map(file => file.buildingDataSpaceID))];
@@ -33,3 +33,18 @@ export const getAllBuildings = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const getAllBuildings = async (req, res) => {
+  try {
+    const buildings = await Building.find({ });
+
+    if (!buildings.length) {
+      return res.status(404).json({ message: "No buildings found at all" });
+    }
+
+    res.status(200).json(buildings);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+

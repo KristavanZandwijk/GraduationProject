@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import DataSpaceTable from 'components/DataSpaceTable';
 import { useTheme } from "@mui/material";
-import IFCViewer from 'components/IFCViewer';
+import IFCViewer2 from 'components/IFCViewer2';
 
 const BuildingDataSpaceID = () => {
   const dispatch = useDispatch();
@@ -76,7 +76,7 @@ const BuildingDataSpaceID = () => {
         handleCheckboxChange={handleCheckboxChange}
       />
       <Box flex="1" height="80vh">
-        <IFCViewer selectedFilepaths={selectedFilepaths} />
+        <IFCViewer2 selectedFilepaths={selectedFilepaths} />
       </Box>
     </Box>
   );

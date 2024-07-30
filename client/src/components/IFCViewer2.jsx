@@ -1,14 +1,16 @@
 import React, { useEffect } from 'react';
-import * as WEBIFC from "web-ifc";
 import * as BUI from "@thatopen/ui";
-import Stats from "stats.js";
 import * as OBC from "@thatopen/components";
-import { Manager } from '@thatopen/ui';
+import * as OBF from "@thatopen/components-front";
+import * as CUI from "@thatopen/ui-obc";
+import Stats from "stats.js";
 
-const IFCViewer = ({ selectedFilepaths }) => {
+const IFCViewer2 = ({ selectedFilepaths }) => {
   useEffect(() => {
     let world;
     let stats;
+    let propertiesTable;
+    let updatePropertiesTable;
 
     const init = async () => {
       const container = document.getElementById('container');
@@ -58,6 +60,10 @@ const IFCViewer = ({ selectedFilepaths }) => {
           const model = await fragmentIfcLoader.load(buffer);
           model.name = filepath.split('/').pop();
           world.scene.three.add(model);
+
+          // Process model relations
+          const indexer = components.get(OBC.IfcRelationsIndexer);
+          await indexer.process(model);
         }
       };
 
@@ -116,7 +122,7 @@ const IFCViewer = ({ selectedFilepaths }) => {
       requestAnimationFrame(animate);
 
       // Adding the User-interface
-      Manager.init();
+      BUI.Manager.init();
 
       const panelHTML = `
         <bim-panel active label="IFC Loader Tutorial" class="options-menu" style="position: absolute; top: 10px; right: 10px; z-index: 10001; background: white; border: 1px solid #ccc; padding: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
@@ -126,6 +132,12 @@ const IFCViewer = ({ selectedFilepaths }) => {
               <bim-button label="Export fragments" onclick="window.exportFragments();"></bim-button>
               <bim-button label="Dispose fragments" onclick="window.disposeFragments();"></bim-button>
             </bim-panel-section>
+          </bim-panel-section>
+          <bim-panel-section collapsed label="Element Data">
+            <bim-button class="expand-table-button" label="Expand"></bim-button>
+            <bim-button class="copy-tsv-button" label="Copy as TSV"></bim-button>
+            <bim-text-input class="search-property-input" placeholder="Search Property" debounce="250"></bim-text-input>
+            <div class="properties-table-container"></div>
           </bim-panel-section>
         </bim-panel>
       `;
@@ -153,6 +165,52 @@ const IFCViewer = ({ selectedFilepaths }) => {
       window.loadIfc = () => loadIfc(selectedFilepaths.map(filepath => `http://localhost:1002/server/${filepath}`));
       window.exportFragments = exportFragments;
       window.disposeFragments = disposeFragments;
+
+      // Displaying element properties on click
+      [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
+        components,
+        fragmentIdMap: {},
+      });
+
+      propertiesTable.preserveStructureOnFilter = true;
+      propertiesTable.indentationInText = false;
+
+      const highlighter = components.get(OBF.Highlighter);
+      highlighter.setup({ world });
+
+      highlighter.events.select.onHighlight.add((fragmentIdMap) => {
+        console.log("Highlight event triggered, fragmentIdMap:", fragmentIdMap);
+        updatePropertiesTable({ fragmentIdMap });
+      });
+
+      highlighter.events.select.onClear.add(() => {
+        console.log("Clear event triggered");
+        updatePropertiesTable({ fragmentIdMap: {} });
+      });
+
+      // Setting up event handlers for properties panel buttons and input
+      const expandTableButton = panelContainer.querySelector('.expand-table-button');
+      expandTableButton.onclick = () => {
+        propertiesTable.expanded = !propertiesTable.expanded;
+        expandTableButton.label = propertiesTable.expanded ? "Collapse" : "Expand";
+        console.log("Expand table button clicked, expanded:", propertiesTable.expanded);
+      };
+
+      const copyTsvButton = panelContainer.querySelector('.copy-tsv-button');
+      copyTsvButton.onclick = async () => {
+        await navigator.clipboard.writeText(propertiesTable.tsv);
+        console.log("TSV copied to clipboard");
+      };
+
+      const searchPropertyInput = panelContainer.querySelector('.search-property-input');
+      searchPropertyInput.oninput = (e) => {
+        propertiesTable.queryString = e.target.value !== "" ? e.target.value : null;
+        console.log("Search input changed, queryString:", propertiesTable.queryString);
+      };
+
+      // Append properties table to the container
+      const propertiesTableContainer = panelContainer.querySelector('.properties-table-container');
+      propertiesTableContainer.appendChild(propertiesTable.dom);
     };
 
     init().catch(console.error);
@@ -169,9 +227,8 @@ const IFCViewer = ({ selectedFilepaths }) => {
       if (buttonContainer) buttonContainer.remove();
     };
   }, [selectedFilepaths]);
-  
 
   return <div id="container" style={{ width: '80%', height: '80%', position: 'relative' }} />;
 };
 
-export default IFCViewer;
+export default IFCViewer2;

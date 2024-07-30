@@ -34,7 +34,7 @@ const Information = () => {
       <Box flex="1" mr={4}>
         <Header
           title="Information"
-          subtitle="This page explains how the AECO data space works."
+          subtitle="This page explains (1) what the AECO data space it, (2) how it works for users and admins, and (3) who and why it was developed."
         />
 
         {/* Text content */}

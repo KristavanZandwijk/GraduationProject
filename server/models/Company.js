@@ -24,7 +24,6 @@ const CompanySchema = new mongoose.Schema(
     },
     employees: {
       type: Array,
-      default: [],
     },
     city: {
       type: String,

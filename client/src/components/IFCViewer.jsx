@@ -90,6 +90,8 @@ const IFCViewer = ({ selectedFilepaths }) => {
         }
       };
 
+      const indexer = components.get(OBC.IfcRelationsIndexer);
+
       // Cleaning the memory
       const disposeFragments = () => {
         fragments.dispose();
@@ -169,7 +171,6 @@ const IFCViewer = ({ selectedFilepaths }) => {
       if (buttonContainer) buttonContainer.remove();
     };
   }, [selectedFilepaths]);
-  
 
   return <div id="container" style={{ width: '80%', height: '80%', position: 'relative' }} />;
 };

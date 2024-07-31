@@ -16,3 +16,4 @@ Quitting the application without output!
 30-07-2024 13:39:06 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240730_133856/_1
 30-07-2024 13:41:08 ERROR RDFWriter:1028 - *ERROR 2*: getResource failed for http://linkedbuildingdata.net/ifc/resources20240730_134057/_262191
 30-07-2024 14:06:44 ERROR RDFWriter:184 - *ERROR 6*: Reference to non-existing line number in line: #1= IFCAPPLICATION(#3,$,$,$);
+30-07-2024 15:17:37 ERROR RDFWriter:184 - *ERROR 6*: Reference to non-existing line number in line: #1= IFCAPPLICATION(#3,$,$,$);

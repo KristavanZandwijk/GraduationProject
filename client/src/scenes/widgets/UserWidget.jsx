@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { setCompanies, setProjects } from 'state';
 
 const UserWidget = ({ userId, picturePath }) => {
   const [user, setUser] = useState(null);
@@ -45,25 +46,27 @@ const UserWidget = ({ userId, picturePath }) => {
 
   const fetchCompanies = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/companies', {
+      const response = await axios.get('http://localhost:5001/companies/all', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      dispatch({ type: 'SET_COMPANIES', payload: Array.isArray(response.data) ? response.data : [] });
+      dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
     } catch (error) {
       console.error('Failed to fetch companies:', error);
     }
   };
+
 
   const fetchProjects = async () => {
     try {
       const response = await axios.get('http://localhost:5001/projects', {
         headers: { Authorization: `Bearer ${token}` },
       });
-      dispatch({ type: 'SET_PROJECTS', payload: Array.isArray(response.data) ? response.data : [] });
+      dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
     } catch (error) {
       console.error('Failed to fetch projects:', error);
     }
   };
+
 
   useEffect(() => {
     fetchCompanies();
@@ -76,15 +79,22 @@ const UserWidget = ({ userId, picturePath }) => {
     return null;
   }
 
-  const userCompanyIds = companies
-    .filter(company => company.employees.some(employee => employee.personID === user.personID))
-    .map(company => company.companyID);
-
-    const filteredProjects = Array.isArray(projects)
+  const filteredProjects = Array.isArray(projects)
     ? projects.filter(project =>
         project.employees.some(employee => employee.personID === user.personID)
       )
     : [];
+
+  const filteredCompanies = Array.isArray(companies)
+      ? companies.filter(company =>
+          company.employees.some(employee => employee.personID === user.personID)
+        )
+      : [];
+
+  console.log("companies", companies);
+  console.log('filteredCompanies:', filteredCompanies);
+
+  console.log('filteredProjects:', filteredProjects);
 
   const {
     firstName,
@@ -135,15 +145,13 @@ const UserWidget = ({ userId, picturePath }) => {
           <WorkOutlineOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
           <Typography color={palette.neutral.medium}>{role}</Typography>
         </Box>
-        {Array.isArray(companies) && companies
-          .filter(company => company.employees.some(employee => employee.personID === user.personID))
-          .map((company, index) => (
-            <Box key={index} display="flex" alignItems="center" gap="1rem">
-              <HomeWorkOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
-              <Typography color={palette.neutral.medium}>{company.companyName}</Typography>
-            </Box>
+        {filteredCompanies.map((company, index) => (
+          <Box key={index} display="flex" alignItems="center" gap="1rem">
+            <HomeWorkOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
+            <Typography color={palette.neutral.medium}>{company.companyName}</Typography>
+          </Box>
         ))}
-        {Array.isArray(filteredProjects) && filteredProjects.map((project, index) => (
+        {filteredProjects.map((project, index) => (
           <Box key={index} display="flex" alignItems="center" gap="1rem">
             <AssignmentIndOutlined fontSize="large" sx={{ color: theme.palette.secondary[200] }} />
             <Typography color={palette.neutral.medium}>{project.projectName}</Typography>

@@ -36,7 +36,7 @@ const ProjectDrop = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/companies', {
+        const response = await axios.get('http://localhost:5001/companies/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
@@ -250,11 +250,11 @@ const ProjectDrop = () => {
           <MenuItem value='' disabled>
             Select the Building(s) the project is related to
           </MenuItem>
-          {buildings.map((building) => (
-            <MenuItem key={building.buildingID} value={building.buildingID}>
-              {`${building.buildingID} - ${building.buildingName} - ${building.buildingLocation}`}
-            </MenuItem>
-          ))}
+          {Array.isArray(buildings) && buildings.map((building) => (
+          <MenuItem key={building.buildingID} value={building.buildingID}>
+            {`${building.buildingID} - ${building.buildingName} - ${building.buildingLocation}`}
+          </MenuItem>
+        ))}
         </Select>
 
       </Box>

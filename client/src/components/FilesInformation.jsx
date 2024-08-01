@@ -4,7 +4,7 @@ import { Refresh } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
-import { updateFile } from 'state';
+import { updateFile } from 'state'; 
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);

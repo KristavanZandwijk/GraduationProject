@@ -1,14 +1,13 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, CircularProgress, Typography } from '@mui/material';
 import Header from 'components/Header';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import TeamSelection from 'components/SelectTeam';
 import TeamInformationWidget from 'components/TeamInformationWidget';
-import { setCompanies, setProjects, setUsers } from 'state'; 
 import DataSpaceTable from 'components/DataSpaceTable';
 import IFCViewer from 'components/IFCViewer';
+import { setCompanies, setProjects, setUsers, setTeams } from 'state';
 
 const TeamDataSpaceIDFiles = () => {
   const dispatch = useDispatch();
@@ -16,53 +15,63 @@ const TeamDataSpaceIDFiles = () => {
   const { teamID } = useParams();
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
+  const teams = useSelector((state) => state.teams || []);
   const projects = useSelector((state) => state.projects || []);
   const [files, setFiles] = useState([]);
   const [error, setError] = useState(null);
   const [selectedFilepaths, setSelectedFilepaths] = useState([]);
-
-  const [teams, setTeams] = useState([]);
-  const [selectedTeam, setSelectedTeam] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const fetchTeams = useCallback(async () => {
-    try {
-      const response = await axios.get('http://localhost:5001/teams', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const allTeams = Array.isArray(response.data) ? response.data : [];
-      
-      // Filter teams based on user projects
-      const filteredProjects = Array.isArray(projects)
-        ? projects.filter(project =>
-            project.employees.some(employee => employee.personID === user.personID)
-          )
-        : [];
-
-      const userTeams = Array.isArray(allTeams)
-        ? allTeams.filter(team =>
-            team.projects.some(teamProject =>
-              filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
-            )
-          )
-        : [];
-
-      setTeams(userTeams);
-      setLoading(false);
-    } catch (error) {
-      console.error('Failed to fetch teams:', error);
-      setLoading(false);
-    }
-  }, [token, user.personID, projects]);
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    fetchTeams();
-  }, [fetchTeams]); 
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/teams', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setTeams(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error('Failed to fetch teams:', error);
+      }
+    };
 
-  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/projects', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      }
+    };
+
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/users', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUsers(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error('Failed to fetch users:', error);
+      }
+    };
+
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/companies', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error('Failed to fetch companies:', error);
+      }
+    };
+
     const fetchFiles = async () => {
       try {
         const response = await axios.get('http://localhost:5001/files', {
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         const allowedStatuses = ['sharedTeam', 'public'];
@@ -78,50 +87,37 @@ const TeamDataSpaceIDFiles = () => {
       }
     };
 
+    fetchTeams();
+    fetchProjects();
+    fetchUsers();
+    fetchCompanies();
     fetchFiles();
-  }, [teamID]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [usersResponse, companiesResponse, projectsResponse] = await Promise.all([
-          axios.get('http://localhost:5001/users', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get('http://localhost:5001/companies', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-          axios.get('http://localhost:5001/projects', {
-            headers: { Authorization: `Bearer ${token}` },
-          }),
-        ]);
-
-        dispatch(setUsers(Array.isArray(usersResponse.data) ? usersResponse.data : []));
-        dispatch(setCompanies(Array.isArray(companiesResponse.data) ? companiesResponse.data : []));
-        dispatch(setProjects(Array.isArray(projectsResponse.data) ? projectsResponse.data : []));
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
-
-    fetchData();
-  }, [dispatch, token]);
-
-  useEffect(() => {
-    if (teamID) {
-      const team = teams.find(team => team.teamID === teamID);
-      setSelectedTeam(team);
-    }
-  }, [teamID, teams]);
+  }, [dispatch, token, teamID]);
 
   const handleTeamChange = (event) => {
     navigate(`/teamdataspace/${event.target.value}`);
   };
-  
+
   const handleTeamClick = (teamDataSpaceID) => {
-    console.log('Navigating to:', `/teamdataspace/${teamID}/${teamDataSpaceID}`);
     navigate(`/teamdataspace/${teamID}/${teamDataSpaceID}`);
   };
+
+  // Filter teams based on user projects
+  const filteredProjects = Array.isArray(projects)
+    ? projects.filter(project =>
+        project.employees.some(employee => employee.personID === user.personID)
+      )
+    : [];
+
+  const userTeams = Array.isArray(teams)
+    ? teams.filter(team =>
+        team.projects.some(teamProject =>
+          filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
+        )
+      )
+    : [];
+
+  const selectedTeam = teams.find(team => team.teamID === teamID);
 
   const handleCheckboxChange = (event, filepath) => {
     if (event.target.checked) {
@@ -151,7 +147,7 @@ const TeamDataSpaceIDFiles = () => {
           <>
             This page shows the files shared with team{' '}
             <Typography component="span" fontWeight="bold">
-              {selectedTeam?.teamName || 'N/A'}
+              {selectedTeam ? selectedTeam.teamName : 'N/A'}
             </Typography>{' '}
             where you{' '}
             <Typography component="span" fontWeight="bold">
@@ -166,13 +162,6 @@ const TeamDataSpaceIDFiles = () => {
           Create New Team
         </Button>
       </Box>
-
-      <TeamSelection
-        teams={teams}
-        loading={loading}
-        selectedTeam={teamID}
-        onTeamChange={handleTeamChange}
-      />
       <DataSpaceTable
         files={files}
         selectedFilepaths={selectedFilepaths}

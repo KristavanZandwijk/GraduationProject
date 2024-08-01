@@ -82,7 +82,7 @@ const UrbanScale = () => {
 
         )}
       </Box>
-      <Box flex="1" height="80vh">
+      <Box flex="1" height="150vh">
         <IFCViewer selectedFilepaths={selectedFilePaths} />
       </Box>
     </Box>

@@ -172,7 +172,7 @@ const IFCViewer = ({ selectedFilepaths }) => {
     };
   }, [selectedFilepaths]);
 
-  return <div id="container" style={{ width: '80%', height: '80%', position: 'relative' }} />;
+  return <div id="container" style={{ width: '80%', height: '100vh', position: 'relative' }} />;
 };
 
 export default IFCViewer;

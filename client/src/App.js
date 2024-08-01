@@ -31,8 +31,7 @@ import NewFile from "scenes/DataUpload";
 import ProjectDataSpace from "scenes/ProjectDataSpaceID";
 import IFCtoRDFConverter from "scenes/IFCtoRDFConverter";
 import CompanyDataSpaceID from "scenes/CompanyDataSpaceID";
-import TeamDataSpaces from "scenes/TeamDataSpace";
-import TeamDataSpaceID from "scenes/TeamDataSpaceID - info";
+import TeamDataSpaces from "scenes/TeamDataSpaces";
 import NewTeam from "scenes/NewTeam";
 import TeamDataSpaceIDFiles from "scenes/TeamDataSpaceID";
 import Information from "scenes/Information";
@@ -71,8 +70,7 @@ function App() {
               <Route path="/companydataspace/:companyID/:projectID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />} />
 
               <Route path="/teamdataspace" element={isAuth ? <TeamDataSpaces /> : <Navigate to="/" />} />
-              <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceID /> : <Navigate to="/" />} />
-              <Route path="/teamdataspace/:teamID/:teamDataSpaceID" element={isAuth ? <TeamDataSpaceIDFiles /> : <Navigate to="/" />} />
+              <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceIDFiles/> : <Navigate to="/" />} />
               <Route path="/teamdataspace/newteam" element={isAuth ? <NewTeam /> : <Navigate to="/" />} />
 
 

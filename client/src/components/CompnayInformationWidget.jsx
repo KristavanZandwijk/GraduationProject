@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import UserImage from 'components/UserImage';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateCompany } from 'state';
+import { updateCompany, setUsers } from 'state';
 
 const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner, onCompanyUpdate }) => {
   const theme = useTheme();
@@ -30,8 +30,21 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
         console.error('Failed to fetch teams:', error);
       }
     };
-    fetchTeams();
-  }, [token]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  fetchUsers();
+  fetchTeams();
+}, [token, dispatch]);
 
   const projectsWithTeams = projects.map(project => {
     const relatedTeams = teams.filter(team => team.projects.some(p => p.projectID === project.projectID));

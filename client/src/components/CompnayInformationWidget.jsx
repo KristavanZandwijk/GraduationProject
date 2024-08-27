@@ -1,44 +1,187 @@
-import React from 'react';
-import { Box, Paper, Typography, useTheme } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import UserImage from 'components/UserImage'; // Import UserImage component
+import React, { useState, useEffect } from 'react';
+import { Box, Paper, Typography, TextField, Button, useTheme, Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import UserImage from 'components/UserImage';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateCompany } from 'state';
 
-const CombinedCompanyInfoWidget = ({ company, projects, employees }) => {
+const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner, onCompanyUpdate }) => {
   const theme = useTheme();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleCompanyNameClick = (companyID) => {
-    navigate(`/companydataspace/${companyID}`);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState(company);
+  const [teams, setTeams] = useState([]);
+  const [selectedEmployees, setSelectedEmployees] = useState(company.employees.map(emp => emp.personID));
+  const token = useSelector((state) => state.token);
+  const users = useSelector((state) => state.users || []);
+
+  useEffect(() => {
+    const fetchTeams = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/teams', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const teams = Array.isArray(response.data) ? response.data : [];
+        setTeams(teams);
+      } catch (error) {
+        console.error('Failed to fetch teams:', error);
+      }
+    };
+    fetchTeams();
+  }, [token]);
+
+  const projectsWithTeams = projects.map(project => {
+    const relatedTeams = teams.filter(team => team.projects.some(p => p.projectID === project.projectID));
+    return {
+      ...project,
+      relatedTeams,
+    };
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSave = async () => {
+    try {
+      const updatedData = { ...formData, employees: selectedEmployees.map(id => ({ personID: id })) };
+      const response = await axios.patch(`http://localhost:5001/companies/${company._id}`, updatedData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        const updatedCompany = response.data;
+        dispatch(updateCompany(updatedCompany));
+        setIsEditing(false);
+
+        if (onCompanyUpdate) {
+          onCompanyUpdate();
+        }
+      }
+    } catch (error) {
+      console.error('Failed to update company:', error);
+    }
+  };
+
+  const handleCancel = () => {
+    setFormData(company);
+    setSelectedEmployees(company.employees.map(emp => emp.personID));
+    setIsEditing(false);
+  };
+
+  const handleTeamClick = (teamID) => {
+    navigate(`/teamdataspace/${teamID}`);
   };
 
   return (
     <Paper elevation={3} sx={{ borderRadius: 10 }}>
-      <Box 
-        p={3} 
-        onClick={() => handleCompanyNameClick(company.companyID)}
-        sx={{ cursor: 'pointer' }} // Change cursor to pointer when hovering over this Box
-      >
+      <Box p={3}>
         <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
           Company Information
         </Typography>
         <Box display="flex" alignItems="center" mb={2}>
-          <UserImage image={company.picturePath} size="100px" /> {/* Render UserImage component with company picture */}
+          <Box sx={{ cursor: 'pointer' }}>
+            <UserImage image={company.picturePath} size="100px" />
+          </Box>
           <Box ml={2}>
-            <Typography variant="subtitle1" >
-              <strong>Company Name:</strong> {company.companyName}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Country:</strong> {company.country}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>City:</strong> {company.city}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Company ID:</strong> {company.companyID}
-            </Typography>
-            <Typography variant="subtitle1">
-              <strong>Company Data Space ID:</strong> {company.companyDataSpaceID}
-            </Typography>
+            {isEditing ? (
+              <>
+                <TextField
+                  label="Company Name"
+                  name="companyName"
+                  value={formData.companyName}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="Country"
+                  name="country"
+                  value={formData.country}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <TextField
+                  label="City"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleInputChange}
+                  fullWidth
+                  margin="normal"
+                />
+                <Box mt={2}>
+                  <Select
+                    multiple
+                    value={selectedEmployees}
+                    onChange={(e) => setSelectedEmployees(e.target.value)}
+                    displayEmpty
+                    renderValue={(selected) => {
+                      if (selected.length === 0) {
+                        return <em>Select the Employees</em>;
+                      }
+                      return selected.map((value) => {
+                        const user = users.find((user) => user.personID === value);
+                        return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
+                      }).join(", ");
+                    }}
+                    sx={{
+                      width: "100%",
+                      backgroundColor: theme.palette.primary.default,
+                      borderRadius: "1rem",
+                      padding: "0.75rem 1.5rem",
+                      border: `1px solid ${theme.palette.secondary[100]}`,
+                    }}
+                  >
+                    <MenuItem value="" disabled>Select the Employees</MenuItem>
+                    {users.map((user) => (
+                      <MenuItem key={user.personID} value={user.personID}>
+                        <Checkbox checked={selectedEmployees.includes(user.personID)} />
+                        <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <Box mt={2}>
+                    <Button variant="contained" color="primary" onClick={handleSave}>
+                      Save
+                    </Button>
+                    <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+                      Cancel
+                    </Button>
+                  </Box>
+                </Box>
+              </>
+            ) : (
+              <>
+                <Typography variant="subtitle1">
+                  <strong>Company Name:</strong> {company.companyName}
+                </Typography>
+                <Typography variant="subtitle1">
+                  <strong>Country:</strong> {company.country}
+                </Typography>
+                <Typography variant="subtitle1">
+                  <strong>City:</strong> {company.city}
+                </Typography>
+                <Typography variant="subtitle1">
+                  <strong>Company ID:</strong> {company.companyID}
+                </Typography>
+                <Typography variant="subtitle1">
+                  <strong>Company Data Space ID:</strong> {company.companyDataSpaceID}
+                </Typography>
+                <Box mt={2}>
+                  <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
+                    Edit
+                  </Button>
+                </Box>
+              </>
+            )}
           </Box>
         </Box>
 
@@ -47,8 +190,8 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees }) => {
             Employees:
           </Typography>
           {employees.length > 0 ? (
-            employees.map((employee, index) => (
-              <Typography key={index} variant="subtitle1">
+            employees.map((employee) => (
+              <Typography key={employee.personID} variant="subtitle1">
                 {employee.firstName} {employee.lastName} - {employee.personID}
               </Typography>
             ))
@@ -59,13 +202,44 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees }) => {
 
         <Box mt={3}>
           <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
+            Company Owner:
+          </Typography>
+          {companyOwner.length > 0 ? (
+            companyOwner.map((owner) => (
+              <Typography key={owner.personID} variant="subtitle1">
+                {owner.firstName} {owner.lastName} - {owner.personID}
+              </Typography>
+            ))
+          ) : (
+            <Typography variant="subtitle1">No Company Owner</Typography>
+          )}
+        </Box>
+
+        <Box mt={3}>
+          <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
             Projects:
           </Typography>
-          {projects.length > 0 ? (
-            projects.map((project, index) => (
-              <Typography key={index} variant="subtitle1">
-                {project.projectName} - {project.projectID}
-              </Typography>
+          {projectsWithTeams.length > 0 ? (
+            projectsWithTeams.map((project) => (
+              <Box key={project.projectID} mb={2}>
+                <Typography variant="subtitle1">
+                  <strong>{project.projectName}</strong> - {project.projectID}
+                </Typography>
+                {project.relatedTeams.length > 0 && (
+                  <Box ml={2}>
+                    {project.relatedTeams.map((team) => (
+                      <Typography
+                        key={team.teamID}
+                        variant="subtitle2"
+                        onClick={() => handleTeamClick(team.teamID)}
+                        sx={{ cursor: 'pointer', color: theme.palette.secondary.main, fontWeight: 'bold' }}
+                      >
+                        Related to Team: {team.teamName}
+                      </Typography>
+                    ))}
+                  </Box>
+                )}
+              </Box>
             ))
           ) : (
             <Typography variant="subtitle1">No projects</Typography>

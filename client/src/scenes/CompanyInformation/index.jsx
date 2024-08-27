@@ -16,40 +16,40 @@ const CompanyInformation = () => {
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
 
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/companies', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error('Failed to fetch companies:', error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/projects', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setProjects(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/users', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/companies', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch companies:', error);
-      }
-    };
-
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/projects', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProjects(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-      }
-    };
-
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/users', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUsers(Array.isArray(response.data) ? response.data : []);
-      } catch (error) {
-        console.error('Failed to fetch users:', error);
-      }
-    };
-
     fetchCompanies();
     fetchProjects();
     fetchUsers();
@@ -65,6 +65,9 @@ const CompanyInformation = () => {
     navigate('/companyinformation/newcompany');
   };
 
+  const handleCompanyUpdate = () => {
+    fetchCompanies(); // Ensure fetchCompanies is defined and called here
+  };
 
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
@@ -89,15 +92,20 @@ const CompanyInformation = () => {
               return { ...employee, ...userDetails };
             });
 
+            const companyOwner = company.companyOwner.map(owner => {
+              const userDetails = users.find(user => user.personID === owner.personID);
+              return { ...owner, ...userDetails };
+            });
+
             return (
               <Grid item xs={12} sm={6} md={4} key={company.companyID}>
-                <Box mt={3} mx="auto">
-                  <CombinedCompanyInfoWidget
-                    company={company}
-                    projects={filteredProjects}
-                    employees={companyEmployees}
-                  />
-                </Box>
+                <CombinedCompanyInfoWidget
+                  company={company}
+                  projects={filteredProjects} // Correct variable name
+                  employees={companyEmployees} // Correct variable name
+                  companyOwner={companyOwner}
+                  onCompanyUpdate={handleCompanyUpdate}
+                />
               </Grid>
             );
           })}

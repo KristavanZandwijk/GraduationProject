@@ -10,7 +10,7 @@ router.get("/employees/:companyID", verifyToken, getCompanyEmployees);
 router.get("/all", verifyToken, getAllCompanies);
 
 /* UPDATE */
-router.patch('/:companyID', verifyToken, updateCompany);
+router.patch('/:id', verifyToken, updateCompany);
 
 export default router;
 

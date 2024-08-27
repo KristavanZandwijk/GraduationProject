@@ -48,14 +48,13 @@ export const getAllCompanies = async (req, res) => {
 
 //Update Company Employees
 export const updateCompany = async (req, res) => {
-  try {
-    const { companyID } = req.params;
-    const updatedCompany = await Company.findOneAndUpdate({ companyID }, req.body, { new: true });
-    res.status(200).json(updatedCompany);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-};
-
+    try {
+      const { id } = req.params;
+      const updatedCompany = await Company.findByIdAndUpdate(id, req.body, { new: true });
+      res.status(200).json(updatedCompany);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
+    }
+  };
 
 

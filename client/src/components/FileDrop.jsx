@@ -37,7 +37,7 @@ const FileDrop = ({ picturePath }) => {
     elementDataSpaceID: '',
     buildingDataSpaceID: '',
     companyDataSpaceID: '',
-    hasOwner: '',
+    fileOwner: '',
     status: '',
     relatedToProject: '',
     relatedToTeam: '',
@@ -49,12 +49,12 @@ const FileDrop = ({ picturePath }) => {
     _id: state.user._id,
     token: state.token
   }));
-  const buildings = useSelector((state) => state.buildings || []);
-  const elements = useSelector((state) => state.elements || []);
-  const companies = useSelector((state) => state.companies || []);
-  const projects = useSelector((state) => state.projects || []);
-  const teams = useSelector((state) => state.teams || []);
-  const users = useSelector((state) => state.users || []);
+  const buildings = useSelector((state) => Array.isArray(state.buildings) ? state.buildings : []);
+  const elements = useSelector((state) => Array.isArray(state.elements) ? state.elements : []);
+  const companies = useSelector((state) => Array.isArray(state.companies) ? state.companies : []);
+  const projects = useSelector((state) => Array.isArray(state.projects) ? state.projects : []);
+  const teams = useSelector((state) => Array.isArray(state.teams) ? state.teams : []);
+  const users = useSelector((state) => Array.isArray(state.users) ? state.users : []);
   const user = useSelector((state) => state.user);
   const isNonMobileScreens = useMediaQuery('(min-width: 1000px)');
 
@@ -150,7 +150,7 @@ const FileDrop = ({ picturePath }) => {
         elementDataSpaceID: '',
         buildingDataSpaceID: '',
         companyDataSpaceID: '',
-        hasOwner: '',
+        fileOwner: '',
         status: '',
         relatedToProject: '',
         relatedToTeam: '',
@@ -183,8 +183,8 @@ const FileDrop = ({ picturePath }) => {
             sx={styleProps}
           />
           <SelectField
-            value={fileDetails.hasOwner}
-            onChange={(value) => setFileDetails(prev => ({ ...prev, hasOwner: value }))}
+            value={fileDetails.fileOwner}
+            onChange={(value) => setFileDetails(prev => ({ ...prev, fileOwner: value }))}
             items={users.map(user => ({
               _id: user.personID,
               value: user.personID,

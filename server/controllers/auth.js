@@ -17,9 +17,12 @@ export const register = async (req, res) => {
       dataSpaceID,
       role,
       roleID,
-      phoneNumber, 
-      picturePath   
+      phoneNumber,
+      picturePath,
     } = req.body;
+
+    // Ensure role is an array (e.g., role: ["admin", "team leader"])
+    const rolesArray = Array.isArray(role) ? role : role.split(',').map(item => item.trim());
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -34,17 +37,19 @@ export const register = async (req, res) => {
       city,
       country,
       dataSpaceID,
-      role,
+      role: rolesArray,
       roleID,
       phoneNumber,
-      picturePath
+      picturePath,
     });
+
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 /* LOGGING IN */
 export const login = async (req, res) => {

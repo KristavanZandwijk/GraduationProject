@@ -2,13 +2,13 @@ import Building from '../models/Building.js';
 
 export const createBuilding = async (req, res) => {
   try {
-    const {buildingID, buildingDataSpaceID, archivedBuildingDataSpaceID, hasOwner, buildingName, buildingLocation } = req.body;
+    const {buildingID, buildingDataSpaceID, archivedBuildingDataSpaceID, buildingOwner, buildingName, buildingLocation } = req.body;
 
     const newBuilding = new Building({
       buildingID,
       buildingDataSpaceID,
       archivedBuildingDataSpaceID,
-      hasOwner,
+      buildingOwner,
       buildingName,
       buildingLocation,
     });

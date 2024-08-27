@@ -124,7 +124,7 @@ const FileTable = () => {
                   </TableCell>
                   <TableCell>{file.fileName}</TableCell>
                   <TableCell>{file.fileDescription}</TableCell>
-                  <TableCell>{file.hasOwner}</TableCell>
+                  <TableCell>{file.fileOwner}</TableCell>
                   <TableCell>{file.personalDataSpaceID}</TableCell>
                   <TableCell>{file.considers}</TableCell>
                   <TableCell onClick={() => handleRowClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>

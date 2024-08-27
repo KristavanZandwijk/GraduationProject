@@ -43,7 +43,7 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
   const {picturePath } = useSelector((state) => state.user);
 
   const fullName = `${user.firstName} ${user.lastName}`;
-  const role = user.role
+  const role = Array.isArray(user.role) ? user.role.join(", ") : user.role; // Join roles with a comma
 
   const isOpen = Boolean(anchorEl);
 

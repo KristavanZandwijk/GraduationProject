@@ -4,7 +4,7 @@ import File from "../models/File.js";
 
 export const createFile = async (req, res) => {
   try {
-    const {fileID, fileName, fileDescription, hasOwner, considers, elementDataSpaceID, buildingDataSpaceID, companyDataSpaceID, teamDataSpaceID, relatedToProject, relatedToTeam, status } = req.body; 
+    const {fileID, fileName, fileDescription, fileOwner, considers, elementDataSpaceID, buildingDataSpaceID, companyDataSpaceID, teamDataSpaceID, relatedToProject, relatedToTeam, status } = req.body; 
     const user = req.userData;
     const filePath = path.join('public', 'assets', 'dataSpaces', user.dataSpaceID, req.file.filename);
 
@@ -14,7 +14,7 @@ export const createFile = async (req, res) => {
       fileID: fileID, // Use the provided fileID
       fileName: req.file.originalname,
       filePath: filePath,
-      hasOwner: hasOwner,
+      fileOwner: fileOwner,
       fileDescription: fileDescription, // Set description here
       considers: considers, // Add considers field here
       elementDataSpaceID: elementDataSpaceID,

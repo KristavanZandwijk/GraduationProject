@@ -128,6 +128,8 @@ const UserWidget = () => {
     };
   });
 
+  const role = Array.isArray(user.role) ? user.role.join(", ") : user.role; // Join roles with a comma
+
   return (
     <Box>
       <Grid container spacing={2} mt={3}>
@@ -234,7 +236,7 @@ const UserWidget = () => {
                     <strong>City:</strong> {user.city}
                   </Typography>
                   <Typography variant="subtitle1">
-                    <strong>Role:</strong> {user.role}
+                    <strong>Role:</strong> {role}
                   </Typography>
                   <Typography variant="subtitle1">
                     <strong>PersonID:</strong> {user.personID}

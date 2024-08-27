@@ -23,11 +23,13 @@ const ProjectDrop = () => {
   const users = useSelector((state) => state.users || []);
   const buildings = useSelector((state) => state.buildings || []);
   const companies = useSelector((state) => state.companies || []);
-
+  
+  // Initialize as empty arrays
   const [selectedCompany, setSelectedCompany] = useState('');
   const [selectedEmployees, setSelectedEmployees] = useState([]);
-  const [selectedClient, setSelectedClient] = useState('');
+  const [selectedClient, setSelectedClient] = useState([]);
   const [selectedRelatesTo, setSelectedRelatesTo] = useState([]);
+  const [selectedProjectleader, setSelectedProjectleader] = useState([]);
 
   const theme = useTheme();
   const token = useSelector((state) => state.token);
@@ -79,8 +81,9 @@ const ProjectDrop = () => {
       projectDescription,
       companies: [{ companyID: selectedCompany }],
       employees: selectedEmployees.map(employeeID => ({ personID: employeeID })),
-      clients: [{ personID: selectedClient }],
+      clients: selectedClient.map(personID => ({ personID })),
       relatesTo: selectedRelatesTo.map(buildingID => ({ buildingID })),
+      projectleader: selectedProjectleader.map(personID => ({ personID })),
     };
 
     try {
@@ -101,8 +104,9 @@ const ProjectDrop = () => {
         setProjectDescription('');
         setSelectedCompany('');
         setSelectedEmployees([]);
-        setSelectedClient('');
+        setSelectedClient([]);
         setSelectedRelatesTo([]);
+        setSelectedProjectleader([]);
       } else {
         console.error(newProject.message);
       }
@@ -194,6 +198,11 @@ const ProjectDrop = () => {
           value={selectedEmployees}
           onChange={(e) => setSelectedEmployees(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedEmployees.length === 0 // Check if array is empty
+              ? () => <em>Select the Employees involved in the project</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
@@ -213,9 +222,15 @@ const ProjectDrop = () => {
         </Select>
 
         <Select
+          multiple
           value={selectedClient}
           onChange={(e) => setSelectedClient(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedClient.length === 0 // Check if array is empty
+              ? () => <em>Select the Client(s) of the project</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
@@ -225,7 +240,35 @@ const ProjectDrop = () => {
           }}
         >
           <MenuItem value='' disabled>
-            Select the Client
+            Select the Client(s)
+          </MenuItem>
+          {users.map((user) => (
+            <MenuItem key={user.personID} value={user.personID}>
+              {`${user.personID} - ${user.firstName} ${user.lastName}`}
+            </MenuItem>
+          ))}
+        </Select>
+
+        <Select
+          multiple
+          value={selectedProjectleader}
+          onChange={(e) => setSelectedProjectleader(e.target.value)}
+          displayEmpty
+          renderValue={
+            selectedProjectleader.length === 0 // Check if array is empty
+              ? () => <em>Select the Projectleader(s)</em>
+              : undefined
+          }
+          sx={{
+            width: '100%',
+            backgroundColor: theme.palette.primary.default,
+            borderRadius: '1rem',
+            padding: '0.75rem 1.5rem',
+            border: `1px solid ${theme.palette.secondary[100]}`,
+          }}
+        >
+          <MenuItem value='' disabled>
+            Select the Project Leader(s)
           </MenuItem>
           {users.map((user) => (
             <MenuItem key={user.personID} value={user.personID}>
@@ -239,6 +282,11 @@ const ProjectDrop = () => {
           value={selectedRelatesTo}
           onChange={(e) => setSelectedRelatesTo(e.target.value)}
           displayEmpty
+          renderValue={
+            selectedRelatesTo.length === 0 // Check if array is empty
+              ? () => <em>Select the Building(s) that the project relate to</em>
+              : undefined
+          }
           sx={{
             width: '100%',
             backgroundColor: theme.palette.primary.default,
@@ -260,7 +308,7 @@ const ProjectDrop = () => {
       </Box>
       <Divider sx={{ margin: '2rem 0' }} />
       <Button
-        disabled={!projectID || !projectName || !projectDescription || !selectedCompany || !selectedEmployees.length || !selectedClient || !selectedRelatesTo.length}
+        disabled={!projectID || !projectName || !projectDescription || !selectedCompany || !selectedEmployees.length || !selectedClient.length || !selectedRelatesTo.length || !selectedProjectleader.length}
         onClick={handleProject}
         sx={{
           backgroundColor: theme.palette.secondary[300],

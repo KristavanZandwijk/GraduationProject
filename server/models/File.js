@@ -18,7 +18,7 @@ const FileSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        hasOwner:{
+        fileOwner:{
             type: String,
             required: true,
         },

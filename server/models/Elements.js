@@ -18,9 +18,8 @@ const ElementSchema = new mongoose.Schema(
             type: Array,
             default: [],
         },
-        hasOwner: {
-            type: String,
-            required: true,
+        elementOwner: {
+            type: Array,
         },
         elementName: {
             type: String,

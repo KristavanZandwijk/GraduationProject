@@ -21,6 +21,9 @@ const ProjectSchema = new mongoose.Schema(
     employees: {
         type: Array,
     },
+    projectleader:{
+        type: Array
+    },
     clients:{
         type: Array,
     },

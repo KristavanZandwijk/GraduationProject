@@ -14,7 +14,7 @@ const CompanySchema = new mongoose.Schema(
       min: 5,
       max: 15,
     },
-      companyName: {
+    companyName: {
       type: String,
       required: true,
     },
@@ -23,6 +23,9 @@ const CompanySchema = new mongoose.Schema(
       default: "",
     },
     employees: {
+      type: Array,
+    },
+    companyOwner: {
       type: Array,
     },
     city: {

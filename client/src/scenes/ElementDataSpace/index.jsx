@@ -20,14 +20,16 @@ const ElementDataSpace = () => {
         const response = await axios.get('http://localhost:5001/elements', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        dispatch(setElements(Array.isArray(response.data) ? response.data : []));
+        const data = Array.isArray(response.data) ? response.data : [];
+        dispatch(setElements(data));
       } catch (error) {
         console.error('Failed to fetch elements:', error);
       }
     };
-
+  
     fetchElements();
   }, [dispatch, token]);
+  
 
   const handleNewElementClick = () => {
     navigate('/elementdataspace/newelement');
@@ -42,7 +44,7 @@ const ElementDataSpace = () => {
         </Button>
       </Box>
       <Box mt={3}>
-        {elements.length === 0 ?(
+        {Array.isArray(elements) && elements.length === 0 ? (
           <Typography variant="h6">There are unfortunately no elements to show (yet).</Typography>
         ) : (
           <ElementTable elements={elements} />
@@ -51,5 +53,6 @@ const ElementDataSpace = () => {
     </Box>
   );
 };
+
 
 export default ElementDataSpace;

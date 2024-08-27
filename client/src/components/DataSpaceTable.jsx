@@ -41,7 +41,7 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
               </TableCell>
               <TableCell>{file.fileName}</TableCell>
               <TableCell>{file.fileDescription}</TableCell>
-              <TableCell>{file.hasOwner}</TableCell>
+              <TableCell>{file.fileOwner}</TableCell>
               <TableCell>{file.relatedToProject}</TableCell>
               <TableCell>{file.relatedToTeam}</TableCell>
               <TableCell>{file.status}</TableCell>

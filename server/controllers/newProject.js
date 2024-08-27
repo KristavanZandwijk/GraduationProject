@@ -2,7 +2,7 @@ import Project from "../models/Project.js";
 
 export const createProject = async (req, res) => {
   try {
-    const {projectID, projectDescription, projectName, companies, employees, clients, relatesTo} = req.body;
+    const {projectID, projectDescription, projectName, companies, employees, clients, relatesTo, projectleader} = req.body;
 
     const newProject = new Project({
       projectID,
@@ -12,6 +12,7 @@ export const createProject = async (req, res) => {
       employees,
       clients,
       relatesTo,
+      projectleader,
 
     });
 

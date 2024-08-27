@@ -23,11 +23,13 @@ const TeamDrop = () => {
   const users = useSelector((state) => state.users || []);
   const buildings = useSelector((state) => state.buildings || []);
   const projects = useSelector((state) => state.projects || []);
+  const teamleader = useSelector((state) => state.teamleader || []);
 
   const [companies, setCompanies] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [selectedClient, setSelectedClient] = useState('');
+  const [selectedClient, setSelectedClient] = useState([]); // Initialized as an array
   const [selectedProjects, setSelectedProjects] = useState([]);
+  const [selectedTeamleader, setSelectedTeamleader] = useState([]); // Initialized as an array
 
   const theme = useTheme();
   const token = useSelector((state) => state.token);
@@ -90,8 +92,9 @@ const TeamDrop = () => {
       teamName,
       teamDataSpaceID,
       companies: selectedCompanies.map(companyID => ({ companyID })),
-      clients: [{ personID: selectedClient }],
+      clients: selectedClient.map(personID => ({ personID })), // No change needed
       projects: selectedProjects.map(projectID => ({ projectID })),
+      teamleader: selectedTeamleader.map(personID => ({ personID })), // No change needed
     };
 
     try {
@@ -111,8 +114,9 @@ const TeamDrop = () => {
         setTeamName('');
         setTeamDataSpaceID('');
         setSelectedCompanies([]);
-        setSelectedClient('');
+        setSelectedClient([]); // Reset to an empty array
         setSelectedProjects([]);
+        setSelectedTeamleader([]); // Reset to an empty array
       } else {
         console.error(newTeam.message);
       }
@@ -208,11 +212,12 @@ const TeamDrop = () => {
         </Select>
 
         <Select
+          multiple
           value={selectedClient}
           onChange={(e) => setSelectedClient(e.target.value)}
           displayEmpty
           renderValue={
-            selectedClient === ''
+            selectedClient.length === 0 // Check if array is empty
               ? () => <em>Select the Client</em>
               : undefined
           }
@@ -229,6 +234,37 @@ const TeamDrop = () => {
         >
           <MenuItem value='' disabled>
             <em>Select the Client</em>
+          </MenuItem>
+          {Array.isArray(users) && users.map((user) => (
+            <MenuItem key={user.personID} value={user.personID}>
+              {`${user.personID} - ${user.firstName} ${user.lastName}`}
+            </MenuItem>
+          ))}
+        </Select>
+
+        <Select
+          multiple
+          value={selectedTeamleader}
+          onChange={(e) => setSelectedTeamleader(e.target.value)}
+          displayEmpty
+          renderValue={
+            selectedTeamleader.length === 0 // Check if array is empty
+              ? () => <em>Select the Teamleader</em>
+              : undefined
+          }
+          sx={{
+            width: '100%',
+            backgroundColor: theme.palette.primary.default,
+            borderRadius: '1rem',
+            padding: '0.75rem 1.5rem',
+            border: `1px solid ${theme.palette.secondary[100]}`,
+            '& .MuiSelect-select:empty': {
+              color: theme.palette.text.disabled,
+            },
+          }}
+        >
+          <MenuItem value='' disabled>
+            <em>Select the Teamleader</em>
           </MenuItem>
           {Array.isArray(users) && users.map((user) => (
             <MenuItem key={user.personID} value={user.personID}>
@@ -271,7 +307,7 @@ const TeamDrop = () => {
       </Box>
       <Divider sx={{ margin: '2rem 0' }} />
       <Button
-        disabled={!teamID || !teamName || !teamDataSpaceID || !selectedCompanies.length || !selectedClient || !selectedProjects.length}
+        disabled={!teamID || !teamName || !teamDataSpaceID || !selectedCompanies.length || !selectedClient.length || !selectedProjects.length || !selectedTeamleader.length}
         onClick={handleTeam}
         sx={{
           backgroundColor: theme.palette.secondary[300],

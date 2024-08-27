@@ -6,7 +6,7 @@ export const buildings = [
     buildingID: "Atlas123",
     buildingDataSpaceID: "Atlas4321",
     archivedBuildingDataSpaceID: "AtlasArchived",
-    hasOwner: "personKrista",
+    buildingOwner: "personKrista",
     buildingName: "Atlas",
     buildingLocation: "TU/e campus Eindhoven",
     createdAt: 1115211422,
@@ -24,7 +24,7 @@ export const elements = [
       buildingID: "Atlas1234"
     },
   ],
-    hasOwner: "personIngrid",
+    elementOwner: "personIngrid",
     elementName: "Element A",
     elementLocation: "TU/e campus Eindhoven",
     createdAt: 1115211422,

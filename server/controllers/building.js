@@ -6,7 +6,7 @@ import File from "../models/File.js";
 export const getUserBuildings = async (req, res) => {
   try {
     const personID = req.userData.personID;  // user data is attached by verifyToken middleware
-    const buildings = await Building.find({ hasOwner: personID });
+    const buildings = await Building.find({ buildingOwner: personID });
 
     if (!buildings.length) {
       return res.status(404).json({ message: "No buildings found for this user." });

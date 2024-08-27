@@ -30,7 +30,7 @@ const registerSchema = yup.object().shape({
   city: yup.string().required("required"),
   country: yup.string().required("required"),
   dataSpaceID: yup.string().required("required"),
-  role: yup.string().required("required"),
+  role: yup.array().of(yup.string()).required("required"),
   roleID: yup.string().required("required"),
   phoneNumber: yup.string().required("required"),
   picture: yup.string().required("required"),
@@ -51,7 +51,7 @@ const initialValuesRegister = {
   city: "",
   country: "",
   dataSpaceID: "",
-  role: "",
+  role: [],
   roleID: "",
   phoneNumber: "",
   picture: "",
@@ -79,6 +79,21 @@ const Form = () => {
     "building owner",
     "element owner",
     "building manager",
+    "team leader", 
+    "project leader", 
+    "admin", 
+    "architect", 
+    "structural engineer", 
+    "contractor", 
+    "urban planner", 
+    "sustainability consultant", 
+    "BIM manager", 
+    "legal advisor", 
+    "IT support",
+    "director",
+    "HR manager",
+    "CEO",
+    "company owner",
   ];
 
   const register = async (values, onSubmitProps) => {
@@ -236,11 +251,12 @@ const Form = () => {
                   sx={{ gridColumn: "span 4", marginTop: theme.spacing(2) }}
                   error={Boolean(touched.role) && Boolean(errors.role)}
                 >
-                  <InputLabel id="role-label">Role</InputLabel>
+                  <InputLabel id="role-label">Roles</InputLabel>
                   <Select
                     labelId="role-label"
                     id="role"
-                    value={values.role}
+                    multiple  // Allow multiple selections
+                    value={values.role || []}  // Ensure value is an array
                     onChange={handleChange}
                     onBlur={handleBlur}
                     name="role"
@@ -257,6 +273,8 @@ const Form = () => {
                     </Typography>
                   )}
                 </FormControl>
+
+
                 <TextField
                   label="Role ID"
                   onBlur={handleBlur}

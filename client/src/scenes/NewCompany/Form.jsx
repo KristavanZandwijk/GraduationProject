@@ -22,6 +22,7 @@ const CompanyDrop = () => {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [selectedCompanyOwner, setSelectedCompanyOwner] = useState([]); // Correct state for company owner
   const theme = useTheme();
   const token = useSelector((state) => state.token);
   const users = useSelector((state) => state.users);
@@ -50,8 +51,9 @@ const CompanyDrop = () => {
       city,
       country,
       employees: selectedEmployees.map((employeeID) => ({ personID: employeeID })),
+      companyOwner: Array.isArray(selectedCompanyOwner) ? selectedCompanyOwner.map((companyOwnerID) => ({ personID: companyOwnerID })) : [],
     };
-
+  
     try {
       const response = await fetch(`http://localhost:5001/newcompanies`, {
         method: "POST",
@@ -61,7 +63,7 @@ const CompanyDrop = () => {
         },
         body: JSON.stringify(companyData),
       });
-
+  
       const newCompany = await response.json();
       if (response.status === 201) {
         dispatch(setCompanies(newCompany));
@@ -71,6 +73,7 @@ const CompanyDrop = () => {
         setCity("");
         setCountry("");
         setSelectedEmployees([]);
+        setSelectedCompanyOwner([]);
       } else {
         console.error(newCompany.message);
       }
@@ -78,6 +81,7 @@ const CompanyDrop = () => {
       console.error("Failed to create company:", error);
     }
   };
+  
 
   return (
     <Box
@@ -135,7 +139,7 @@ const CompanyDrop = () => {
           }}
         />
         <InputBase
-          placeholder="Add the Company's location"
+          placeholder="Add the company's location"
           onChange={(e) => setCity(e.target.value)}
           value={city}
           sx={{
@@ -161,6 +165,16 @@ const CompanyDrop = () => {
           value={selectedEmployees}
           onChange={(e) => setSelectedEmployees(e.target.value)}
           displayEmpty
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <em>Select the Employees</em>; // Placeholder when no employee is selected
+            }
+
+            return selected.map((value) => {
+              const user = users.find((user) => user.personID === value);
+              return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
+            }).join(", ");
+          }}
           sx={{
             width: "100%",
             backgroundColor: theme.palette.primary.default,
@@ -169,15 +183,47 @@ const CompanyDrop = () => {
             border: `1px solid ${theme.palette.secondary[100]}`,
           }}
         >
-          <MenuItem value="" disabled>
-            Select the Employees
-          </MenuItem>
+          <MenuItem value="" disabled>Select the Employees</MenuItem> {/* Placeholder option */}
           {users.map((user) => (
             <MenuItem key={user.personID} value={user.personID}>
               {`${user.personID} - ${user.firstName} ${user.lastName}`}
             </MenuItem>
           ))}
         </Select>
+
+
+        <Select
+          multiple
+          value={selectedCompanyOwner}
+          onChange={(e) => setSelectedCompanyOwner(e.target.value)}
+          displayEmpty
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <em>Select the Company Owner</em>; // Placeholder when no owner is selected
+            }
+
+            return selected.map((value) => {
+              const user = users.find((user) => user.personID === value);
+              return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
+            }).join(", ");
+          }}
+          sx={{
+            width: "100%",
+            backgroundColor: theme.palette.primary.default,
+            borderRadius: "1rem",
+            padding: "0.75rem 1.5rem",
+            border: `1px solid ${theme.palette.secondary[100]}`,
+          }}
+        >
+          <MenuItem value="" disabled>Select the Company Owner</MenuItem> {/* Placeholder option */}
+          {users.map((user) => (
+            <MenuItem key={user.personID} value={user.personID}>
+              {`${user.personID} - ${user.firstName} ${user.lastName}`}
+            </MenuItem>
+          ))}
+        </Select>
+
+
       </Box>
       <Divider sx={{ margin: "2rem 0" }} />
       <Button
@@ -187,7 +233,8 @@ const CompanyDrop = () => {
           !companyName ||
           !city ||
           !country ||
-          !selectedEmployees.length
+          !selectedEmployees.length ||
+          !selectedCompanyOwner.length 
         }
         onClick={handleCompany}
         sx={{

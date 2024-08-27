@@ -2,15 +2,15 @@ import Element from "../models/Elements.js";
 
 export const createElement = async (req, res) => {
   try {
-    const {elementID, elementDataSpaceID, hasOwner, elementName, elementLocation, hasBuilding } = req.body;
+    const {elementID, elementDataSpaceID, elementOwner, elementName, elementLocation, isPartOfBuilding } = req.body;
 
     const newElement = new Element({
       elementID,
       elementDataSpaceID,
-      hasOwner,
+      elementOwner,
       elementName,
       elementLocation,
-      hasBuilding,
+      isPartOfBuilding,
     });
 
     await newElement.save();

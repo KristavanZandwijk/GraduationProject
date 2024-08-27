@@ -20,9 +20,8 @@ const BuildingSchema = new mongoose.Schema(
             min: 5,
             max: 15,
         },
-        hasOwner: {
-            type: String,
-            required: true,
+        buildingOwner: {
+            type: Array,
         },
         buildingName: {
             type: String,

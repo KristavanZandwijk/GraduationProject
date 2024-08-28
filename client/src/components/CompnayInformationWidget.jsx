@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, TextField, Button, useTheme, Select, MenuItem, Checkbox, ListItemText, Grid } from '@mui/material';
+import { Box, Paper, Typography, TextField, Button, useTheme, Select, MenuItem, Checkbox, ListItemText, Grid, FormControl, InputLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import UserImage from 'components/UserImage';
 import axios from 'axios';
@@ -99,140 +99,132 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
     navigate(`/teamdataspace/${teamID}`);
   };
 
+  const getEmployeeName = (id) => {
+    const user = users.find((u) => u.personID === id);
+    return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
+  };
+
+  const getCompanyOwnerName = (id) => {
+    const user = users.find((u) => u.personID === id);
+    return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
+  };
+
   return (
-    <Paper elevation={3} sx={{ borderRadius: 10 }}>
-      <Box p={3}>
-        <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
-          Company Information
-        </Typography>
-        <Box display="flex" alignItems="center" mb={2}>
-          <Box sx={{ cursor: 'pointer' }}>
-            <UserImage image={company.picturePath} size="100px" />
-          </Box>
-          <Box ml={2} width="100%">
-            {isEditing ? (
-              <>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Company Name"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                  </Grid>
-                  <Grid item xs={6}>
-                    <TextField
-                      label="City"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                  <Grid item xs={6}>
-                    <TextField
-                      label="Country"
-                      name="country"
-                      value={formData.country}
-                      onChange={handleInputChange}
-                      fullWidth
-                      margin="normal"
-                    />
-                  </Grid>
-                  </Grid>
-                  <Grid item xs={12}>
+    <Paper elevation={3} sx={{ borderRadius: 10, p: 3 }}>
+      <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
+        Company Information
+      </Typography>
+      <Box display="flex" flexDirection="column">
+        <Box sx={{ cursor: 'pointer' }}>
+          <UserImage image={company.picturePath} size="100px" />
+        </Box>
+        <Box ml={2} width="100%">
+          {isEditing ? (
+            <>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Company Name"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="City"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleInputChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Employees</InputLabel>
                     <Select
+                      name="employees"
+                      label="Employees"
                       multiple
                       value={selectedEmployees}
                       onChange={(e) => setSelectedEmployees(e.target.value)}
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Select the Employees</em>;
-                        }
-                        return selected.map((value) => {
-                          const user = users.find((user) => user.personID === value);
-                          return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
-                        }).join(", ");
-                      }}
-                      sx={{ 
-                        width: "100%", 
-                        backgroundColor: theme.palette.primary.default, 
-                        borderRadius: "1rem", 
-                        padding: "0.75rem 1.5rem", 
-                        border: `1px solid ${theme.palette.secondary[100]}`, 
-                        marginTop: theme.spacing(2) 
-                      }}
+                      renderValue={(selected) => selected.map(getEmployeeName).join(", ")}
                     >
-                      <MenuItem value="" disabled>Select the Employees</MenuItem>
-                      {users.map((user) => (
+                      <MenuItem value="" disabled>
+                        <em>Select the Employees</em>
+                      </MenuItem>
+                      {Array.isArray(users) && users.map((user) => (
                         <MenuItem key={user.personID} value={user.personID}>
                           <Checkbox checked={selectedEmployees.includes(user.personID)} />
-                          <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
+                          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
                         </MenuItem>
                       ))}
                     </Select>
-                  </Grid>
-                  <Grid item xs={12}>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12}>
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel>Company Owner</InputLabel>
                     <Select
+                      name="companyOwner"
+                      label="Company Owner"
                       multiple
                       value={selectedOwners}
                       onChange={(e) => setSelectedOwners(e.target.value)}
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Select the Owners</em>;
-                        }
-                        return selected.map((value) => {
-                          const user = users.find((user) => user.personID === value);
-                          return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
-                        }).join(", ");
-                      }}
-                      sx={{ 
-                        width: "100%", 
-                        backgroundColor: theme.palette.primary.default, 
-                        borderRadius: "1rem", 
-                        padding: "0.75rem 1.5rem", 
-                        border: `1px solid ${theme.palette.secondary[100]}`, 
-                        marginTop: theme.spacing(2) 
-                      }}
+                      renderValue={(selected) => selected.map(getCompanyOwnerName).join(', ')}
                     >
-                      <MenuItem value="" disabled>Select the Owners</MenuItem>
+                      <MenuItem value="" disabled>
+                        <em>Select the Company Owner</em>
+                      </MenuItem>
                       {users.map((user) => (
                         <MenuItem key={user.personID} value={user.personID}>
                           <Checkbox checked={selectedOwners.includes(user.personID)} />
-                          <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
+                          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
                         </MenuItem>
                       ))}
                     </Select>
-                  </Grid>
+                  </FormControl>
                 </Grid>
-                <Box mt={2}>
-                  <Button variant="contained" color="primary" onClick={handleSave}>
-                    Save
-                  </Button>
-                  <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
-                    Cancel
-                  </Button>
-                </Box>
-              </>
-            ) : (
-              <>
-                <Typography variant="subtitle1">
-                  <strong>Company Name:</strong> {company.companyName}
-                </Typography>
-                <Typography variant="subtitle1">
-                  <strong>City:</strong> {company.city}
-                </Typography>
-                <Typography variant="subtitle1">
-                  <strong>Country:</strong> {company.country}
-                </Typography>
-                <Typography variant="subtitle1">
-                  <strong>Company ID:</strong> {company.companyID}
-                </Typography>
+              </Grid>
+
+              <Box mt={2}>
+                <Button variant="contained" color="primary" onClick={handleSave}>
+                  Save
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+                  Cancel
+                </Button>
+              </Box>
+            </>
+          ) : (
+            <>
+              <Typography variant="subtitle1">
+                <strong>Company Name:</strong> {company.companyName}
+              </Typography>
+              <Typography variant="subtitle1">
+                <strong>City:</strong> {company.city}
+              </Typography>
+              <Typography variant="subtitle1">
+                <strong>Country:</strong> {company.country}
+              </Typography>
+
+              <Typography variant="subtitle1">
+                <strong>Company ID:</strong> {company.companyID}
+              </Typography>
                 <Typography variant="subtitle1">
                   <strong>Company Data Space ID:</strong> {company.companyDataSpaceID}
                 </Typography>
@@ -307,7 +299,7 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
             Edit
           </Button>
         </Box>
-      </Box>
+
     </Paper>
   );
 };

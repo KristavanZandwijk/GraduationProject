@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'; // useParams import
 import ProjectInfo from 'components/ProjectInformationWidget';
 import CompanySelect from 'components/SelectCompany'; // Import the new component
 
-const ProjectDataSpace = () => {
+const ProjectDataSpace = () => { 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const companies = useSelector((state) => state.companies || []);
@@ -19,7 +19,7 @@ const ProjectDataSpace = () => {
 
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState(''); // Track selected company
 
   const { companyID } = useParams(); // Use useParams to get the companyID from the URL
 
@@ -110,7 +110,7 @@ const ProjectDataSpace = () => {
   }, [projects, user.personID]);
 
   const handleProjectClick = (projectID) => {
-    navigate(`/companydataspace/${companyID}/${projectID}`);
+    navigate(`/companydataspace/${selectedCompany || companyID}/${projectID}`);
   };
 
   return (

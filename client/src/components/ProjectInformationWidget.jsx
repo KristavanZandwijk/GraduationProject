@@ -80,8 +80,6 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
     setFormData({ ...formData, [name]: value });
   };
 
-
-
   const handleSave = async () => {
     try {
       const updatedData = {
@@ -113,6 +111,13 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
     setIsEditing(false);
   };
 
+  const handleViewDataSpace = () => {
+    // Replace `companyID` with the actual company ID if needed 
+    // Assuming you want to use the first selected companyID from selectedCompanies array
+    const companyID = selectedCompanies[0] || 'defaultCompanyID'; 
+    navigate(`/companydataspace/${companyID}/${project.projectID}`);
+  };
+
   return (
     <Paper elevation={3} sx={{ borderRadius: 10, p: 3 }}>
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
@@ -121,203 +126,203 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
       <Box display="flex" flexDirection="column">
         {isEditing ? (
           <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              label="Project Name"
-              name="projectName"
-              value={formData.projectName || ''}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              name="projectDescription"
-              value={formData.projectDescription || ''}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-              multiline
-              rows={2}
-            />
-          </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Project Name"
+                name="projectName"
+                value={formData.projectName || ''}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                name="projectDescription"
+                value={formData.projectDescription || ''}
+                onChange={handleInputChange}
+                fullWidth
+                margin="normal"
+                multiline
+                rows={2}
+              />
+            </Grid>
+            
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Companies</InputLabel>
+                <Select
+                  name="companies"
+                  multiple
+                  value={selectedCompanies}
+                  onChange={(e) => setSelectedCompanies(e.target.value)}
+                  renderValue={(selected) => selected.map(getCompanyName).join(', ')}
+                  displayEmpty
+                  sx={{ 
+                    backgroundColor: theme.palette.primary.default,
+                    borderRadius: "0", // Set borderRadius to 0 for squared edges
+                    padding: "0.75rem 1.5rem",
+                    '& .MuiSelect-select': {
+                      borderRadius: "0", // Ensure the inner part also has squared edges
+                      padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
+                      display: "flex", // Ensure items are properly aligned
+                      alignItems: "center", // Align items in the center
+                    }
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select the company(s) involved in the project</em>
+                  </MenuItem>
+                  {Array.isArray(companies) && companies.map((company) => (
+                    <MenuItem key={company.companyID} value={company.companyID}>
+                      <Checkbox checked={selectedCompanies.indexOf(company.companyID) > -1} />
+                      <ListItemText primary={company.companyName} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
           
-          <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Companies</InputLabel>
-              <Select
-                name="companies"
-                multiple
-                value={selectedCompanies}
-                onChange={(e) => setSelectedCompanies(e.target.value)}
-                renderValue={(selected) => selected.map(getCompanyName).join(', ')}
-                displayEmpty
-                sx={{ 
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: "0", // Set borderRadius to 0 for squared edges
-                  padding: "0.75rem 1.5rem",
-                  '& .MuiSelect-select': {
-                    borderRadius: "0", // Ensure the inner part also has squared edges
-                    padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
-                    display: "flex", // Ensure items are properly aligned
-                    alignItems: "center", // Align items in the center
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select the company(s) involved in the project</em>
-                </MenuItem>
-                {Array.isArray(companies) && companies.map((company) => (
-                  <MenuItem key={company.companyID} value={company.companyID}>
-                    <Checkbox checked={selectedCompanies.indexOf(company.companyID) > -1} />
-                    <ListItemText primary={company.companyName} />
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Project Leader</InputLabel>
+                <Select
+                  name="projectleader"
+                  multiple
+                  value={selectedProjectleader}
+                  onChange={(e) => setSelectedProjectleader(e.target.value)}
+                  renderValue={(selected) => selected.map(getUserName).join(', ')}
+                  displayEmpty
+                  sx={{ 
+                    backgroundColor: theme.palette.primary.default,
+                    borderRadius: "0", // Set borderRadius to 0 for squared edges
+                    padding: "0.75rem 1.5rem",
+                    '& .MuiSelect-select': {
+                      borderRadius: "0", // Ensure the inner part also has squared edges
+                      padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
+                      display: "flex", // Ensure items are properly aligned
+                      alignItems: "center", // Align items in the center
+                    }
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select the project leader(s) involved in the project</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        
-          <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Project Leader</InputLabel>
-              <Select
-                name="projectleader"
-                multiple
-                value={selectedProjectleader}
-                onChange={(e) => setSelectedProjectleader(e.target.value)}
-                renderValue={(selected) => selected.map(getUserName).join(', ')}
-                displayEmpty
-                sx={{ 
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: "0", // Set borderRadius to 0 for squared edges
-                  padding: "0.75rem 1.5rem",
-                  '& .MuiSelect-select': {
-                    borderRadius: "0", // Ensure the inner part also has squared edges
-                    padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
-                    display: "flex", // Ensure items are properly aligned
-                    alignItems: "center", // Align items in the center
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select the project leader(s) involved in the project</em>
-                </MenuItem>
-                {Array.isArray(users) && users.map((user) => (
-                  <MenuItem key={user.personID} value={user.personID}>
-                    <Checkbox checked={selectedProjectleader.indexOf(user.personID) > -1} />
-                    <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                  {Array.isArray(users) && users.map((user) => (
+                    <MenuItem key={user.personID} value={user.personID}>
+                      <Checkbox checked={selectedProjectleader.indexOf(user.personID) > -1} />
+                      <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Employees</InputLabel>
+                <Select
+                  name="employees"
+                  multiple
+                  value={selectedEmployees}
+                  onChange={(e) => setSelectedEmployees(e.target.value)}
+                  renderValue={(selected) => selected.map(getUserName).join(', ')}
+                  displayEmpty
+                  sx={{ 
+                    backgroundColor: theme.palette.primary.default,
+                    borderRadius: "0", // Set borderRadius to 0 for squared edges
+                    padding: "0.75rem 1.5rem",
+                    '& .MuiSelect-select': {
+                      borderRadius: "0", // Ensure the inner part also has squared edges
+                      padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
+                      display: "flex", // Ensure items are properly aligned
+                      alignItems: "center", // Align items in the center
+                    }
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select the employees involved in the project</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        
-          <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Employees</InputLabel>
-              <Select
-                name="employees"
-                multiple
-                value={selectedEmployees}
-                onChange={(e) => setSelectedEmployees(e.target.value)}
-                renderValue={(selected) => selected.map(getUserName).join(', ')}
-                displayEmpty
-                sx={{ 
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: "0", // Set borderRadius to 0 for squared edges
-                  padding: "0.75rem 1.5rem",
-                  '& .MuiSelect-select': {
-                    borderRadius: "0", // Ensure the inner part also has squared edges
-                    padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
-                    display: "flex", // Ensure items are properly aligned
-                    alignItems: "center", // Align items in the center
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select the employees involved in the project</em>
-                </MenuItem>
-                {Array.isArray(users) && users.map((user) => (
-                  <MenuItem key={user.personID} value={user.personID}>
-                    <Checkbox checked={selectedEmployees.indexOf(user.personID) > -1} />
-                    <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                  {Array.isArray(users) && users.map((user) => (
+                    <MenuItem key={user.personID} value={user.personID}>
+                      <Checkbox checked={selectedEmployees.indexOf(user.personID) > -1} />
+                      <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Clients</InputLabel>
+                <Select
+                  name="clients"
+                  multiple
+                  value={selectedClients}
+                  onChange={(e) => setSelectedClients(e.target.value)}
+                  renderValue={(selected) => selected.length > 0 ? selected.map(getUserName).join(', ') : ''}
+                  displayEmpty
+                  sx={{ 
+                    backgroundColor: theme.palette.primary.default,
+                    borderRadius: "0", // Set borderRadius to 0 for squared edges
+                    padding: "0.75rem 1.5rem",
+                    '& .MuiSelect-select': {
+                      borderRadius: "0", // Ensure the inner part also has squared edges
+                      padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
+                      display: "flex", // Ensure items are properly aligned
+                      alignItems: "center", // Align items in the center
+                    }
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select Clients</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        
-          <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Clients</InputLabel>
-              <Select
-                name="clients"
-                multiple
-                value={selectedClients}
-                onChange={(e) => setSelectedClients(e.target.value)}
-                renderValue={(selected) => selected.length > 0 ? selected.map(getUserName).join(', ') : ''}
-                displayEmpty
-                sx={{ 
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: "0", // Set borderRadius to 0 for squared edges
-                  padding: "0.75rem 1.5rem",
-                  '& .MuiSelect-select': {
-                    borderRadius: "0", // Ensure the inner part also has squared edges
-                    padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
-                    display: "flex", // Ensure items are properly aligned
-                    alignItems: "center", // Align items in the center
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select Clients</em>
-                </MenuItem>
-                {Array.isArray(users) && users.map((user) => (
-                  <MenuItem key={user.personID} value={user.personID}>
-                    <Checkbox checked={selectedClients.indexOf(user.personID) > -1} />
-                    <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                  {Array.isArray(users) && users.map((user) => (
+                    <MenuItem key={user.personID} value={user.personID}>
+                      <Checkbox checked={selectedClients.indexOf(user.personID) > -1} />
+                      <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          
+            <Grid item xs={12}>
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Buildings</InputLabel>
+                <Select
+                  name="buildings"
+                  multiple
+                  value={selectedBuildings}
+                  onChange={(e) => setSelectedBuildings(e.target.value)}
+                  renderValue={(selected) => selected.map(getBuildingName).join(', ')}
+                  displayEmpty
+                  sx={{ 
+                    backgroundColor: theme.palette.primary.default,
+                    borderRadius: "0", // Set borderRadius to 0 for squared edges
+                    padding: "0.75rem 1.5rem",
+                    '& .MuiSelect-select': {
+                      borderRadius: "0", // Ensure the inner part also has squared edges
+                      padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
+                      display: "flex", // Ensure items are properly aligned
+                      alignItems: "center", // Align items in the center
+                    }
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Select the related buildings</em>
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-        
-          <Grid item xs={12}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Buildings</InputLabel>
-              <Select
-                name="buildings"
-                multiple
-                value={selectedBuildings}
-                onChange={(e) => setSelectedBuildings(e.target.value)}
-                renderValue={(selected) => selected.map(getBuildingName).join(', ')}
-                displayEmpty
-                sx={{ 
-                  backgroundColor: theme.palette.primary.default,
-                  borderRadius: "0", // Set borderRadius to 0 for squared edges
-                  padding: "0.75rem 1.5rem",
-                  '& .MuiSelect-select': {
-                    borderRadius: "0", // Ensure the inner part also has squared edges
-                    padding: "0.75rem 1.5rem", // Ensure padding is consistent with TextField
-                    display: "flex", // Ensure items are properly aligned
-                    alignItems: "center", // Align items in the center
-                  }
-                }}
-              >
-                <MenuItem value="" disabled>
-                  <em>Select the related buildings</em>
-                </MenuItem>
-                {Array.isArray(buildings) && buildings.map((building) => (
-                  <MenuItem key={building.buildingID} value={building.buildingID}>
-                    <Checkbox checked={selectedBuildings.indexOf(building.buildingID) > -1} />
-                    <ListItemText primary={building.buildingName} />
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
+                  {Array.isArray(buildings) && buildings.map((building) => (
+                    <MenuItem key={building.buildingID} value={building.buildingID}>
+                      <Checkbox checked={selectedBuildings.indexOf(building.buildingID) > -1} />
+                      <ListItemText primary={building.buildingName} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
             <Grid item xs={12} display="flex" justifyContent="flex-end">
               <Button onClick={handleSave} variant="contained" color="primary" sx={{ mr: 1 }}>
                 Save
@@ -334,6 +339,9 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
             </Typography>
             <Typography variant="subtitle1">
               <strong>Project Description:</strong> {project.projectDescription}
+            </Typography>
+            <Typography variant="subtitle1">
+              <strong>Project ID:</strong> {project.projectID}
             </Typography>
           </>
         )}
@@ -422,6 +430,7 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
         variant="outlined"
         color='secondary'
         sx={{ mt: 2 }}
+        onClick={handleViewDataSpace}
       >
         View project specific data space
       </Button>

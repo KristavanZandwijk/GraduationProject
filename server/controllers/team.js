@@ -41,3 +41,15 @@ export const getUserTeams = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+//Update Teams
+export const updateTeam = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedTeam = await Team.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json(updatedTeam);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+

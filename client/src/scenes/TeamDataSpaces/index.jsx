@@ -1,4 +1,3 @@
-// client/src/components/TeamDataSpaces.jsx
 import React, { useEffect, useState } from 'react';
 import { Box, Button, CircularProgress, Typography, Grid } from '@mui/material';
 import Header from 'components/Header';
@@ -19,37 +18,36 @@ const TeamDataSpaces = () => {
   const projects = useSelector((state) => state.projects || []);
   const user = useSelector((state) => state.user || {});
 
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/teams', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setTeams(Array.isArray(response.data) ? response.data : []));
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch teams:', error);
-        setLoading(false);
-      }
-    };
+  const fetchTeams = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/teams', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setTeams(Array.isArray(response.data) ? response.data : []));
+      setLoading(false);
+    } catch (error) {
+      console.error('Failed to fetch teams:', error);
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTeams();
   }, [dispatch, token]);
 
   const filteredProjects = Array.isArray(projects)
-  ? projects.filter(project =>
-      project.employees.some(employee => employee.personID === user.personID)
-    )
-  : [];
-
-const userTeams = Array.isArray(teams)
-  ? teams.filter(team =>
-      team.projects.some(teamProject =>
-        filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
+    ? projects.filter(project =>
+        project.employees.some(employee => employee.personID === user.personID)
       )
-    )
-  : [];
+    : [];
 
+  const userTeams = Array.isArray(teams)
+    ? teams.filter(team =>
+        team.projects.some(teamProject =>
+          filteredProjects.some(filteredProject => filteredProject.projectID === teamProject.projectID)
+        )
+      )
+    : [];
 
   if (loading) {
     return <CircularProgress />;
@@ -78,7 +76,10 @@ const userTeams = Array.isArray(teams)
         {userTeams.length > 0 ? (
           userTeams.map((userTeam) => (
             <Grid item xs={12} sm={6} md={4} key={userTeam.teamID}>
-              <TeamInformationWidget team={userTeam} />
+              <TeamInformationWidget 
+              team={userTeam} 
+              onTeamUpdate={fetchTeams}
+              />
             </Grid>
           ))
         ) : (

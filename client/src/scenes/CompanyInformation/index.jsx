@@ -103,8 +103,8 @@ const CompanyInformation = () => {
                   company={company}
                   projects={filteredProjects} // Correct variable name
                   employees={companyEmployees} // Correct variable name
-                  companyOwner={companyOwner}
-                  onCompanyUpdate={handleCompanyUpdate}
+                  companyOwner={companyOwner} // Pass company owners
+                  onCompanyUpdate={handleCompanyUpdate} // Pass update callback
                 />
               </Grid>
             );

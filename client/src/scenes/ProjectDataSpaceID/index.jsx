@@ -7,7 +7,7 @@ import DataSpaceTable from 'components/DataSpaceTable';
 import { useTheme } from '@mui/material';
 import IFCViewer from 'components/IFCViewer';
 
-const ProjectDataSpace = () => {
+const ProjectDataSpaceID = () => {
   const { projectID } = useParams();
   const { buildingDataSpaceID } = useParams();
   const [files, setFiles] = useState([]);
@@ -80,4 +80,4 @@ const ProjectDataSpace = () => {
   );
 };
 
-export default ProjectDataSpace;
+export default ProjectDataSpaceID;

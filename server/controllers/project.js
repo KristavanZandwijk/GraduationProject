@@ -31,3 +31,15 @@ export const getUserProjects = async (req, res) => {
   }
 };
 
+
+//Update Projects
+export const updateProject = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedProject = await Project.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json(updatedProject);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+

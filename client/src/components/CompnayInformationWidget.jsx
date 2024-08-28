@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, TextField, Button, useTheme, Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
+import { Box, Paper, Typography, TextField, Button, useTheme, Select, MenuItem, Checkbox, ListItemText, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import UserImage from 'components/UserImage';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
   const [formData, setFormData] = useState(company);
   const [teams, setTeams] = useState([]);
   const [selectedEmployees, setSelectedEmployees] = useState(company.employees.map(emp => emp.personID));
+  const [selectedOwners, setSelectedOwners] = useState(companyOwner.map(owner => owner.personID));
   const token = useSelector((state) => state.token);
   const users = useSelector((state) => state.users || []);
 
@@ -31,20 +32,20 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
       }
     };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get("http://localhost:5001/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
-    } catch (error) {
-      console.error("Failed to fetch users:", error);
-    }
-  };
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
 
-  fetchUsers();
-  fetchTeams();
-}, [token, dispatch]);
+    fetchUsers();
+    fetchTeams();
+  }, [token, dispatch]);
 
   const projectsWithTeams = projects.map(project => {
     const relatedTeams = teams.filter(team => team.projects.some(p => p.projectID === project.projectID));
@@ -61,7 +62,11 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
 
   const handleSave = async () => {
     try {
-      const updatedData = { ...formData, employees: selectedEmployees.map(id => ({ personID: id })) };
+      const updatedData = { 
+        ...formData, 
+        employees: selectedEmployees.map(id => ({ personID: id })), 
+        companyOwner: selectedOwners.map(id => ({ personID: id })) 
+      };
       const response = await axios.patch(`http://localhost:5001/companies/${company._id}`, updatedData, {
         headers: {
           'Content-Type': 'application/json',
@@ -86,6 +91,7 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
   const handleCancel = () => {
     setFormData(company);
     setSelectedEmployees(company.employees.map(emp => emp.personID));
+    setSelectedOwners(companyOwner.map(owner => owner.personID));
     setIsEditing(false);
   };
 
@@ -103,72 +109,114 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
           <Box sx={{ cursor: 'pointer' }}>
             <UserImage image={company.picturePath} size="100px" />
           </Box>
-          <Box ml={2}>
+          <Box ml={2} width="100%">
             {isEditing ? (
               <>
-                <TextField
-                  label="Company Name"
-                  name="companyName"
-                  value={formData.companyName}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="Country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
-                <TextField
-                  label="City"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                  fullWidth
-                  margin="normal"
-                />
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Company Name"
+                      name="companyName"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      fullWidth
+                      margin="normal"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="City"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      fullWidth
+                      margin="normal"
+                    />
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Country"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      fullWidth
+                      margin="normal"
+                    />
+                  </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Select
+                      multiple
+                      value={selectedEmployees}
+                      onChange={(e) => setSelectedEmployees(e.target.value)}
+                      displayEmpty
+                      renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return <em>Select the Employees</em>;
+                        }
+                        return selected.map((value) => {
+                          const user = users.find((user) => user.personID === value);
+                          return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
+                        }).join(", ");
+                      }}
+                      sx={{ 
+                        width: "100%", 
+                        backgroundColor: theme.palette.primary.default, 
+                        borderRadius: "1rem", 
+                        padding: "0.75rem 1.5rem", 
+                        border: `1px solid ${theme.palette.secondary[100]}`, 
+                        marginTop: theme.spacing(2) 
+                      }}
+                    >
+                      <MenuItem value="" disabled>Select the Employees</MenuItem>
+                      {users.map((user) => (
+                        <MenuItem key={user.personID} value={user.personID}>
+                          <Checkbox checked={selectedEmployees.includes(user.personID)} />
+                          <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Select
+                      multiple
+                      value={selectedOwners}
+                      onChange={(e) => setSelectedOwners(e.target.value)}
+                      displayEmpty
+                      renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return <em>Select the Owners</em>;
+                        }
+                        return selected.map((value) => {
+                          const user = users.find((user) => user.personID === value);
+                          return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
+                        }).join(", ");
+                      }}
+                      sx={{ 
+                        width: "100%", 
+                        backgroundColor: theme.palette.primary.default, 
+                        borderRadius: "1rem", 
+                        padding: "0.75rem 1.5rem", 
+                        border: `1px solid ${theme.palette.secondary[100]}`, 
+                        marginTop: theme.spacing(2) 
+                      }}
+                    >
+                      <MenuItem value="" disabled>Select the Owners</MenuItem>
+                      {users.map((user) => (
+                        <MenuItem key={user.personID} value={user.personID}>
+                          <Checkbox checked={selectedOwners.includes(user.personID)} />
+                          <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </Grid>
+                </Grid>
                 <Box mt={2}>
-                  <Select
-                    multiple
-                    value={selectedEmployees}
-                    onChange={(e) => setSelectedEmployees(e.target.value)}
-                    displayEmpty
-                    renderValue={(selected) => {
-                      if (selected.length === 0) {
-                        return <em>Select the Employees</em>;
-                      }
-                      return selected.map((value) => {
-                        const user = users.find((user) => user.personID === value);
-                        return user ? `${user.personID} - ${user.firstName} ${user.lastName}` : null;
-                      }).join(", ");
-                    }}
-                    sx={{
-                      width: "100%",
-                      backgroundColor: theme.palette.primary.default,
-                      borderRadius: "1rem",
-                      padding: "0.75rem 1.5rem",
-                      border: `1px solid ${theme.palette.secondary[100]}`,
-                    }}
-                  >
-                    <MenuItem value="" disabled>Select the Employees</MenuItem>
-                    {users.map((user) => (
-                      <MenuItem key={user.personID} value={user.personID}>
-                        <Checkbox checked={selectedEmployees.includes(user.personID)} />
-                        <ListItemText primary={`${user.personID} - ${user.firstName} ${user.lastName}`} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <Box mt={2}>
-                    <Button variant="contained" color="primary" onClick={handleSave}>
-                      Save
-                    </Button>
-                    <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
-                      Cancel
-                    </Button>
-                  </Box>
+                  <Button variant="contained" color="primary" onClick={handleSave}>
+                    Save
+                  </Button>
+                  <Button variant="outlined" color="secondary" onClick={handleCancel} sx={{ ml: 2 }}>
+                    Cancel
+                  </Button>
                 </Box>
               </>
             ) : (
@@ -177,10 +225,10 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
                   <strong>Company Name:</strong> {company.companyName}
                 </Typography>
                 <Typography variant="subtitle1">
-                  <strong>Country:</strong> {company.country}
+                  <strong>City:</strong> {company.city}
                 </Typography>
                 <Typography variant="subtitle1">
-                  <strong>City:</strong> {company.city}
+                  <strong>Country:</strong> {company.country}
                 </Typography>
                 <Typography variant="subtitle1">
                   <strong>Company ID:</strong> {company.companyID}
@@ -188,11 +236,6 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
                 <Typography variant="subtitle1">
                   <strong>Company Data Space ID:</strong> {company.companyDataSpaceID}
                 </Typography>
-                <Box mt={2}>
-                  <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
-                    Edit
-                  </Button>
-                </Box>
               </>
             )}
           </Box>
@@ -257,6 +300,12 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
           ) : (
             <Typography variant="subtitle1">No projects</Typography>
           )}
+        </Box>
+
+        <Box mt={2}>
+          <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
+            Edit
+          </Button>
         </Box>
       </Box>
     </Paper>

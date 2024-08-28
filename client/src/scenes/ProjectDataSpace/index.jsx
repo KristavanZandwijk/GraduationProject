@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, Button, Typography, Grid, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import Header from 'components/Header';
 import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom'; // useParams import
 import ProjectInfo from 'components/ProjectInformationWidget';
 import CompanySelect from 'components/SelectCompany'; // Import the new component
 
-const CompanyDataSpaceID = () => {
+const ProjectDataSpace = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const companies = useSelector((state) => state.companies || []);
@@ -20,6 +20,8 @@ const CompanyDataSpaceID = () => {
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState('');
+
+  const { companyID } = useParams(); // Use useParams to get the companyID from the URL
 
   useEffect(() => {
     const fetchCompanies = async () => {
@@ -70,25 +72,42 @@ const CompanyDataSpaceID = () => {
     fetchProjects();
     fetchUsers();
     fetchBuildings();
-  }, [dispatch, token]);
+  }, [dispatch, token]); // Ensure all dependencies are added
 
-  const companyID = window.location.pathname.split('/').pop();
+  const handleProjectUpdate = () => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/projects', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+      }
+    };
 
-  // Filter companies and projects based on the selected company
-  const filteredCompanies = Array.isArray(companies)
-    ? companies.filter(company => 
-        company && 
-        company.companyID === companyID && 
-        Array.isArray(company.employees) &&
-        company.employees.some(employee => employee.personID === user.personID))
-    : [];
+    fetchProjects(); // Fetch updated projects
+  };
 
-  const filteredProjects = Array.isArray(projects)
-    ? projects.filter(project =>
-        project &&
-        Array.isArray(project.employees) &&
-        project.employees.some(employee => employee.personID === user.personID))
-    : [];
+  // Memoized filtered companies and projects based on the selected company
+  const filteredCompanies = useMemo(() => {
+    return Array.isArray(companies)
+      ? companies.filter(company => 
+          company && 
+          company.companyID === companyID && 
+          Array.isArray(company.employees) &&
+          company.employees.some(employee => employee.personID === user.personID))
+      : [];
+  }, [companies, companyID, user.personID]);
+
+  const filteredProjects = useMemo(() => {
+    return Array.isArray(projects)
+      ? projects.filter(project =>
+          project &&
+          Array.isArray(project.employees) &&
+          project.employees.some(employee => employee.personID === user.personID))
+      : [];
+  }, [projects, user.personID]);
 
   const handleProjectClick = (projectID) => {
     navigate(`/companydataspace/${companyID}/${projectID}`);
@@ -136,6 +155,7 @@ const CompanyDataSpaceID = () => {
                 users={users}
                 buildings={buildings}
                 handleProjectClick={handleProjectClick}
+                onProjectUpdate={handleProjectUpdate} // Pass update callback
               />
             </Grid>
           ))
@@ -147,4 +167,4 @@ const CompanyDataSpaceID = () => {
   );
 };
 
-export default CompanyDataSpaceID;
+export default ProjectDataSpace;

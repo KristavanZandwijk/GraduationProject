@@ -35,6 +35,7 @@ import TeamDataSpaces from "scenes/TeamDataSpaces";
 import NewTeam from "scenes/NewTeam";
 import TeamDataSpaceIDFiles from "scenes/TeamDataSpaceID";
 import Information from "scenes/Information";
+import Admin from "scenes/Admin";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -87,6 +88,10 @@ function App() {
               <Route path="/profile" element={isAuth ? <Profile /> : <Navigate to="/" />} />
               <Route path="/personaldataspace/:dataspaceID" element={isAuth ? <Personal /> : <Navigate to="/" />} />
               <Route path="/information" element={isAuth ? <Information /> : <Navigate to="/" />} />
+
+              <Route path="/admin" element={isAuth ? <Admin /> : <Navigate to="/" />} />
+
+              
               
  
             </Route>

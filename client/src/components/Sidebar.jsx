@@ -39,116 +39,6 @@ import FlexBetween from "./FlexBetween";
 import { useSelector } from "react-redux";
 import UserImage from "./UserImage";
 
-const navItems = [
-  {
-    text: "Home",
-    icon: <HubOutlined />,
-    path: "/home",
-  },
-  {
-    text: "Public Data Spaces",
-    icon: null,
-  },
-  {
-    text: "Urban Scale",
-    icon: <MapOutlined />,
-    path: "/urbanscale",
-  },
-  {
-    text: "Building Data Space",
-    icon: <AccountBalanceOutlined />,
-    path: "/buildingdataspace",
-    disabled: true, // Add a 'disabled' property
-  },
-  {
-    text: "Element Data Space",
-    icon: <DoorFrontOutlined />,
-    path: "/elementdataspace",
-  },
-  {
-    text: "Shared Data Spaces",
-    icon: null,
-  },
-  {
-    text: "Team Data Space",
-    icon: <Diversity3Outlined />,
-    path: "/teamdataspace",
-  },
-  {
-    text: "Company Data Space",
-    icon: <FactoryOutlined />,
-    path: "/companydataspace",
-  },
-  {
-    text: "Company Information",
-    icon: <WorkOutlineOutlined />,
-    path: "/companyinformation",
-  },
-  {
-    text: "Private Data Space",
-    icon: null,
-  },
-  {
-    text: "Personal Data Space",
-    icon: <FolderSharedOutlined />,
-    path: "/personaldataspace",
-  },
-  {
-    text: "Data Upload",
-    icon: <FileUploadOutlined />,
-    path: "/dataupload",
-  },
-  {
-    text: "Features",
-    icon: null,
-  },
-
-  {
-    text: "Search Function",
-    icon: <SearchOutlined />,
-    path: "/searchfunction",
-  },
-  {
-    text: "Project Learning",
-    icon: <LocalLibraryOutlined />,
-    path: "/projectlearning",
-  },
-  {
-    text: "Element Passport",
-    icon: <FingerprintOutlined />,
-    path: "/elementpassport",
-  },
-  {
-    text: "Element Reuse",
-    icon: <RecyclingOutlined />,
-    path: "/elementreuse",
-  },
-  {
-    text: "Emergency Plans",
-    icon: <FireExtinguisherOutlined />,
-    path: "/emergencyplans",
-  },
-  {
-    text: "Profile",
-    icon: null,
-  },
-  {
-    text: "Profile Settings",
-    icon: <PersonOutlined />,
-    path: "/profile",
-  },
-  {
-    text: "Data Privacy",
-    icon: <AdminPanelSettingsOutlined />,
-    path: "/dataprivacy",
-  },
-  {
-    text: "Information",
-    icon: <InfoOutlined />,
-    path: "/information",
-  },
-];
-
 const Sidebar = ({
   drawerWidth,
   isSidebarOpen,
@@ -161,9 +51,12 @@ const Sidebar = ({
   const theme = useTheme();
   const user = useSelector((state) => state.user);
   const fullName = `${user.firstName} ${user.lastName}`;
-  const role = Array.isArray(user.role) ? user.role.join(", ") : user.role; // Join roles with a comma
+  const role = Array.isArray(user.role) ? user.role.join(", ") : user.role;
   const { picturePath } = useSelector((state) => state.user);
   const dataSpaceID = user.dataSpaceID;
+
+  // Determine if user has admin role
+  const isAdmin = role.toLowerCase().includes("admin");
 
   useEffect(() => {
     setActive(pathname);
@@ -172,6 +65,126 @@ const Sidebar = ({
   const handleProfileClick = () => {
     navigate("/profile");
   };
+
+  // Define the base navigation items
+  const navItems = [
+    {
+      text: "Home",
+      icon: <HubOutlined />,
+      path: "/home",
+    },
+    {
+      text: "Public Data Spaces",
+      icon: null,
+    },
+    {
+      text: "Urban Scale",
+      icon: <MapOutlined />,
+      path: "/urbanscale",
+    },
+    {
+      text: "Building Data Space",
+      icon: <AccountBalanceOutlined />,
+      path: "/buildingdataspace",
+      disabled: true, // Add a 'disabled' property
+    },
+    {
+      text: "Element Data Space",
+      icon: <DoorFrontOutlined />,
+      path: "/elementdataspace",
+    },
+    {
+      text: "Shared Data Spaces",
+      icon: null,
+    },
+    {
+      text: "Team Data Space",
+      icon: <Diversity3Outlined />,
+      path: "/teamdataspace",
+    },
+    {
+      text: "Company Data Space",
+      icon: <FactoryOutlined />,
+      path: "/companydataspace",
+    },
+    {
+      text: "Company Information",
+      icon: <WorkOutlineOutlined />,
+      path: "/companyinformation",
+    },
+    {
+      text: "Private Data Space",
+      icon: null,
+    },
+    {
+      text: "Personal Data Space",
+      icon: <FolderSharedOutlined />,
+      path: "/personaldataspace",
+    },
+    {
+      text: "Data Upload",
+      icon: <FileUploadOutlined />,
+      path: "/dataupload",
+    },
+    {
+      text: "Features",
+      icon: null,
+    },
+    {
+      text: "Search Function",
+      icon: <SearchOutlined />,
+      path: "/searchfunction",
+    },
+    {
+      text: "Project Learning",
+      icon: <LocalLibraryOutlined />,
+      path: "/projectlearning",
+    },
+    {
+      text: "Element Passport",
+      icon: <FingerprintOutlined />,
+      path: "/elementpassport",
+    },
+    {
+      text: "Element Reuse",
+      icon: <RecyclingOutlined />,
+      path: "/elementreuse",
+    },
+    {
+      text: "Emergency Plans",
+      icon: <FireExtinguisherOutlined />,
+      path: "/emergencyplans",
+    },
+    {
+      text: "Profile",
+      icon: null,
+    },
+    {
+      text: "Profile Settings",
+      icon: <PersonOutlined />,
+      path: "/profile",
+    },
+    {
+      text: "Data Privacy",
+      icon: <AdminPanelSettingsOutlined />,
+      path: "/dataprivacy",
+    },
+    {
+      text: "Information",
+      icon: <InfoOutlined />,
+      path: "/information",
+    },
+    // Conditionally add Admin Page based on role
+    ...(isAdmin
+      ? [
+          {
+            text: "Admin Page",
+            icon: <AdminPanelSettingsOutlined />,
+            path: "/admin",
+          },
+        ]
+      : []),
+  ];
 
   return (
     <Box component="nav">
@@ -224,7 +237,7 @@ const Sidebar = ({
                     <ListItemButton
                       onClick={() => {
                         if (!disabled) {
-                          if (text === "PersonalDataSpace") {
+                          if (text === "Personal Data Space") {
                             navigate(`/personaldataspace/${dataSpaceID}`);
                           } else {
                             navigate(path);

@@ -138,6 +138,10 @@ export const authSlice = createSlice({
       state.building = action.payload;
     },
 
+    updateElement: (state, action) => { 
+      state.element = action.payload;
+    },
+
     setIfcFile: (state, action) => {
       state.ifcFile = action.payload;
     },
@@ -178,6 +182,7 @@ export const {
   updateTeam,
   updateFile,
   updateBuilding,
+  updateElement,
   setIfcFile,
   setTtlFileName,
   setIFCFiles

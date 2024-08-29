@@ -81,9 +81,6 @@ const File = () => {
           minHeight: '20vh',
         }}>
           <Typography variant="h6" color={theme.palette.secondary.main}>Data:</Typography>
-          <Link onClick={handleDownload} style={{ cursor: 'pointer' }} color={theme.palette.secondary.main}>
-            Download Data
-          </Link>
           {isLoading ? (
             <>
               <Typography variant="h6">Data is loading...</Typography>

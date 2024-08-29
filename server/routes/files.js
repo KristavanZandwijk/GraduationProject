@@ -78,6 +78,28 @@ router.get('/:fileID', verifyToken, async (req, res) => {
 });
 
 
+// Fetch file metadata
+router.get('/metadata/:fileID', verifyToken, async (req, res) => {
+  try {
+    const fileRecord = await File.findOne({ fileID: req.params.fileID });
+    if (!fileRecord) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    const metadata = {
+      filename: fileRecord.fileName,
+      size: fs.statSync(fileRecord.filePath).size,
+      createdAt: fileRecord.createdAt,
+      owner: fileRecord.fileOwner,
+    };
+
+    res.status(200).json(metadata);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
 //Update File Data
 router.patch('/:fileID', verifyToken, updateFile);
 

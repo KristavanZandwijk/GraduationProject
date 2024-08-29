@@ -152,7 +152,7 @@ const UrbanBuildingTable = ({ buildings = [], selectedBuildingDataSpaceIDs, hand
                 {editingBuildingID === building.buildingID ? (
                   <FormControl fullWidth>
                   <Select
-                    multiple
+                    multiple 
                     value={buildingDetails.buildingOwner ? buildingDetails.buildingOwner.map(owner => owner.personID) : []}
                     onChange={handleOwnerChange}
                     renderValue={(selected) => 

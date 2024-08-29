@@ -14,7 +14,7 @@ const ElementDataSpace = () => {
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
 
-  useEffect(() => {
+
     const fetchElements = async () => {
       try {
         const response = await axios.get('http://localhost:5001/elements', {
@@ -27,6 +27,7 @@ const ElementDataSpace = () => {
       }
     };
   
+    useEffect(() => {
     fetchElements();
   }, [dispatch, token]);
   
@@ -47,7 +48,7 @@ const ElementDataSpace = () => {
         {Array.isArray(elements) && elements.length === 0 ? (
           <Typography variant="h6">There are unfortunately no elements to show (yet).</Typography>
         ) : (
-          <ElementTable elements={elements} />
+          <ElementTable elements={elements} fetchElements={fetchElements} /> 
         )}
       </Box>
     </Box>

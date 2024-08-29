@@ -169,12 +169,8 @@ const FileTable = () => {
             <Grid item xs={12} key={file.fileID}>
               <Paper elevation={3}>
                 <Accordion>
-                  <AccordionSummary expandIcon={<ExpandMore />}>
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      width="100%"
-                    >
+                <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box display="flex" flexDirection="column" width="100%">
                       <Typography
                         color={theme.palette.secondary[100]}
                         fontWeight="bold"
@@ -203,6 +199,27 @@ const FileTable = () => {
                         ) : (
                           <Typography variant="h6" mt={0.5}>
                             {file.fileDescription}
+                          </Typography>
+                        )}
+                      </Box>
+                      <Box mt={2}>
+                        <Typography variant="h6">
+                          <strong>File Status:</strong>
+                        </Typography>
+                        {editingFileID === file.fileID ? (
+                          <Select
+                            value={fileDetails.status || ''}
+                            onChange={(e) => handleChange('status', e.target.value)}
+                            fullWidth
+                          >
+                            <MenuItem value="private">Private</MenuItem>
+                            <MenuItem value="sharedCompany">Shared with Company</MenuItem>
+                            <MenuItem value="sharedTeam">Shared with Team</MenuItem>
+                            <MenuItem value="public">Public</MenuItem>
+                          </Select>
+                        ) : (
+                          <Typography variant="h6" mt={0.5}>
+                            {file.status}
                           </Typography>
                         )}
                       </Box>
@@ -238,52 +255,51 @@ const FileTable = () => {
                         )}
                       </Grid>
                       <Grid item xs={12} sm={6}>
-                      <Typography variant="h6">
-                        <strong>Relates to building/ element (Data Space ID):</strong>
-                      </Typography>
-                      {editingFileID === file.fileID ? (
-                        fileDetails.considers === 'building' ? (
-                          <Select
-                            value={fileDetails.buildingDataSpaceID || ''}
-                            onChange={(e) => handleChange('buildingDataSpaceID', e.target.value)}
-                            fullWidth
-                          >
-                            {buildings.map((building) => (
-                              <MenuItem
-                                key={building.buildingDataSpaceID}
-                                value={building.buildingDataSpaceID}
-                              >
-                                {building.buildingName} - {building.buildingDataSpaceID}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        ) : (
-                          <Select
-                            value={fileDetails.elementDataSpaceID || ''}
-                            onChange={(e) => handleChange('elementDataSpaceID', e.target.value)}
-                            fullWidth
-                          >
-                            {elements.map((element) => (
-                              <MenuItem
-                                key={element.elementDataSpaceID}
-                                value={element.elementDataSpaceID}
-                              >
-                                {element.elementName} - {element.elementDataSpaceID}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        )
-                      ) : (
                         <Typography variant="h6">
-                          {file.considers === 'building'
-                            ? `${getBuildingName(file.buildingDataSpaceID)} - ${file.buildingDataSpaceID}`
-                            : file.considers === 'element'
-                            ? `${getElementName(file.elementDataSpaceID)} - ${file.elementDataSpaceID}`
-                            : 'N/A'}
+                          <strong>Relates to building/ element (Data Space ID):</strong>
                         </Typography>
-                      )}
-                    </Grid>
-
+                        {editingFileID === file.fileID ? (
+                          fileDetails.considers === 'building' ? (
+                            <Select
+                              value={fileDetails.buildingDataSpaceID || ''}
+                              onChange={(e) => handleChange('buildingDataSpaceID', e.target.value)}
+                              fullWidth
+                            >
+                              {buildings.map((building) => (
+                                <MenuItem
+                                  key={building.buildingDataSpaceID}
+                                  value={building.buildingDataSpaceID}
+                                >
+                                  {building.buildingName} - {building.buildingDataSpaceID}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          ) : (
+                            <Select
+                              value={fileDetails.elementDataSpaceID || ''}
+                              onChange={(e) => handleChange('elementDataSpaceID', e.target.value)}
+                              fullWidth
+                            >
+                              {elements.map((element) => (
+                                <MenuItem
+                                  key={element.elementDataSpaceID}
+                                  value={element.elementDataSpaceID}
+                                >
+                                  {element.elementName} - {element.elementDataSpaceID}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          )
+                        ) : (
+                          <Typography variant="h6">
+                            {file.considers === 'building'
+                              ? `${getBuildingName(file.buildingDataSpaceID)} - ${file.buildingDataSpaceID}`
+                              : file.considers === 'element'
+                              ? `${getElementName(file.elementDataSpaceID)} - ${file.elementDataSpaceID}`
+                              : 'N/A'}
+                          </Typography>
+                        )}
+                      </Grid>
                       <Grid item xs={12} sm={6}>
                         <Typography variant="h6"><strong>Related To Project (Project ID):</strong></Typography>
                         {editingFileID === file.fileID ? (

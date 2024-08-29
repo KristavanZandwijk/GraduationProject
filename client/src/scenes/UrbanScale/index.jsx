@@ -17,18 +17,19 @@ const UrbanScale = () => {
   const [files, setFiles] = useState([]);
   const token = useSelector((state) => state.token);
 
-  useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        const response = await axios.get('http://localhost:5001/buildings/urban', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
-      } catch (error) {
-        console.error('Failed to fetch buildings:', error);
-      }
-    };
+  const fetchBuildings = async () => {
+    try {
+      const response = await axios.get('http://localhost:5001/buildings/urban', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error('Failed to fetch buildings:', error);
+    }
+  };
 
+  useEffect(() => {
+    fetchBuildings();
     const fetchFiles = async () => {
       try {
         const response = await axios.get('http://localhost:5001/files', {
@@ -40,7 +41,6 @@ const UrbanScale = () => {
       }
     };
 
-    fetchBuildings();
     fetchFiles();
   }, [dispatch, token]);
 
@@ -75,11 +75,11 @@ const UrbanScale = () => {
           <CircularProgress />
         ) : (
           <UrbanBuildingTable 
-          buildings={buildings}
-          selectedBuildingDataSpaceIDs={selectedBuildingDataSpaceIDs}
-          handleCheckboxChange={handleCheckboxChange}
-        />
-
+            buildings={buildings}
+            selectedBuildingDataSpaceIDs={selectedBuildingDataSpaceIDs}
+            handleCheckboxChange={handleCheckboxChange}
+            fetchBuildings={fetchBuildings} // Pass the function as a prop
+          />
         )}
       </Box>
       <Box flex="1" height="150vh">
@@ -90,3 +90,4 @@ const UrbanScale = () => {
 };
 
 export default UrbanScale;
+

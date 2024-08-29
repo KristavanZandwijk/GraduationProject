@@ -127,22 +127,6 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
               fullWidth
               margin="normal"
             />
-            <TextField
-              label="Team ID"
-              name="teamID"
-              value={formData.teamID}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              label="Team Data Space ID"
-              name="teamDataSpaceID"
-              value={formData.teamDataSpaceID}
-              onChange={handleInputChange}
-              fullWidth
-              margin="normal"
-            />
             <FormControl fullWidth margin="normal">
               <InputLabel>Team Leader</InputLabel>
               <Select

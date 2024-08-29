@@ -48,3 +48,15 @@ export const getAllBuildings = async (req, res) => {
   }
 };
 
+//Update Building Meta data
+export const updateBuilding = async (req, res) => {
+  try {
+    const { buildingID } = req.params;
+    const updatedBuilding = await Building.findOneAndUpdate({ buildingID }, req.body, { new: true });
+    res.status(200).json(updatedBuilding);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
+

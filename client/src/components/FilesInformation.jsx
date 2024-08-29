@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableFooter, Paper, Typography, IconButton, Select, MenuItem, Button } from '@mui/material';
-import { Refresh } from '@mui/icons-material';
+import { Box, Accordion, AccordionSummary, AccordionDetails, Typography, IconButton, Select, MenuItem, Button, InputBase, Grid, Paper } from '@mui/material';
+import { ExpandMore } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@emotion/react';
-import { updateFile } from 'state'; 
+import { updateFile, setUsers } from 'state';
+import axios from 'axios';
 
 const FileTable = () => {
   const [files, setFiles] = useState([]);
   const [editingFileID, setEditingFileID] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('');
+  const [fileDetails, setFileDetails] = useState({});
   const { dataSpaceID } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+
+  const [buildings, setBuildings] = useState([]);
+  const [elements, setElements] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [users, setUsers] = useState([]);
+
   const navigate = useNavigate();
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -29,35 +37,98 @@ const FileTable = () => {
     }
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setUsers(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    }
+  };
+
+  const fetchBuildings = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/buildings/all", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setBuildings(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch buildings:", error);
+    }
+  };
+
+  const fetchElements = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/elements", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setElements(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch elements:", error);
+    }
+  };
+
+  const fetchCompanies = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/companies", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch companies:", error);
+    }
+  };
+
+  const fetchProjects = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/projects", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      dispatch(setProjects(Array.isArray(response.data) ? response.data : []));
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchUsers();
     fetchFiles();
+    fetchBuildings();
+    fetchElements();
+    fetchCompanies();
+    fetchProjects();
   }, [token]);
 
-  const handleRowClick = (file) => {
-    if (file.considers === 'building') {
-      navigate(`/buildingdataspace/${file.buildingDataSpaceID}`);
-    } else if (file.considers === 'element') {
-      navigate(`/elementdataspace/${file.elementDataSpaceID}`);
-    } else if (file.considers === 'project') {
-      navigate(`/companydataspace/${file.relatedToProject}`);
-    }
+  const getUserName = (personID) => {
+    const user = users.find(u => u.personID === personID);
+    return user ? `${user.firstName} ${user.lastName}` : personID;
   };
 
-  const handleFileClick = (file) => {
-    if (file.considers === 'building') {
-      navigate(`/buildingdataspace/${file.buildingDataSpaceID}/${file.fileID}`);
-    } else if (file.considers === 'element') {
-      navigate(`/elementdataspace/${file.elementDataSpaceID}/${file.fileID}`);
-    }
+  const getProjectName = (projectID) => {
+    const project = projects.find(p => p.projectID === projectID);
+    return project ? project.projectName : projectID;
   };
 
-  const handleProjectClick = (file) => {
-    navigate(`/companydataspace/${file.relatedToProject}/${file.fileID}`);
+  const getCompanyName = (companyDataSpaceID) => {
+    const company = companies.find(c => c.companyDataSpaceID === companyDataSpaceID);
+    return company ? company.companyName : companyDataSpaceID;
   };
 
-  const handleEditClick = (fileID, currentStatus) => {
-    setEditingFileID(fileID);
-    setSelectedStatus(currentStatus);
+  const getBuildingName = (buildingDataSpaceID) => {
+    const building = buildings.find(building => building.buildingDataSpaceID === buildingDataSpaceID);
+    return building ? building.buildingName : buildingDataSpaceID;
+  };
+
+  const getElementName = (elementDataSpaceID) => {
+    const element = elements.find(element => element.elementDataSpaceID === elementDataSpaceID);
+    return element ? element.elementName : elementDataSpaceID;
+  };
+
+  const handleEditClick = (file) => {
+    setEditingFileID(file.fileID);
+    setFileDetails(file);
   };
 
   const handleSave = async (fileID) => {
@@ -68,15 +139,15 @@ const FileTable = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({ status: selectedStatus }),
+        body: JSON.stringify(fileDetails),
       });
 
       if (response.ok) {
         const updatedFile = await response.json();
         dispatch(updateFile(updatedFile));
         setEditingFileID(null);
-        setSelectedStatus('');
-        fetchFiles();  // Refresh the file list
+        setFileDetails({});
+        fetchFiles(); // Refresh the file list
       } else {
         console.error('Failed to update file:', await response.text());
       }
@@ -85,109 +156,192 @@ const FileTable = () => {
     }
   };
 
+  const handleChange = (field, value) => {
+    setFileDetails((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <Box mt="2rem">
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6" gutterBottom>
-          Personal Data Space Content
-        </Typography>
-        <IconButton onClick={fetchFiles} color="primary">
-          <Refresh />
-        </IconButton>
-      </Box>
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>File ID</TableCell>
-              <TableCell>File Name</TableCell>
-              <TableCell>File Description</TableCell>
-              <TableCell>File Owned By</TableCell>
-              <TableCell>Uploaded on Personal Data Space</TableCell>
-              <TableCell>File Considers</TableCell>
-              <TableCell>Stored in Data Space (projectID)</TableCell>
-              <TableCell>Related To Project</TableCell>
-              <TableCell>Part of company Data Space</TableCell>
-              <TableCell>Related To Team</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Uploaded At</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {files
-              .filter((file) => file.personalDataSpaceID === dataSpaceID)
-              .map((file) => (
-                <TableRow key={file.fileID}>
-                  <TableCell onClick={() => handleFileClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
-                    {file.fileID}
-                  </TableCell>
-                  <TableCell>{file.fileName}</TableCell>
-                  <TableCell>{file.fileDescription}</TableCell>
-                  <TableCell>{file.fileOwner}</TableCell>
-                  <TableCell>{file.personalDataSpaceID}</TableCell>
-                  <TableCell>{file.considers}</TableCell>
-                  <TableCell onClick={() => handleRowClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
-                    {file.considers === 'building' && file.buildingDataSpaceID}
-                    {file.considers === 'element' && file.elementDataSpaceID}
-                  </TableCell>
-                  <TableCell onClick={() => handleProjectClick(file)} style={{ cursor: 'pointer', color: theme.palette.secondary.main }}>
-                    {file.relatedToProject}
-                  </TableCell>
-                  <TableCell>{file.companyDataSpaceID}</TableCell>
-                  <TableCell>{file.relatedToTeam}</TableCell>
-                  <TableCell>
-                    {editingFileID === file.fileID ? (
-                      <Select
-                        value={selectedStatus}
-                        onChange={(e) => setSelectedStatus(e.target.value)}
-                        fullWidth
+      <Grid container spacing={2}>
+        {files
+          .filter((file) => file.personalDataSpaceID === dataSpaceID)
+          .map((file) => (
+            <Grid item xs={12} key={file.fileID}>
+              <Paper elevation={3}>
+                <Accordion>
+                  <AccordionSummary expandIcon={<ExpandMore />}>
+                    <Box
+                      display="flex"
+                      flexDirection="column"
+                      width="100%"
+                    >
+                      <Typography
+                        color={theme.palette.secondary[100]}
+                        fontWeight="bold"
+                        variant="h5"
+                        gutterBottom
                       >
-                        <MenuItem value="private">Private</MenuItem>
-                        <MenuItem value="sharedCompany">Shared with Company</MenuItem>
-                        <MenuItem value="sharedTeam">Shared with Team</MenuItem>
-                        <MenuItem value="public">Public</MenuItem>
-                      </Select>
-                    ) : (
-                      file.status
-                    )}
-                  </TableCell>
-                  <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
-                  <TableCell>
-                    {editingFileID === file.fileID ? (
-                      <Button onClick={() => handleSave(file.fileID)} color="primary">
-                        Save
-                      </Button>
-                    ) : (
-                      <Button onClick={() => handleEditClick(file.fileID, file.status)} color="secondary">
-                        Edit
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={12}>
-                <Typography variant="caption" color="textSecondary" component="div">
-                  <div>
-                    <strong>1. A file could have four types of 'status':</strong>
-                    <br />
-                    <strong>a. "private":</strong> the file is only accessible by the file owner.
-                    <br />
-                    <strong>b. "sharedCompany":</strong> the file is accessible to the employees that are part of the project. See the company Data Space for an overview of the employees. 
-                    <br />
-                    <strong>c. "sharedTeam":</strong> the file is accessible to all employees within the team (this could include multiple companies). See the team data space for an overview of the employees.
-                    <br />
-                    <strong>d. "public":</strong> the file is accessible to everyone who has an account on the AECO Data Space.
-                  </div>
-                </Typography>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
+                        {file.fileName}
+                      </Typography>
+                      <Box mt={1}>
+                        <Typography variant="h6">
+                          <strong>File Description:</strong>
+                        </Typography>
+                        {editingFileID === file.fileID ? (
+                          <InputBase
+                            value={fileDetails.fileDescription || ''}
+                            onChange={(e) => handleChange('fileDescription', e.target.value)}
+                            fullWidth
+                            placeholder="Enter file description"
+                            sx={{
+                              padding: '0.5rem',
+                              borderRadius: '0.25rem',
+                              border: `1px solid ${theme.palette.divider}`,
+                              marginTop: '0.5rem',
+                            }}
+                          />
+                        ) : (
+                          <Typography variant="h6" mt={0.5}>
+                            {file.fileDescription}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>File ID:</strong> {file.fileID}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>Uploaded At:</strong> {file.createdAt}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>File Owned By:</strong> {getUserName(file.fileOwner)} - {file.fileOwner}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>Personal Data Space ID:</strong> {file.personalDataSpaceID}</Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>File Considers:</strong></Typography>
+                        {editingFileID === file.fileID ? (
+                          <Select
+                            value={fileDetails.considers || ''}
+                            onChange={(e) => handleChange('considers', e.target.value)}
+                            fullWidth
+                          >
+                            <MenuItem value="element">Element</MenuItem>
+                            <MenuItem value="building">Building</MenuItem>
+                          </Select>
+                        ) : (
+                          <Typography variant="h6">{file.considers}</Typography>
+                        )}
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                      <Typography variant="h6">
+                        <strong>Relates to building/ element (Data Space ID):</strong>
+                      </Typography>
+                      {editingFileID === file.fileID ? (
+                        fileDetails.considers === 'building' ? (
+                          <Select
+                            value={fileDetails.buildingDataSpaceID || ''}
+                            onChange={(e) => handleChange('buildingDataSpaceID', e.target.value)}
+                            fullWidth
+                          >
+                            {buildings.map((building) => (
+                              <MenuItem
+                                key={building.buildingDataSpaceID}
+                                value={building.buildingDataSpaceID}
+                              >
+                                {building.buildingName} - {building.buildingDataSpaceID}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Select
+                            value={fileDetails.elementDataSpaceID || ''}
+                            onChange={(e) => handleChange('elementDataSpaceID', e.target.value)}
+                            fullWidth
+                          >
+                            {elements.map((element) => (
+                              <MenuItem
+                                key={element.elementDataSpaceID}
+                                value={element.elementDataSpaceID}
+                              >
+                                {element.elementName} - {element.elementDataSpaceID}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        )
+                      ) : (
+                        <Typography variant="h6">
+                          {file.considers === 'building'
+                            ? `${getBuildingName(file.buildingDataSpaceID)} - ${file.buildingDataSpaceID}`
+                            : file.considers === 'element'
+                            ? `${getElementName(file.elementDataSpaceID)} - ${file.elementDataSpaceID}`
+                            : 'N/A'}
+                        </Typography>
+                      )}
+                    </Grid>
+
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>Related To Project (Project ID):</strong></Typography>
+                        {editingFileID === file.fileID ? (
+                          <Select
+                            value={fileDetails.relatedToProject || ''}
+                            onChange={(e) => handleChange('relatedToProject', e.target.value)}
+                            fullWidth
+                          >
+                            {projects.map((project) => (
+                              <MenuItem key={project.projectID} value={project.projectID}>
+                                {project.projectName} - {project.projectID}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Typography variant="h6">{getProjectName(file.relatedToProject)} - {file.relatedToProject}</Typography>
+                        )}
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="h6"><strong>Part of Company (Company Data Space ID):</strong></Typography>
+                        {editingFileID === file.fileID ? (
+                          <Select
+                            value={fileDetails.companyDataSpaceID || ''}
+                            onChange={(e) => handleChange('companyDataSpaceID', e.target.value)}
+                            fullWidth
+                          >
+                            {companies.map((company) => (
+                              <MenuItem key={company.companyID} value={company.companyID}>
+                                {company.companyName} - {company.companyID}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Typography variant="h6">{getCompanyName(file.companyDataSpaceID)} - {file.companyDataSpaceID} </Typography>
+                        )}
+                      </Grid>
+                      <Grid item xs={12}>
+                        {editingFileID === file.fileID ? (
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={() => handleSave(file.fileID)}
+                          >
+                            Save
+                          </Button>
+                        ) : (
+                          <Button variant="contained" color="primary" onClick={() => handleEditClick(file)}>
+                            <Typography>Edit</Typography>
+                          </Button>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              </Paper>
+            </Grid>
+          ))}
+      </Grid>
     </Box>
   );
 };

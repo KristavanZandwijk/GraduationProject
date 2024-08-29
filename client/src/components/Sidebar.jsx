@@ -46,7 +46,7 @@ const navItems = [
     path: "/home",
   },
   {
-    text: "Data Spaces Public",
+    text: "Public Data Spaces",
     icon: null,
   },
   {
@@ -66,7 +66,7 @@ const navItems = [
     path: "/elementdataspace",
   },
   {
-    text: "Data Spaces Shared",
+    text: "Shared Data Spaces",
     icon: null,
   },
   {
@@ -80,7 +80,12 @@ const navItems = [
     path: "/companydataspace",
   },
   {
-    text: "Data Spaces Private",
+    text: "Company Information",
+    icon: <WorkOutlineOutlined />,
+    path: "/companyinformation",
+  },
+  {
+    text: "Private Data Space",
     icon: null,
   },
   {
@@ -89,14 +94,15 @@ const navItems = [
     path: "/personaldataspace",
   },
   {
-    text: "Features",
-    icon: null,
-  },
-  {
     text: "Data Upload",
     icon: <FileUploadOutlined />,
     path: "/dataupload",
   },
+  {
+    text: "Features",
+    icon: null,
+  },
+
   {
     text: "Search Function",
     icon: <SearchOutlined />,
@@ -123,20 +129,11 @@ const navItems = [
     path: "/emergencyplans",
   },
   {
-    text: "Organization(s)",
-    icon: null,
-  },
-  {
-    text: "Company Information",
-    icon: <WorkOutlineOutlined />,
-    path: "/companyinformation",
-  },
-  {
     text: "Profile",
     icon: null,
   },
   {
-    text: "Profile",
+    text: "Profile Settings",
     icon: <PersonOutlined />,
     path: "/profile",
   },

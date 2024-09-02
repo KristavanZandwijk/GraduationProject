@@ -171,6 +171,8 @@ const UserWidget = ({ userId, picturePath }) => {
         fontWeight="600"
         pt="1rem"
         pb="0.5rem"
+        onClick={() => navigate('/profile')}
+        style={{ cursor: 'pointer' }}
       >
         Personal Information
       </Typography>
@@ -202,6 +204,8 @@ const UserWidget = ({ userId, picturePath }) => {
         fontWeight="600"
         pt="1rem"
         pb="0.5rem"
+        onClick={() => navigate('/companyinformation')}
+        style={{ cursor: 'pointer' }}
       >
         Companies
       </Typography>
@@ -223,13 +227,45 @@ const UserWidget = ({ userId, picturePath }) => {
 
       <Divider />
 
-      {/* PROJECTS INVOLVED HEADER */}
+      {/* TEAMS INVOLVED HEADER */}
       <Typography
         variant="h6"
         color={palette.secondary.main}
         fontWeight="600"
         pt="1rem"
         pb="0.5rem"
+        onClick={() => navigate('/teamdataspace')}
+        style={{ cursor: 'pointer' }}
+      >
+        Involved in the teams:
+      </Typography>
+
+      {/* FOURTH ROW */}
+      <Box p="1rem 0">
+        {filteredTeams.map((team, index) => (
+          <Box key={index} display="flex" alignItems="center" gap="1rem">
+            <GroupOutlined
+              fontSize="large"
+              sx={{ color: palette.secondary[200] }}
+            />
+            <Typography color={palette.neutral.medium}>
+              {team.teamName}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+
+      <Divider />
+
+      {/* PROJECTS INVOLVED HEADER */}
+        <Typography
+        variant="h6"
+        color="secondary"
+        fontWeight="600"
+        pt="1rem"
+        pb="0.5rem"
+        onClick={() => navigate('/projectoverview')}
+        style={{ cursor: 'pointer' }}
       >
         Involved in the projects:
       </Typography>
@@ -251,31 +287,7 @@ const UserWidget = ({ userId, picturePath }) => {
 
       <Divider />
 
-      {/* TEAMS INVOLVED HEADER */}
-      <Typography
-        variant="h6"
-        color={palette.secondary.main}
-        fontWeight="600"
-        pt="1rem"
-        pb="0.5rem"
-      >
-        Involved in the teams:
-      </Typography>
-
-      {/* FOURTH ROW */}
-      <Box p="1rem 0">
-        {filteredTeams.map((team, index) => (
-          <Box key={index} display="flex" alignItems="center" gap="1rem">
-            <GroupOutlined
-              fontSize="large"
-              sx={{ color: palette.secondary[200] }}
-            />
-            <Typography color={palette.neutral.medium}>
-              {team.teamName}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
+      
     </WidgetWrapper>
   );
 };

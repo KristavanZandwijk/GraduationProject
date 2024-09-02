@@ -23,7 +23,7 @@ import BuildingDataSpaceID from "scenes/BuildingDataSpaceID";
 import ElementDataSpaceID from "scenes/ElementDataSpaceID";
 import File from "scenes/File";
 import UrbanScale from "scenes/UrbanScale";
-import CompanyDataSpace from "scenes/CompanyDataSpace";
+import CompanyDataSpace from "scenes/CompanySelection";
 import NewCompany from "scenes/NewCompany";
 import NewProject from "scenes/NewProject";
 import CompanyInfoPage from "scenes/CompanyInformation";

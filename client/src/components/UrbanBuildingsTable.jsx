@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox, TextField, Button, Select, MenuItem, FormControl, InputLabel, ListItemText } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox, TextField, Button, Select, MenuItem, FormControl, ListItemText } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import axios from 'axios';
 import { updateBuilding } from 'state';
@@ -14,6 +14,7 @@ const UrbanBuildingTable = ({ buildings = [], selectedBuildingDataSpaceIDs, hand
   const [editingBuildingID, setEditingBuildingID] = useState(null);
   const [buildingDetails, setBuildingDetails] = useState({});
   const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
@@ -84,7 +85,7 @@ const UrbanBuildingTable = ({ buildings = [], selectedBuildingDataSpaceIDs, hand
   };
 
   if (!Array.isArray(buildings) || buildings.length === 0) {
-    return <Typography mt="2rem">Unfortunately, there are no buildings that are accessible by you.</Typography>;
+    return <Typography mt="2rem">Unfortunately, there are no public buildings to show (yet).</Typography>;
   }
 
   const handleRowClick = (buildingDataSpaceID) => {
@@ -108,92 +109,102 @@ const UrbanBuildingTable = ({ buildings = [], selectedBuildingDataSpaceIDs, hand
           </TableRow>
         </TableHead>
         <TableBody>
-          {buildings.map((building) => (
-            <TableRow key={building.buildingDataSpaceID}>
-              <TableCell>
-                <Checkbox
-                  checked={selectedBuildingDataSpaceIDs.includes(building.buildingDataSpaceID)}
-                  onChange={(event) => handleCheckboxChange(event, building.buildingDataSpaceID)}
-                />
-              </TableCell>
-              <TableCell
-                onClick={() => handleRowClick(building.buildingDataSpaceID)}
-                style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
-              >
-                {building.buildingID}
-              </TableCell>
-              <TableCell
-                onClick={() => handleRowClick(building.buildingDataSpaceID)}
-                style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
-              >
-                {building.buildingDataSpaceID}
-              </TableCell>
-              <TableCell>
-                {editingBuildingID === building.buildingID ? (
-                  <TextField
-                    value={buildingDetails.buildingName}
-                    onChange={(e) => handleChange('buildingName', e.target.value)}
+          {buildings.map((building) => {
+            const isOwner = building.buildingOwner.some(owner => owner.personID === user.personID);
+            const isAdmin = user.role.includes('admin');
+
+            return (
+              <TableRow key={building.buildingDataSpaceID}>
+                <TableCell>
+                  <Checkbox
+                    checked={selectedBuildingDataSpaceIDs.includes(building.buildingDataSpaceID)}
+                    onChange={(event) => handleCheckboxChange(event, building.buildingDataSpaceID)}
                   />
-                ) : (
-                  building.buildingName
-                )}
-              </TableCell>
-              <TableCell>
-                {editingBuildingID === building.buildingID ? (
-                  <TextField
-                    value={buildingDetails.buildingLocation}
-                    onChange={(e) => handleChange('buildingLocation', e.target.value)}
-                  />
-                ) : (
-                  building.buildingLocation
-                )}
-              </TableCell>
-              <TableCell>
-                {editingBuildingID === building.buildingID ? (
-                  <FormControl fullWidth>
-                  <Select
-                    multiple 
-                    value={buildingDetails.buildingOwner ? buildingDetails.buildingOwner.map(owner => owner.personID) : []}
-                    onChange={handleOwnerChange}
-                    renderValue={(selected) => 
-                      selected.map(id => users.find(user => user.personID === id).firstName + ' ' + users.find(user => user.personID === id).lastName).join(', ')
-                    }
-                  >
-                    {users.map((user) => (
-                      <MenuItem key={user.personID} value={user.personID}>
-                        <Checkbox checked={buildingDetails.buildingOwner ? buildingDetails.buildingOwner.some(owner => owner.personID === user.personID) : false} />
-                        <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                
-                ) : (
-                  building.buildingOwner && building.buildingOwner.length > 0 ? (
-                    building.buildingOwner.map((owner, index) => (
-                      <Typography key={index} variant="body2">
-                        {getUserName(owner.personID)}
-                      </Typography>
-                    ))
+                </TableCell>
+                <TableCell
+                  onClick={() => handleRowClick(building.buildingDataSpaceID)}
+                  style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
+                >
+                  {building.buildingID}
+                </TableCell>
+                <TableCell
+                  onClick={() => handleRowClick(building.buildingDataSpaceID)}
+                  style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
+                >
+                  {building.buildingDataSpaceID}
+                </TableCell>
+                <TableCell>
+                  {editingBuildingID === building.buildingID ? (
+                    <TextField
+                      value={buildingDetails.buildingName}
+                      onChange={(e) => handleChange('buildingName', e.target.value)}
+                    />
                   ) : (
-                    <Typography variant="body2">No Owners</Typography>
-                  )
+                    building.buildingName
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingBuildingID === building.buildingID ? (
+                    <TextField
+                      value={buildingDetails.buildingLocation}
+                      onChange={(e) => handleChange('buildingLocation', e.target.value)}
+                    />
+                  ) : (
+                    building.buildingLocation
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingBuildingID === building.buildingID ? (
+                    <FormControl fullWidth>
+                      <Select
+                        multiple
+                        value={buildingDetails.buildingOwner ? buildingDetails.buildingOwner.map(owner => owner.personID) : []}
+                        onChange={handleOwnerChange}
+                        renderValue={(selected) =>
+                          selected.map(id => {
+                            const user = users.find(user => user.personID === id);
+                            return user ? `${user.firstName} ${user.lastName}` : id;
+                          }).join(', ')
+                        }
+                      >
+                        {users.map((user) => (
+                          <MenuItem key={user.personID} value={user.personID}>
+                            <Checkbox checked={buildingDetails.buildingOwner ? buildingDetails.buildingOwner.some(owner => owner.personID === user.personID) : false} />
+                            <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    building.buildingOwner && building.buildingOwner.length > 0 ? (
+                      building.buildingOwner.map((owner, index) => (
+                        <Typography key={index} variant="body2">
+                          {getUserName(owner.personID)}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography variant="body2">No Owners</Typography>
+                    )
+                  )}
+                </TableCell>
+                <TableCell>{new Date(building.createdAt).toLocaleString()}</TableCell>
+                {editingBuildingID === building.buildingID ? (
+                  <TableCell>
+                    <Button variant="contained" color="primary" onClick={() => handleSave(building.buildingID)}>Save</Button>
+                    <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>Cancel</Button>
+                  </TableCell>
+                ) : isOwner || isAdmin ? (
+                  <TableCell>
+                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleEditClick(building)}>Edit</Button>
+                  </TableCell>
+                ) : (
+                  <TableCell>
+                    <Typography variant="body2" color="textSecondary">No Permissions to edit information</Typography>
+                  </TableCell>
                 )}
-              </TableCell>
-              <TableCell>{new Date(building.createdAt).toLocaleString()}</TableCell>
-              {editingBuildingID === building.buildingID && (
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => handleSave(building.buildingID)}>Save</Button>
-                  <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>Cancel</Button>
-                </TableCell>
-              )}
-              {!editingBuildingID && (
-                <TableCell>
-                  <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleEditClick(building)}>Edit</Button>
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

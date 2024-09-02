@@ -98,19 +98,19 @@ const Sidebar = ({
       icon: null,
     },
     {
+      text: "Company Overview",
+      icon: <WorkOutlineOutlined />,
+      path: "/companyinformation",
+    },
+    {
       text: "Team Data Space",
       icon: <Diversity3Outlined />,
       path: "/teamdataspace",
     },
     {
-      text: "Company Data Space",
+      text: "Project Data Space",
       icon: <FactoryOutlined />,
       path: "/companydataspace",
-    },
-    {
-      text: "Company Information",
-      icon: <WorkOutlineOutlined />,
-      path: "/companyinformation",
     },
     {
       text: "Private Data Space",

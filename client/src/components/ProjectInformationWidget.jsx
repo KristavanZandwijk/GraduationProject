@@ -14,6 +14,8 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
   const [formData, setFormData] = useState(project);
   const [projects, setProjects] = useState([]);
   const [users, setUsers] = useState([]);
+  const user = useSelector((state) => state.user); // Get the current logged-in user
+
 
   const [selectedEmployees, setSelectedEmployees] = useState(
     Array.isArray(project.employees) ? project.employees.map(emp => emp.personID) : []
@@ -110,6 +112,11 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
     setSelectedBuildings(Array.isArray(project.relatesTo) ? project.relatesTo.map(building => building.buildingID) : []);
     setIsEditing(false);
   };
+
+    // Determine if the current user can edit the project information
+    const isProjectLeader = project.projectleader.some(leader => leader.personID === user.personID);
+    const isAdmin = user.role.includes('admin');
+    const canEdit = isProjectLeader || isAdmin;
 
   const handleViewDataSpace = () => {
     // Replace `companyID` with the actual company ID if needed 
@@ -371,11 +378,14 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
           )}
         </Box>
 
+        {/* Only show the Edit button if the user is allowed to edit */}
+        {canEdit && (
         <Box mt={2}>
           <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => setIsEditing(true)}>
             Edit
           </Button>
         </Box>
+        )}
       </Box>
       <Button
         variant="outlined"

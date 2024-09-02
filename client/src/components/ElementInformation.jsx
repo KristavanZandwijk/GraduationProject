@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox, TextField, Button, Select, MenuItem, FormControl, InputLabel, ListItemText } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography, Checkbox, TextField, Button, Select, MenuItem, FormControl, ListItemText } from '@mui/material';
 import { useTheme } from '@emotion/react';
 import axios from 'axios';
 import { updateElement } from 'state';
@@ -11,15 +11,14 @@ const ElementTable = ({ elements = [], fetchElements }) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
-
   const [editingElementID, setEditingElementID] = useState(null);
   const [elementDetails, setElementDetails] = useState({});
   const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user); // Get the current user
   const [users, setUsers] = useState([]);
   const [buildings, setBuildings] = useState([]);
 
   useEffect(() => {
-    // Fetch users and buildings for editing options
     const fetchUsers = async () => {
       try {
         const response = await axios.get("http://localhost:5001/users", {
@@ -122,124 +121,133 @@ const ElementTable = ({ elements = [], fetchElements }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {Array.isArray(elements) && elements.map((element) => (
-            <TableRow key={element.elementID}>
-              <TableCell>{element.elementID}</TableCell>
-              <TableCell
-                onClick={() => handleRowClickElement(element.elementDataSpaceID)}
-                style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
-              >
-                {element.elementDataSpaceID}
-              </TableCell>
-              <TableCell>
-                {editingElementID === element.elementID ? (
-                  <TextField
-                    value={elementDetails.elementName || ''}
-                    onChange={(e) => handleChange('elementName', e.target.value)}
-                  />
-                ) : (
-                  element.elementName
-                )}
-              </TableCell>
-              <TableCell>
-                {editingElementID === element.elementID ? (
-                  <TextField
-                    value={elementDetails.elementLocation || ''}
-                    onChange={(e) => handleChange('elementLocation', e.target.value)}
-                  />
-                ) : (
-                  element.elementLocation
-                )}
-              </TableCell>
-              <TableCell>
-                {editingElementID === element.elementID ? (
-                  <FormControl fullWidth>
-                    <Select
-                      multiple
-                      value={elementDetails.elementOwner ? elementDetails.elementOwner.map(owner => owner.personID) : []}
-                      onChange={handleOwnerChange}
-                      renderValue={(selected) =>
-                        selected.map(id => {
-                          const user = users.find(user => user.personID === id);
-                          return user ? `${user.firstName} ${user.lastName}` : id;
-                        }).join(', ')
-                      }
-                    >
-                      {users.map((user) => (
-                        <MenuItem key={user.personID} value={user.personID}>
-                          <Checkbox
-                            checked={elementDetails.elementOwner ? elementDetails.elementOwner.some(owner => owner.personID === user.personID) : false}
-                          />
-                          <ListItemText primary={`${user.firstName} ${user.lastName}`} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  element.elementOwner && element.elementOwner.length > 0 ? (
-                    element.elementOwner.map((owner, index) => (
-                      <Typography key={index} variant="body2">
-                        {owner.personID}
-                      </Typography>
-                    ))
-                  ) : (
-                    <Typography variant="body2">No Owners</Typography>
-                  )
-                )}
-              </TableCell>
-              <TableCell>
-                {editingElementID === element.elementID ? (
-                  <FormControl fullWidth>
-                    <Select
-                      multiple
-                      value={elementDetails.isPartOfBuilding ? elementDetails.isPartOfBuilding.map(b => b.buildingID) : []}
-                      onChange={handleBuildingChange}
-                      renderValue={(selected) =>
-                        selected.map(id => {
-                          const building = buildings.find(building => building.buildingID === id);
-                          return building ? building.buildingName : id;
-                        }).join(', ')
-                      }
-                    >
-                      {buildings.map((building) => (
-                        <MenuItem key={building.buildingID} value={building.buildingID}>
-                          <Checkbox
-                            checked={elementDetails.isPartOfBuilding ? elementDetails.isPartOfBuilding.some(b => b.buildingID === building.buildingID) : false}
-                          />
-                          <ListItemText primary={building.buildingName} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  element.isPartOfBuilding && element.isPartOfBuilding.length > 0 ? (
-                    element.isPartOfBuilding.map((building, index) => (
-                      <Typography key={index} variant="body2">
-                        {building.buildingID}
-                      </Typography>
-                    ))
-                  ) : (
-                    <Typography variant="body2">No related building</Typography>
-                  )
-                )}
-              </TableCell>
-              <TableCell>{new Date(element.createdAt).toLocaleString()}</TableCell>
-              {editingElementID === element.elementID && (
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => handleSave(element.elementID)}>Save</Button>
-                  <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>Cancel</Button>
+          {Array.isArray(elements) && elements.map((element) => {
+            const isOwner = element.elementOwner.some(owner => owner.personID === user.personID);
+            const isAdmin = user.role.includes('admin');
+
+            return (
+              <TableRow key={element.elementID}>
+                <TableCell>{element.elementID}</TableCell>
+                <TableCell
+                  onClick={() => handleRowClickElement(element.elementDataSpaceID)}
+                  style={{ cursor: 'pointer', color: theme.palette.secondary.main }}
+                >
+                  {element.elementDataSpaceID}
                 </TableCell>
-              )}
-              {!editingElementID && (
                 <TableCell>
-                  <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleEditClick(element)}>Edit</Button>
+                  {editingElementID === element.elementID ? (
+                    <TextField
+                      value={elementDetails.elementName || ''}
+                      onChange={(e) => handleChange('elementName', e.target.value)}
+                    />
+                  ) : (
+                    element.elementName
+                  )}
                 </TableCell>
-              )}
-            </TableRow>
-          ))}
+                <TableCell>
+                  {editingElementID === element.elementID ? (
+                    <TextField
+                      value={elementDetails.elementLocation || ''}
+                      onChange={(e) => handleChange('elementLocation', e.target.value)}
+                    />
+                  ) : (
+                    element.elementLocation
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingElementID === element.elementID ? (
+                    <FormControl fullWidth>
+                      <Select
+                        multiple
+                        value={elementDetails.elementOwner ? elementDetails.elementOwner.map(owner => owner.personID) : []}
+                        onChange={handleOwnerChange}
+                        renderValue={(selected) =>
+                          selected.map(id => {
+                            const user = users.find(user => user.personID === id);
+                            return user ? `${user.firstName} ${user.lastName}` : id;
+                          }).join(', ')
+                        }
+                      >
+                        {users.map((user) => (
+                          <MenuItem key={user.personID} value={user.personID}>
+                            <Checkbox
+                              checked={elementDetails.elementOwner ? elementDetails.elementOwner.some(owner => owner.personID === user.personID) : false}
+                            />
+                            <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    element.elementOwner && element.elementOwner.length > 0 ? (
+                      element.elementOwner.map((owner, index) => (
+                        <Typography key={index} variant="body2">
+                          {`${owner.personID}`}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography variant="body2">No Owners</Typography>
+                    )
+                  )}
+                </TableCell>
+                <TableCell>
+                  {editingElementID === element.elementID ? (
+                    <FormControl fullWidth>
+                      <Select
+                        multiple
+                        value={elementDetails.isPartOfBuilding ? elementDetails.isPartOfBuilding.map(b => b.buildingID) : []}
+                        onChange={handleBuildingChange}
+                        renderValue={(selected) =>
+                          selected.map(id => {
+                            const building = buildings.find(building => building.buildingID === id);
+                            return building ? building.buildingName : id;
+                          }).join(', ')
+                        }
+                      >
+                        {buildings.map((building) => (
+                          <MenuItem key={building.buildingID} value={building.buildingID}>
+                            <Checkbox
+                              checked={elementDetails.isPartOfBuilding ? elementDetails.isPartOfBuilding.some(b => b.buildingID === building.buildingID) : false}
+                            />
+                            <ListItemText primary={building.buildingName} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    element.isPartOfBuilding && element.isPartOfBuilding.length > 0 ? (
+                      element.isPartOfBuilding.map((building, index) => (
+                        <Typography key={index} variant="body2">
+                          {building.buildingID}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography variant="body2">No related building</Typography>
+                    )
+                  )}
+                </TableCell>
+                <TableCell>{new Date(element.createdAt).toLocaleString()}</TableCell>
+                {editingElementID === element.elementID ? (
+                  <TableCell>
+                    <Button variant="contained" color="primary" onClick={() => handleSave(element.elementID)}>Save</Button>
+                    <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>Cancel</Button>
+                  </TableCell>
+                ) : isOwner || isAdmin ? (
+                  <TableCell>
+                    <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => handleEditClick(element)}>Edit</Button>
+                  </TableCell>
+                ) : (
+                  <TableCell>
+                    <Typography variant="body2" color="textSecondary">No Permissions to edit information</Typography>
+                  </TableCell>
+                )}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}  
+};
+
 export default ElementTable;

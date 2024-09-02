@@ -18,6 +18,9 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
   const [selectedOwners, setSelectedOwners] = useState(companyOwner.map(owner => owner.personID));
   const token = useSelector((state) => state.token);
   const users = useSelector((state) => state.users || []);
+  const user = useSelector((state) => state.user || {}); 
+
+  
 
   useEffect(() => {
     const fetchTeams = async () => {
@@ -109,13 +112,18 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
     return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
   };
 
+    // Determine if the current user can edit the team information
+    const isCompanyOwner = company.companyOwner.some(owner => owner.personID === user.personID);
+    const isAdmin = user.role.includes('admin');
+    const canEdit = isCompanyOwner|| isAdmin;
+
   return (
     <Paper elevation={3} sx={{ borderRadius: 10, p: 3 }}>
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h5" gutterBottom>
         Company Information
       </Typography>
       <Box display="flex" flexDirection="column">
-        <Box sx={{ cursor: 'pointer' }}>
+        <Box>
           <UserImage image={company.picturePath} size="100px" />
         </Box>
         <Box ml={2} width="100%">
@@ -294,11 +302,14 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
           )}
         </Box>
 
+        {/* Only show the Edit button if the user is allowed to edit */}
+        {canEdit && (
         <Box mt={2}>
           <Button variant="contained" color="primary" onClick={() => setIsEditing(true)}>
             Edit
           </Button>
         </Box>
+        )}
 
     </Paper>
   );

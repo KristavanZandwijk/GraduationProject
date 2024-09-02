@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Paper, Typography, TextField, FormControl, InputLabel, Button, useTheme, Select, MenuItem, Checkbox, ListItemText, Grid } from '@mui/material';
+import { Box, Paper, Typography, TextField, FormControl, InputLabel, Button, useTheme, Select, MenuItem, Checkbox, ListItemText } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateTeam, setUsers } from 'state';
+import { updateTeam, setUsers, setCompanies } from 'state';
 
 const TeamInformationWidget = ({ team, onTeamUpdate }) => {
   const theme = useTheme();
@@ -16,6 +16,7 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
   const users = useSelector((state) => state.users || []);
   const companies = useSelector((state) => state.companies || []);
   const projects = useSelector((state) => state.projects || []);
+  const user = useSelector((state) => state.user); // Get the current logged-in user
 
   const [selectedClients, setSelectedClients] = useState(
     Array.isArray(team.clients) ? team.clients.map(client => client.personID) : []
@@ -45,7 +46,19 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
       }
     };
 
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/companies/all", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
+      } catch (error) {
+        console.error("Failed to fetch companies:", error);
+      }
+    };
+
     fetchUsers();
+    fetchCompanies();
   }, [token, dispatch]);
 
   const getClientName = (personID) => {
@@ -111,6 +124,11 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
     navigate(`/teamdataspace/${team.teamID}`);
   };
 
+  // Determine if the current user can edit the team information
+  const isTeamLeader = team.teamleader.some(leader => leader.personID === user.personID);
+  const isAdmin = user.role.includes('admin');
+  const canEdit = isTeamLeader || isAdmin;
+
   return (
     <Paper elevation={3} sx={{ borderRadius: 10, p: 3 }}>
       <Box>
@@ -157,7 +175,7 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
                 value={selectedCompanies}
                 onChange={(e) => setSelectedCompanies(e.target.value)}
                 renderValue={(selected) =>
-                  selected.map(id => getCompanyName(id)).join(', ')
+                  selected.map(companyID => getCompanyName(companyID)).join(', ')
                 }
               >
                 <MenuItem value="" disabled>
@@ -259,12 +277,15 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
           )}
         </Box>
 
+        {/* Only show the Edit button if the user is allowed to edit */}
+        {canEdit && (
+          <Box mt={2}>
+            <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => setIsEditing(true)}>
+              Edit
+            </Button>
+          </Box>
+        )}
 
-        <Box mt={2}>
-          <Button variant="contained" color="primary" sx={{ mt: 2 }} onClick={() => setIsEditing(true)}>
-            Edit
-          </Button>
-        </Box>
       </Box>
       <Button
         variant="outlined"

@@ -76,7 +76,7 @@ const UserSchema = new mongoose.Schema(
         "element owner",
         "building manager",
         "team leader",
-        "project leader",
+        "project leader", 
         "admin",
         "architect",
         "structural engineer",

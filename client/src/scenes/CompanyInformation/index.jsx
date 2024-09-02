@@ -6,6 +6,7 @@ import axios from 'axios';
 import { setCompanies } from 'state';
 import { useNavigate } from 'react-router-dom';
 import CombinedCompanyInfoWidget from 'components/CompnayInformationWidget';
+import RoleBasedButton from 'components/RoleBasedButton';
 
 const CompanyInformation = () => {
   const dispatch = useDispatch();
@@ -61,10 +62,6 @@ const CompanyInformation = () => {
       )
     : [];
 
-  const handleNewCompanyClick = () => {
-    navigate('/companyinformation/newcompany');
-  };
-
   const handleCompanyUpdate = () => {
     fetchCompanies(); // Ensure fetchCompanies is defined and called here
   };
@@ -76,9 +73,11 @@ const CompanyInformation = () => {
         subtitle="This page shows the meta data of all companies where you are registered as an employee. Click on the company to navigate to the company data space."
       />
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="contained" color="primary" onClick={handleNewCompanyClick} sx={{ mr: 2 }}>
-          Create New Company
-        </Button>
+        <RoleBasedButton
+          roles={['admin', 'company owner']}
+          buttonText="Create New Company"
+          navigateTo="/companyinformation/newcompany"
+        />
       </Box>
       {filteredCompanies.length > 0 ? (
         <Grid container spacing={2}>

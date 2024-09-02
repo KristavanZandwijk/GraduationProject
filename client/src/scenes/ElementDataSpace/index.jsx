@@ -6,6 +6,7 @@ import { setElements } from '../../state';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import ElementTable from 'components/ElementInformation';
+import RoleBasedButton from 'components/RoleBasedButton';
 
 const ElementDataSpace = () => {
   const dispatch = useDispatch();
@@ -31,18 +32,18 @@ const ElementDataSpace = () => {
     fetchElements();
   }, [dispatch, token]);
   
-
-  const handleNewElementClick = () => {
-    navigate('/elementdataspace/newelement');
-  };
-
   return (
     <Box m="1.5rem 2.5rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="Element Data Spaces" subtitle="This space shows all the element data spaces that are accessible to you. Click on the element data space ID to access the element data space." />
-        <Button variant="contained" color="primary" onClick={handleNewElementClick}>
-          Create New Element
-        </Button>
+      </Box>
+
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <RoleBasedButton
+          roles={['admin', 'team leader', 'project leader', 'element owner']}
+          buttonText="Create New Element"
+          navigateTo="/elementdataspace/newelement"
+        />
       </Box>
       <Box mt={3}>
         {Array.isArray(elements) && elements.length === 0 ? (

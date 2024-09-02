@@ -97,7 +97,7 @@ const CompanyDataSpace = () => {
   return (
     <Box m="1.5rem 2.5rem" height="100vh">
       <Header
-        title="Select a company to go to Data Space."
+        title="Select a company to go to Data Space"
         subtitle="" // You might want to provide a meaningful subtitle or remove it
       />
       <Box display="flex" justifyContent="flex-end" mb={1}>

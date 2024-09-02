@@ -7,6 +7,7 @@ import { setCompanies, setProjects } from 'state';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams import
 import ProjectInfo from 'components/ProjectInformationWidget';
 import CompanySelect from 'components/SelectCompany'; // Import the new component
+import RoleBasedButton from 'components/RoleBasedButton';
 
 const ProjectDataSpace = () => { 
   const dispatch = useDispatch();
@@ -131,12 +132,13 @@ const ProjectDataSpace = () => {
           </>
         }
       />
-      <Box display="flex" justifyContent="flex-end" mb={1}>
-        <Button variant="contained" color="primary" onClick={() => navigate('/companydataspace/newproject')}>
-          Create New Project
-        </Button>
+      <Box display="flex" justifyContent="flex-end" mb={2}>
+        <RoleBasedButton
+          roles={['admin', 'team leader', 'project leader', 'company owner']}
+          buttonText="Create New Project"
+          navigateTo="/companydataspace/newproject"
+        />
       </Box>
-
       <CompanySelect 
         selectedCompany={selectedCompany} 
         setSelectedCompany={setSelectedCompany}

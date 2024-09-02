@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import UrbanBuildingTable from 'components/UrbanBuildingsTable';
 import IFCViewer from 'components/IFCViewer';
+import RoleBasedButton from 'components/RoleBasedButton';
 
 const UrbanScale = () => {
   const dispatch = useDispatch();
@@ -55,10 +56,6 @@ const UrbanScale = () => {
     }
   };
 
-  const handleNewBuildingClick = () => {
-    navigate('/urbanscale/newbuilding');
-  };
-
   return (
     <Box m="1.5rem 2.5rem" height="100vh" display="flex" flexDirection="column">
       <Header
@@ -66,9 +63,11 @@ const UrbanScale = () => {
         subtitle="This map shows the buildings (ifc files) that are accessible by you."
       />
       <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button variant="contained" color="primary" onClick={handleNewBuildingClick} sx={{ mr: 2 }}>
-          Create New Building
-        </Button>
+        <RoleBasedButton
+          roles={['admin', 'building owner', 'team leader', 'project leader']}
+          buttonText="Create New Building"
+          navigateTo="/urbanscale/newbuilding"
+        />
       </Box>
       <Box mt={3}>
         {buildings.length === 0 ? (

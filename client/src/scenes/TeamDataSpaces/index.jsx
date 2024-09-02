@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import TeamInformationWidget from 'components/TeamInformationWidget';
 import { setTeams } from 'state';
 import { useTheme } from '@emotion/react';
+import RoleBasedButton from 'components/RoleBasedButton';
 
 const TeamDataSpaces = () => {
   const dispatch = useDispatch();
@@ -55,19 +56,18 @@ const TeamDataSpaces = () => {
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header
-        title="Team Data Spaces"
-        subtitle="Overview of your team data spaces"
-      />
-
-      <Box display="flex" justifyContent="flex-end" mb={2}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate('/teamdataspace/newteam')}
-        >
-          Create New Team
-        </Button>
+       <Box flex="1" ml={4}>
+        <Header
+          title="Team Data Spaces"
+          subtitle="Overview of your team data spaces"
+        />
+       </Box>
+       <Box display="flex" justifyContent="flex-end" mb={2}>
+        <RoleBasedButton
+          roles={['admin', 'team leader']}
+          buttonText="Create New Team"
+          navigateTo="/teamdataspace/newteam"
+        />
       </Box>
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
         Teams:

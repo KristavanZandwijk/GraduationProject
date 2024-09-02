@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Typography } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Checkbox, Button, Typography } from '@mui/material';
 import { useTheme } from "@mui/material";
 
 const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheckboxChange }) => {
@@ -8,6 +8,11 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
   if (files.length === 0) {
     return <Typography mt="2rem">Unfortunately, there are no files related to this dataspace yet.</Typography>;
   }
+
+  const handleDownload = (filePath) => {
+    const downloadUrl = `http://127.0.0.1:1002/server/${filePath}`;
+    window.open(downloadUrl, '_blank');
+  };
 
   return (
     <TableContainer component={Paper} sx={{ marginTop: "2rem" }}>
@@ -23,6 +28,7 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
             <TableCell>Related To Team</TableCell>
             <TableCell>Status of Sharing</TableCell>
             <TableCell>Uploaded At</TableCell>
+            <TableCell>Download</TableCell> {/* New column for downloading files */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -46,6 +52,15 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
               <TableCell>{file.relatedToTeam}</TableCell>
               <TableCell>{file.status}</TableCell>
               <TableCell>{new Date(file.createdAt).toLocaleString()}</TableCell>
+              <TableCell>
+                <Button 
+                  variant="contained" 
+                  color="primary" 
+                  onClick={() => handleDownload(file.filePath)}
+                >
+                  Download
+                </Button>
+              </TableCell> {/* New cell for the download button */}
             </TableRow>
           ))}
         </TableBody>

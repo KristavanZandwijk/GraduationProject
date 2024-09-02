@@ -119,11 +119,11 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
     const canEdit = isProjectLeader || isAdmin;
 
   const handleViewDataSpace = () => {
-    // Replace `companyID` with the actual company ID if needed 
-    // Assuming you want to use the first selected companyID from selectedCompanies array
-    const companyID = selectedCompanies[0] || 'defaultCompanyID'; 
-    navigate(`/companydataspace/${companyID}/${project.projectID}`);
+    navigate(`/projectoverview/${project.projectID}`);
   };
+
+   // Filter companies to only include those related to the project
+   const filteredCompanies = companies.filter(company => selectedCompanies.includes(company.companyID));
 
   return (
     <Paper elevation={3} sx={{ borderRadius: 10, p: 3 }}>
@@ -168,16 +168,16 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
               renderValue={(selected) => selected.map(getCompanyName).join(', ')}
             >
               <MenuItem value="" disabled>
-                <em>Select the company(s) involved in the project</em>
-              </MenuItem>
-              {Array.isArray(companies) && companies.map((company) => (
-                <MenuItem key={company.companyID} value={company.companyID}>
-                  <Checkbox checked={selectedCompanies.includes(company.companyID)} />
-                  <ListItemText primary={company.companyName} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+                    <em>Select the company(s) involved in the project</em>
+                  </MenuItem>
+                  {Array.isArray(filteredCompanies) && filteredCompanies.map((company) => (
+                    <MenuItem key={company.companyID} value={company.companyID}>
+                      <Checkbox checked={selectedCompanies.includes(company.companyID)} />
+                      <ListItemText primary={company.companyName} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
             </Grid>
           
@@ -303,12 +303,12 @@ const ProjectInfo = ({ project, companies, users: propUsers, buildings, onProjec
             </Typography>
           </>
         )}
-        <Box mt={3}>
+         <Box mt={3}>
           <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
             Companies:
           </Typography>
-          {companies.length > 0 ? (
-            companies.map((company) => (
+          {filteredCompanies.length > 0 ? (
+            filteredCompanies.map((company) => (
               <Typography key={company.companyID} variant="subtitle1">
                 {company.companyName} - {company.companyID}
               </Typography>

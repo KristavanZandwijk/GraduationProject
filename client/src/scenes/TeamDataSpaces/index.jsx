@@ -81,7 +81,7 @@ const TeamDataSpaces = () => {
               onTeamUpdate={fetchTeams}
               />
             </Grid>
-          ))
+          )) 
         ) : (
           <Typography>No teams found for this user.</Typography>
         )}

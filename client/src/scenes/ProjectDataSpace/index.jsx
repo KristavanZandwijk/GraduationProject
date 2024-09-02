@@ -6,7 +6,6 @@ import axios from 'axios';
 import { setCompanies, setProjects } from 'state';
 import { useNavigate, useParams } from 'react-router-dom'; // useParams import
 import ProjectInfo from 'components/ProjectInformationWidget';
-import CompanySelect from 'components/SelectCompany'; // Import the new component
 import RoleBasedButton from 'components/RoleBasedButton';
 
 const ProjectDataSpace = () => { 
@@ -25,9 +24,9 @@ const ProjectDataSpace = () => {
   const { companyID } = useParams(); // Use useParams to get the companyID from the URL
 
   useEffect(() => {
-    const fetchCompanies = async () => {
+    const fetchCompanies = async () => { 
       try {
-        const response = await axios.get('http://localhost:5001/companies', {
+        const response = await axios.get('http://localhost:5001/companies/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
@@ -120,15 +119,11 @@ const ProjectDataSpace = () => {
         title="Project Overview"
         subtitle={
           <>
-            This page shows the projects of company{' '}
-            <Typography component="span" fontWeight="bold">
-              {filteredCompanies.length > 0 ? filteredCompanies[0].companyName : 'N/A'}
-            </Typography>{' '}
-            where you{' '}
+            This page shows all the projects where you{' '}
             <Typography component="span" fontWeight="bold">
               ({user.firstName} {user.lastName})
             </Typography>{' '}
-            are registered as an employee.
+            are registered as an employee. If you do not see your desired project, contact the admin, or project leader to add you as an employee.
           </>
         }
       />
@@ -139,11 +134,6 @@ const ProjectDataSpace = () => {
           navigateTo="/companydataspace/newproject"
         />
       </Box>
-      <CompanySelect 
-        selectedCompany={selectedCompany} 
-        setSelectedCompany={setSelectedCompany}
-      />
-
       <Typography color={theme.palette.secondary.main} fontWeight="bold" variant="h6" gutterBottom>
         Company Projects
       </Typography>

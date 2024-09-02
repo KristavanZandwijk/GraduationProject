@@ -110,7 +110,7 @@ const Sidebar = ({
     {
       text: "Project Data Space",
       icon: <FactoryOutlined />,
-      path: "/companydataspace",
+      path: "/projectoverview",
     },
     {
       text: "Private Data Space",

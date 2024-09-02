@@ -102,6 +102,10 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
     navigate(`/teamdataspace/${teamID}`);
   };
 
+  const handleProjectClick = (projectID) => {
+    navigate(`/projectoverview/${projectID}`);
+  };
+
   const getEmployeeName = (id) => {
     const user = users.find((u) => u.personID === id);
     return user ? `${user.firstName} ${user.lastName}` : 'Unknown';
@@ -273,12 +277,16 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
 
         <Box mt={3}>
           <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
-            Projects:
+            Projects (project ID):
           </Typography>
           {projectsWithTeams.length > 0 ? (
             projectsWithTeams.map((project) => (
               <Box key={project.projectID} mb={2}>
-                <Typography variant="subtitle1">
+                <Typography 
+                  variant="subtitle1"
+                  onClick={() => handleProjectClick(project.projectID)}
+                  sx={{ cursor: 'pointer' }}
+                  >
                   <strong>{project.projectName}</strong> - {project.projectID}
                 </Typography>
                 {project.relatedTeams.length > 0 && (

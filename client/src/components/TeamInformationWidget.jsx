@@ -34,6 +34,11 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
     Array.isArray(team.teamleader) ? team.teamleader.map(teamleader => teamleader.personID) : []
   );
 
+    // Filter the companies that are involved in the team
+    const filteredCompanies = companies.filter(company =>
+      selectedCompanies.includes(company.companyID)
+    );
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -251,14 +256,14 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
           <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
             Companies:
           </Typography>
-          {companies.length > 0 ? (
-            companies.map((company) => (
+          {filteredCompanies.length > 0 ? (
+            filteredCompanies.map((company) => (
               <Typography key={company.companyID} variant="subtitle1">
                 {company.companyName} - {company.companyID}
               </Typography>
             ))
           ) : (
-            <Typography variant="subtitle1">No companies</Typography>
+            <Typography variant="subtitle1">No companies involved in the team</Typography>
           )}
         </Box>
 

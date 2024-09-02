@@ -23,7 +23,6 @@ import BuildingDataSpaceID from "scenes/BuildingDataSpaceID";
 import ElementDataSpaceID from "scenes/ElementDataSpaceID";
 import File from "scenes/File";
 import UrbanScale from "scenes/UrbanScale";
-import CompanyDataSpace from "scenes/CompanySelection";
 import NewCompany from "scenes/NewCompany";
 import NewProject from "scenes/NewProject";
 import CompanyInfoPage from "scenes/CompanyInformation";
@@ -66,9 +65,8 @@ function App() {
               <Route path="/companyinformation" element={isAuth ? <CompanyInfoPage /> : <Navigate to="/" />} />
               <Route path="/companyinformation/newcompany" element={isAuth ? <NewCompany /> : <Navigate to="/" />} />
               <Route path="/companydataspace/newproject" element={isAuth ? <NewProject /> : <Navigate to="/" />} />
-              <Route path="/companydataspace" element={isAuth ? <CompanyDataSpace /> : <Navigate to="/" />} />
-              <Route path="/companydataspace/:companyID" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />} />
-              <Route path="/companydataspace/:companyID/:projectID" element={isAuth ? <ProjectDataSpaceID /> : <Navigate to="/" />} />
+              <Route path="/projectoverview" element={isAuth ? <ProjectDataSpace /> : <Navigate to="/" />} />
+              <Route path="/projectoverview/:projectID" element={isAuth ? <ProjectDataSpaceID /> : <Navigate to="/" />} />
 
               <Route path="/teamdataspace" element={isAuth ? <TeamDataSpaces /> : <Navigate to="/" />} />
               <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceIDFiles/> : <Navigate to="/" />} />

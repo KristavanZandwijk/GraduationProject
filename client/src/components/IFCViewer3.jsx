@@ -1,18 +1,16 @@
-import React, { useEffect } from 'react';
-import * as WEBIFC from "web-ifc";
-import * as BUI from "@thatopen/ui";
-import * as OBC from "@thatopen/components";
-import * as OBF from "@thatopen/components-front";
-import * as CUI from "@thatopen/ui-obc";
-import { Manager } from '@thatopen/ui';
-import Stats from "stats.js";
+import React, { useEffect, useRef, useState } from 'react';
+import * as WEBIFC from 'web-ifc';
+import * as BUI from '@thatopen/ui';
+import * as OBC from '@thatopen/components';
+import * as OBF from '@thatopen/components-front';
+import * as CUI from '@thatopen/ui-obc';
 
 const IFCViewer3 = () => {
+  const viewportRef = useRef(null);
+  const [attributesTable, setAttributesTable] = useState(null);
+
   useEffect(() => {
     let world;
-    let stats;
-    let propertiesTable;
-    let updatePropertiesTable;
 
     const init = async () => {
       const container = document.getElementById('container');
@@ -21,172 +19,221 @@ const IFCViewer3 = () => {
         return;
       }
 
-      // Setting up the world
+      BUI.Manager.init();
+
+      //Load a model
       const components = new OBC.Components();
       const worlds = components.get(OBC.Worlds);
       world = worlds.create();
 
-      world.scene = new OBC.SimpleScene(components);
-      world.renderer = new OBC.SimpleRenderer(components, container);
-      world.camera = new OBC.SimpleCamera(components);
+      const sceneComponent = new OBC.SimpleScene(components);
+      sceneComponent.setup();
+      world.scene = sceneComponent;
+
+      const rendererComponent = new OBC.SimpleRenderer(components, viewportRef.current);
+      world.renderer = rendererComponent;
+
+      const cameraComponent = new OBC.SimpleCamera(components);
+      world.camera = cameraComponent;
 
       components.init();
 
-      // Scene settings (position camera & lights)
-      world.camera.controls.setLookAt(12, 6, 8, 0, 0, -10);
+      cameraComponent.controls.setLookAt(10, 5.5, 5, -4, -1, -6.5);
       world.scene.setup();
 
-      // Importing grid
+      viewportRef.current.addEventListener('resize', () => {
+        rendererComponent.resize();
+        cameraComponent.updateAspect();
+      });
+
       const grids = components.get(OBC.Grids);
       grids.create(world);
 
-      // Background setting
       world.scene.three.background = null;
 
-      // Getting IFC and Fragments
-      const fragments = components.get(OBC.FragmentsManager);
-      const fragmentIfcLoader = components.get(OBC.IfcLoader);
+      //calculate the relations index of the model
 
-      // Calibrating the converter
-      await fragmentIfcLoader.setup();
-
-      // Configuration to origin
-      fragmentIfcLoader.settings.webIfc.COORDINATE_TO_ORIGIN = true;
-
-      // Load the specific IFC file
-      const filepath = "http://127.0.0.1:1002/server/public/assets/dataSpaces/DSKrista/atlasfloor.ifc";
-      const file = await fetch(filepath);
-      const data = await file.arrayBuffer();
-      const buffer = new Uint8Array(data);
-      const model = await fragmentIfcLoader.load(buffer);
-      model.name = filepath.split('/').pop();
+      const ifcLoader = components.get(OBC.IfcLoader);
+      await ifcLoader.setup();
+      const file = await fetch('https://thatopen.github.io/engine_ui-components/resources/small.ifc');
+      const buffer = await file.arrayBuffer();
+      const typedArray = new Uint8Array(buffer);
+      const model = await ifcLoader.load(typedArray);
       world.scene.three.add(model);
 
-      // Saving IFC file
-      function download(file) {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(file);
-        link.download = file.name;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-      }
+      //Preconfiguring the table
+      const indexer = components.get(OBC.IfcRelationsIndexer);
+      await indexer.process(model);
 
-      const exportFragments = () => {
-        if (!fragments.groups.size) {
-          return;
-        }
-        const group = Array.from(fragments.groups.values())[0];
-        const data = fragments.export(group);
-        download(new File([new Blob([data])], 'small.frag'));
+      const baseStyle = { padding: '0.25rem', borderRadius: '0.25rem' };
 
-        const properties = group.getLocalProperties();
-        if (properties) {
-          download(new File([JSON.stringify(properties)], 'small.json'));
-        }
-      };
-
-      // Cleaning the memory
-      const disposeFragments = () => {
-        fragments.dispose();
-      };
-
-      // Measuring performance
-      stats = new Stats();
-      stats.showPanel(0);
-      container.appendChild(stats.dom);
-      stats.dom.style.position = 'absolute';
-      stats.dom.style.top = '0px';
-      stats.dom.style.left = '0px';
-      stats.dom.style.zIndex = '10000';
-      world.renderer.onBeforeUpdate.add(() => stats.begin());
-      world.renderer.onAfterUpdate.add(() => stats.end());
-
-      const animate = () => {
-        stats.begin();
-        world.renderer.update();
-        stats.end();
-        requestAnimationFrame(animate);
-      };
-
-      requestAnimationFrame(animate);
-
-      // Adding the User-interface
-      Manager.init();
-
-      const panelHTML = `
-        <bim-panel active label="IFC Loader Tutorial" class="options-menu" style="position: absolute; top: 10px; right: 10px; z-index: 10001; background: white; border: 1px solid #ccc; padding: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
-          <bim-panel-section collapsed label="Controls">
-            <bim-panel-section style="padding-top: 12px;">
-              <bim-button label="Export fragments" onclick="window.exportFragments();"></bim-button>
-              <bim-button label="Dispose fragments" onclick="window.disposeFragments();"></bim-button>
-            </bim-panel-section>
-          </bim-panel-section>
-        </bim-panel>
-      `;
-
-      const buttonHTML = `
-        <bim-button class="phone-menu-toggler" icon="solar:settings-bold" style="position: absolute; top: 10px; right: 10px; z-index: 10002;" onclick="
-          const panel = document.querySelector('.options-menu');
-          if (panel.classList.contains('options-menu-visible')) {
-            panel.classList.remove('options-menu-visible');
-          } else {
-            panel.classList.add('options-menu-visible');
+      //create the table using the predefine functional component
+      const tableDefinition = {
+        Entity: (entity) => {
+          let style = {};
+          if (entity === OBC.IfcCategoryMap[WEBIFC.IFCPROPERTYSET]) {
+            style = { ...baseStyle, backgroundColor: 'purple', color: 'white' };
           }
-        "></bim-button>
-      `;
+          if (String(entity).includes('IFCWALL')) {
+            style = { ...baseStyle, backgroundColor: 'green', color: 'white' };
+          }
+          return <bim-label style={style}>{entity}</bim-label>;
+        },
+        PredefinedType: (type) => {
+          const colors = ['#1c8d83', '#3c1c8d', '#386c19', '#837c24'];
+          const randomIndex = Math.floor(Math.random() * colors.length);
+          const backgroundColor = colors[randomIndex];
+          const style = { ...baseStyle, backgroundColor, color: 'white' };
+          return <bim-label style={style}>{type}</bim-label>;
+        },
+        NominalValue: (value) => {
+          let style = {};
+          if (typeof value === 'boolean' && value === false) {
+            style = { ...baseStyle, backgroundColor: '#b13535', color: 'white' };
+          }
+          if (typeof value === 'boolean' && value === true) {
+            style = { ...baseStyle, backgroundColor: '#18882c', color: 'white' };
+          }
+          return <bim-label style={style}>{value}</bim-label>;
+        },
+      };
 
-      const panelContainer = document.createElement('div');
-      panelContainer.innerHTML = panelHTML;
-      container.appendChild(panelContainer);
-
-      const buttonContainer = document.createElement('div');
-      buttonContainer.innerHTML = buttonHTML;
-      container.appendChild(buttonContainer);
-
-      // Setting up element highlighting
-      [propertiesTable, updatePropertiesTable] = CUI.tables.elementProperties({
+      //Updating table when user makes new selection
+      const attributesTable = CUI.tables.entityAttributes({
         components,
         fragmentIdMap: {},
+        tableDefinition,
+        attributesToInclude: () => {
+          const attributes = [
+            'Name',
+            'ContainedInStructure',
+            'HasProperties',
+            'HasPropertySets',
+            (name) => name.includes('Value'),
+            (name) => name.startsWith('Material'),
+            (name) => name.startsWith('Relating'),
+            (name) => {
+              const ignore = ['IsGroupedBy', 'IsDecomposedBy'];
+              return name.startsWith('Is') && !ignore.includes(name);
+            },
+          ];
+          return attributes;
+        },
       });
 
-      propertiesTable.preserveStructureOnFilter = true;
-      propertiesTable.indentationInText = false;
+      attributesTable.expanded = true;
+      attributesTable.indentationInText = true;
+      attributesTable.preserveStructureOnFilter = true;
 
+      setAttributesTable(attributesTable);
+
+      // Creating a panel to append the table
       const highlighter = components.get(OBF.Highlighter);
       highlighter.setup({ world });
 
       highlighter.events.select.onHighlight.add((fragmentIdMap) => {
-        console.log("Highlight event triggered, fragmentIdMap:", fragmentIdMap);
-        updatePropertiesTable({ fragmentIdMap });
+        setAttributesTable({ fragmentIdMap });
       });
 
-      highlighter.events.select.onClear.add(() => {
-        console.log("Clear event triggered");
-        updatePropertiesTable({ fragmentIdMap: {} });
-      });
+      highlighter.events.select.onClear.add(() =>
+        setAttributesTable({ fragmentIdMap: {} }),
+      );
 
-      // Exposing functions to window object
-      window.exportFragments = exportFragments;
-      window.disposeFragments = disposeFragments;
+      //Create BIM rid elements
+
+      const onSearchInput = (e) => {
+        const input = e.target;
+        attributesTable.queryString = input.value;
+      };
+
+      const onPreserveStructureChange = (e) => {
+        const checkbox = e.target
+        attributesTable.preserveStructureOnFilter = checkbox.checked;
+      };
+
+      const onExportJSON = () => {
+        attributesTable.downloadData('entities-attributes');
+      };
+
+      const onCopyTSV = async () => {
+        await navigator.clipboard.writeText(attributesTable.tsv);
+        alert('Table data copied as TSV in clipboard! Try to paste it in a spreadsheet app.');
+      };
+
+      const onAttributesChange = (e) => {
+        const dropdownValue = e.target.value;
+        setAttributesTable((prevTable) => ({
+          ...prevTable,
+          attributesToInclude: () => {
+            const attributes = [
+              ...dropdownValue,
+              (name) => name.includes('Value'),
+              (name) => name.startsWith('Material'),
+              (name) => name.startsWith('Relating'),
+              (name) => {
+                const ignore = ['IsGroupedBy', 'IsDecomposedBy'];
+                return name.startsWith('Is') && !ignore.includes(name);
+              },
+            ];
+            return attributes;
+          },
+        }));
+      };
+
+      const BIMPanelContainer = document.createElement('div');
+      BIMPanelContainer.innerHTML = `
+        <bim-panel>
+          <bim-panel-section label="Entity Attributes" fixed>
+            <div style="display: flex; gap: 0.5rem; justify-content: space-between;">
+              <div style="display: flex; gap: 0.5rem;">
+                <bim-text-input onInput=${onSearchInput} type="search" placeholder="Search" debounce="250"></bim-text-input>
+                <bim-checkbox onChange=${onPreserveStructureChange} label="Preserve Structure" inverted checked></bim-checkbox>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <bim-dropdown onChange=${onAttributesChange} multiple>
+                  <bim-option label="Name" checked></bim-option>
+                  <bim-option label="ContainedInStructure" checked></bim-option>
+                  <bim-option label="ForLayerSet"></bim-option>
+                  <bim-option label="LayerThickness"></bim-option>
+                  <bim-option label="HasProperties" checked></bim-option>
+                  <bim-option label="HasAssociations"></bim-option>
+                  <bim-option label="HasAssignments"></bim-option>
+                  <bim-option label="HasPropertySets" checked></bim-option>
+                  <bim-option label="PredefinedType"></bim-option>
+                  <bim-option label="Quantities"></bim-option>
+                  <bim-option label="ReferencedSource"></bim-option>
+                  <bim-option label="Identification"></bim-option>
+                  <bim-option label="Prefix"></bim-option>
+                  <bim-option label="LongName"></bim-option>
+                </bim-dropdown>
+                <bim-button onClick=${onCopyTSV} icon="solar:copy-bold" tooltip-title="Copy TSV" tooltip-text="Copy the table contents as tab separated text values, so you can copy them into a spreadsheet."></bim-button>
+                <bim-button onClick=${onExportJSON} icon="ph:export-fill" tooltip-title="Export JSON" tooltip-text="Download the table contents as a JSON file."></bim-button>
+              </div>
+            </div>
+            ${attributesTable}
+          </bim-panel-section>
+        </bim-panel>
+      `;
+      container.appendChild(BIMPanelContainer);
     };
 
-    init().catch(console.error);
+    init();
 
     return () => {
       if (world?.renderer) world.renderer.dispose();
       if (world?.scene) world.scene.dispose();
       if (world?.camera) world.camera.dispose();
-      if (stats?.dom) stats.dom.remove();
 
-      const panelContainer = document.querySelector('.options-menu');
-      if (panelContainer) panelContainer.remove();
-      const buttonContainer = document.querySelector('.phone-menu-toggler');
-      if (buttonContainer) buttonContainer.remove();
+      const BIMPanelContainer = document.querySelector('.phone-menu-toggler');
+      if (BIMPanelContainer) BIMPanelContainer.remove();
     };
   }, []);
 
-  return <div id="container" style={{ width: '100%', height: '80vh', position: 'relative' }} />;
+  return (
+    <div id="container" style={{ width: '100%', height: '80vh', position: 'relative' }}>
+      <div ref={viewportRef} style={{ width: '100%', height: '80%' }}></div>
+    </div>
+  );
 };
 
 export default IFCViewer3;

@@ -37,10 +37,15 @@ const TeamDataSpaces = () => {
   }, [dispatch, token]);
 
   const filteredProjects = Array.isArray(projects)
-    ? projects.filter(project =>
-        project.employees.some(employee => employee.personID === user.personID)
-      )
-    : [];
+  ? projects.filter(project =>
+      project &&
+      Array.isArray(project.employees) &&
+      Array.isArray(project.projectleader) &&
+      (project.employees.some(employee => employee.personID === user.personID) ||
+      project.projectleader.some(leader => leader.personID === user.personID))
+    )
+  : [];
+
 
   const userTeams = Array.isArray(teams)
     ? teams.filter(team =>

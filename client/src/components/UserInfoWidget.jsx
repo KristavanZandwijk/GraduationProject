@@ -34,14 +34,17 @@ const UserWidget = () => {
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/companies', {
+        const response = await axios.get('http://localhost:5001/companies/all', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const companies = Array.isArray(response.data) ? response.data : [];
         setCompanies(companies);
-        const filteredCompanies = companies.filter(company =>
-          company.employees.some(employee => employee.personID === user.personID)
-        );
+        const filteredCompanies = Array.isArray(companies)
+        ? companies.filter(company =>
+            company.employees.some(employee => employee.personID === user.personID) ||
+            company.companyOwner.some(owner => owner.personID === user.personID)
+          )
+        : [];
         setFilteredCompanies(filteredCompanies);
       } catch (error) {
         console.error('Failed to fetch companies:', error);
@@ -55,9 +58,16 @@ const UserWidget = () => {
         });
         const projects = Array.isArray(response.data) ? response.data : [];
         setProjects(projects);
-        const filteredProjects = projects.filter(project =>
-          project.employees.some(employee => employee.personID === user.personID)
-        );
+        const filteredProjects = Array.isArray(projects)
+        ? projects.filter(project =>
+            project &&
+            Array.isArray(project.employees) &&
+            Array.isArray(project.projectleader) &&
+            (project.employees.some(employee => employee.personID === user.personID) ||
+            project.projectleader.some(leader => leader.personID === user.personID))
+          )
+        : [];
+
         setFilteredProjects(filteredProjects);
       } catch (error) {
         console.error('Failed to fetch projects:', error);

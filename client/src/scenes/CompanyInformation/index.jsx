@@ -19,7 +19,7 @@ const CompanyInformation = () => {
 
   const fetchCompanies = async () => {
     try {
-      const response = await axios.get('http://localhost:5001/companies', {
+      const response = await axios.get('http://localhost:5001/companies/all', {
         headers: { Authorization: `Bearer ${token}` },
       });
       dispatch(setCompanies(Array.isArray(response.data) ? response.data : []));
@@ -57,10 +57,12 @@ const CompanyInformation = () => {
   }, [dispatch, token]);
 
   const filteredCompanies = Array.isArray(companies)
-    ? companies.filter(company =>
-        company.employees.some(employee => employee.personID === user.personID)
-      )
-    : [];
+  ? companies.filter(company =>
+      company.employees.some(employee => employee.personID === user.personID) ||
+      company.companyOwner.some(owner => owner.personID === user.personID)
+    )
+  : [];
+
 
   const handleCompanyUpdate = () => {
     fetchCompanies(); // Ensure fetchCompanies is defined and called here

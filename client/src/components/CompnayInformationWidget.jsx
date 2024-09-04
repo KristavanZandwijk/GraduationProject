@@ -46,7 +46,7 @@ const CombinedCompanyInfoWidget = ({ company, projects, employees, companyOwner,
       }
     };
 
-    fetchUsers();
+    fetchUsers(); 
     fetchTeams();
   }, [token, dispatch]);
 

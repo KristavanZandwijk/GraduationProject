@@ -28,21 +28,28 @@ const roles = [
   "building owner",
   "element owner",
   "building manager",
-  "team leader", 
+  "team leader",
   "project leader", 
-  "admin", 
-  "architect", 
-  "structural engineer", 
-  "contractor", 
-  "urban planner", 
-  "sustainability consultant", 
-  "BIM manager", 
-  "legal advisor", 
+  "admin",
+  "architect",
+  "structural engineer",
+  "contractor",
+  "urban planner",
+  "sustainability consultant",
+  "BIM manager",
+  "legal advisor",
   "IT support",
   "director",
   "HR manager",
   "CEO",
   "company owner",
+  "site manager",
+  "health and safety officer",
+  'quality manager',
+  'engineering manager',
+  'design manager',
+  'project director',
+  'contract officer',
 ];
 
 const AdminTable = () => {
@@ -95,10 +102,9 @@ const AdminTable = () => {
         },
         body: JSON.stringify({ role: selectedRoles }),
       });
-
+  
       if (response.ok) {
         const updatedUser = await response.json();
-        dispatch(updateUser(updatedUser));
         setUsers(users.map(user => user._id === userId ? updatedUser : user));
         setIsEditing(false);
       }
@@ -106,6 +112,7 @@ const AdminTable = () => {
       console.error('Failed to update user:', error);
     }
   };
+  
 
   if (loading) return <Typography>Loading...</Typography>;
   if (error) return <Typography color="error">{error}</Typography>;

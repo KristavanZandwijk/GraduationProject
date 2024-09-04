@@ -105,17 +105,24 @@ const UserWidget = ({ userId, picturePath }) => {
 
   // Filter projects based on the user's involvement
   const filteredProjects = Array.isArray(projects)
-    ? projects.filter(project =>
-        project.employees.some(employee => employee.personID === user.personID)
-      )
-    : [];
+  ? projects.filter(project =>
+      project &&
+      Array.isArray(project.employees) &&
+      Array.isArray(project.projectleader) &&
+      (project.employees.some(employee => employee.personID === user.personID) ||
+      project.projectleader.some(leader => leader.personID === user.personID))
+    )
+  : [];
+
 
   // Filter companies based on the user's involvement
   const filteredCompanies = Array.isArray(companies)
-    ? companies.filter(company =>
-        company.employees.some(employee => employee.personID === user.personID)
-      )
-    : [];
+  ? companies.filter(company =>
+      company.employees.some(employee => employee.personID === user.personID) ||
+      company.companyOwner.some(owner => owner.personID === user.personID)
+    )
+  : [];
+
 
   // Filter teams based on the user's involvement in projects
   const filteredTeams = Array.isArray(teams)

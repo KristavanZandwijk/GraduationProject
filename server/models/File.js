@@ -30,10 +30,10 @@ const FileSchema = mongoose.Schema(
             type:String,
         },
         elementDataSpaceID:{
-            type: String,
+            type: Array,
         },
         buildingDataSpaceID:{
-            type: String,
+            type: Array,
         },
         companyDataSpaceID:{
             type: String,

@@ -90,7 +90,13 @@ const UserSchema = new mongoose.Schema(
         "HR manager",
         "CEO",
         "company owner",
-
+        "site manager",
+        "health and safety officer",
+        'quality manager',
+        'engineering manager',
+        'design manager',
+        'project director',
+        'contract officer',
       ],
     },
     phoneNumber:{

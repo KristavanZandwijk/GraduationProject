@@ -105,9 +105,12 @@ const ProjectDataSpace = () => {
       ? projects.filter(project =>
           project &&
           Array.isArray(project.employees) &&
-          project.employees.some(employee => employee.personID === user.personID))
+          (project.employees.some(employee => employee.personID === user.personID) ||
+          project.projectleader.some(leader => leader.personID === user.personID))
+        )
       : [];
   }, [projects, user.personID]);
+  
 
   const handleProjectClick = (projectID) => {
     navigate(`/companydataspace/${selectedCompany || companyID}/${projectID}`);

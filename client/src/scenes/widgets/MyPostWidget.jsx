@@ -81,40 +81,41 @@ const MyPostWidget = ({ picturePath }) => {
           p="1rem"
         >
           <Dropzone
-            acceptedFiles=".jpg,.jpeg,.png,.ifc"
-            multiple={false}
-            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
-          >
-            {({ getRootProps, getInputProps }) => (
-              <FlexBetween>
-                <Box
-                  {...getRootProps()}
-                  border={`2px dashed ${theme.palette.secondary.main}`}
-                  p="1rem"
-                  width="100%"
-                  sx={{ "&:hover": { cursor: "pointer" } }}
-                >
-                  <input {...getInputProps()} />
-                  {!image ? (
-                    <p>Add Image Here</p>
-                  ) : (
-                    <FlexBetween>
-                      <Typography>{image.name}</Typography>
-                      <EditOutlined />
-                    </FlexBetween>
-                  )}
-                </Box>
-                {image && (
-                  <IconButton
-                    onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
-                  >
-                    <DeleteOutlined />
-                  </IconButton>
-                )}
-              </FlexBetween>
+        acceptedFiles=".jpg,.jpeg,.png,.ifc,.mp4"  // Include .mp4 here
+        multiple={false}
+        onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}  // You might want to rename `setImage` to something more generic like `setFile`
+      >
+        {({ getRootProps, getInputProps }) => (
+          <FlexBetween>
+            <Box
+              {...getRootProps()}
+              border={`2px dashed ${theme.palette.secondary.main}`}
+              p="1rem"
+              width="100%"
+              sx={{ "&:hover": { cursor: "pointer" } }}
+            >
+              <input {...getInputProps()} />
+              {!image ? (  // You might want to rename `image` to something more generic like `file`
+                <p>Add Image or Video Here</p>  // Update the placeholder text
+              ) : (
+                <FlexBetween>
+                  <Typography>{image.name}</Typography>  // Similarly, this should refer to `file.name`
+                  <EditOutlined />
+                </FlexBetween>
+              )}
+            </Box>
+            {image && (
+              <IconButton
+                onClick={() => setImage(null)}  // Again, consider renaming to `setFile(null)`
+                sx={{ width: "15%" }}
+              >
+                <DeleteOutlined />
+              </IconButton>
             )}
-          </Dropzone>
+          </FlexBetween>
+        )}
+      </Dropzone>
+
         </Box>
       )}
 

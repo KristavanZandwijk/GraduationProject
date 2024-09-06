@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import Header from 'components/Header';
 import IFCViewer3 from 'components/IFCViewer3';
 
+
 const DataPrivacy = () => {
   return (
     <Box m="1.5rem 2.5rem">

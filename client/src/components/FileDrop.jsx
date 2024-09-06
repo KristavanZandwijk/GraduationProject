@@ -101,7 +101,7 @@ const FileDrop = ({ picturePath }) => {
       ))}
     </Select>
   );
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       const endpoints = [

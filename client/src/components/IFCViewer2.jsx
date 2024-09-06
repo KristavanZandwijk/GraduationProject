@@ -137,7 +137,7 @@ const IFCViewer2 = ({ selectedFilepaths }) => {
             <bim-button class="expand-table-button" label="Expand"></bim-button>
             <bim-button class="copy-tsv-button" label="Copy as TSV"></bim-button>
             <bim-text-input class="search-property-input" placeholder="Search Property" debounce="250"></bim-text-input>
-            <div class="properties-table-container"></div>
+            ${propertiesTable}
           </bim-panel-section>
         </bim-panel>
       `;

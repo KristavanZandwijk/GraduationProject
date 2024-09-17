@@ -51,8 +51,8 @@ function App() {
               <Route path="/home" element={isAuth ? <HomePage /> : <Navigate to="/" />} />
               <Route path="/home/:userId" element={isAuth ? <ProfilePage /> : <Navigate to="/" />} />
               
-              <Route path="/urbanscale/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
-              <Route path="/urbanscale" element={isAuth ? <UrbanScale /> : <Navigate to="/" />} />
+              <Route path="/buildingdataspace/newbuilding" element={isAuth ? <NewBuilding /> : <Navigate to="/" />} />
+              <Route path="/buildingdataspace" element={isAuth ? <UrbanScale /> : <Navigate to="/" />} />
               
               <Route path="/buildingdataspace/:buildingDataSpaceID" element={isAuth ? <BuildingDataSpaceID /> : <Navigate to="/" />} />
               <Route path="/buildingdataspace/:buildingDataSpaceID/:fileID" element={isAuth ? <File /> : <Navigate to="/" />} />

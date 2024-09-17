@@ -182,7 +182,7 @@ const IFCViewer2 = ({ selectedFilepaths }) => {
         console.log("Highlight event triggered, fragmentIdMap:", fragmentIdMap);
         updatePropertiesTable({ fragmentIdMap });
       });
-
+ 
       highlighter.events.select.onClear.add(() => {
         console.log("Clear event triggered");
         updatePropertiesTable({ fragmentIdMap: {} });

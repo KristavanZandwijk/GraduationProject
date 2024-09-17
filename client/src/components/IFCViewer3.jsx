@@ -119,7 +119,7 @@ const IFCViewer3 = () => {
           ];
           return attributes;
         },
-      });
+      }); 
 
       attributesTable.expanded = true;
       attributesTable.indentationInText = true;

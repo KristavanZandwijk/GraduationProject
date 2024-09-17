@@ -28,7 +28,7 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
             <TableCell>Related To Team</TableCell>
             <TableCell>Status of Sharing</TableCell>
             <TableCell>Uploaded At</TableCell>
-            <TableCell>Download</TableCell> {/* New column for downloading files */}
+            <TableCell>View in new tab</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -58,7 +58,7 @@ const DataSpaceTable = ({ files, selectedFilepaths, handleFileClick, handleCheck
                   color="primary" 
                   onClick={() => handleDownload(file.filePath)}
                 >
-                  Download
+                  VIEW
                 </Button>
               </TableCell> {/* New cell for the download button */}
             </TableRow>

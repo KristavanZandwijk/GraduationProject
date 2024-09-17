@@ -78,15 +78,9 @@ const Sidebar = ({
       icon: null,
     },
     {
-      text: "Urban Scale",
-      icon: <MapOutlined />,
-      path: "/urbanscale",
-    },
-    {
       text: "Building Data Space",
       icon: <AccountBalanceOutlined />,
       path: "/buildingdataspace",
-      disabled: true, // Add a 'disabled' property
     },
     {
       text: "Element Data Space",

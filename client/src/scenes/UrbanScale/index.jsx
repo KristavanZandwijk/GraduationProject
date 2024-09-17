@@ -59,14 +59,14 @@ const UrbanScale = () => {
   return (
     <Box m="1.5rem 2.5rem" height="100vh" display="flex" flexDirection="column">
       <Header
-        title="Urban Scale"
-        subtitle="This map shows the buildings (ifc files) that are accessible by you."
+        title="Buildings"
+        subtitle="This map shows the buildings (ifc files) that are publicly available. Click on the building to navigate to the specific building data space."
       />
       <Box display="flex" justifyContent="flex-end" mb={2}>
         <RoleBasedButton
           roles={['admin', 'building owner', 'team leader', 'project leader']}
           buttonText="Create New Building"
-          navigateTo="/urbanscale/newbuilding"
+          navigateTo="/buildingdataspace/newbuilding"
         />
       </Box>
       <Box mt={3}>
@@ -81,7 +81,7 @@ const UrbanScale = () => {
           />
         )}
       </Box>
-      <Box flex="1" height="150vh">
+      <Box flex="1" height="100vh">
         <IFCViewer selectedFilepaths={selectedFilePaths} />
       </Box>
     </Box>

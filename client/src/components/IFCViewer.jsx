@@ -129,7 +129,7 @@ const IFCViewer = ({ selectedFilepaths }) => {
               <bim-button label="Dispose fragments" onclick="window.disposeFragments();"></bim-button>
             </bim-panel-section>
           </bim-panel-section>
-        </bim-panel>
+        </bim-panel> 
       `;
 
       const buttonHTML = `

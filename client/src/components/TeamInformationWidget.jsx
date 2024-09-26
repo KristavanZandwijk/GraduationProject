@@ -236,9 +236,25 @@ const TeamInformationWidget = ({ team, onTeamUpdate }) => {
             <Typography variant="subtitle1">
               <strong>Team Data Space:</strong> {team.teamDataSpaceID}
             </Typography>
+            
           </>
         )}
           <Box mt={3}>
+          <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
+            Client(s):
+          </Typography>
+          {Array.isArray(team.clients) && team.clients.length > 0 ? (
+            team.clients.map((clients) => (
+              <Typography key={clients.personID} variant="subtitle1">
+                {getUserName(clients.personID)} - {clients.personID}
+              </Typography>
+            ))
+          ) : (
+            <Typography variant="subtitle1">No client(s)</Typography>
+          )}
+        </Box>
+        
+        <Box mt={3}>
           <Typography fontWeight="bold" variant="subtitle1" gutterBottom>
             Team Leader(s):
           </Typography>

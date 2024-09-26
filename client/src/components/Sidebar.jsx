@@ -33,6 +33,7 @@ import {
   FileUploadOutlined,
   Diversity3Outlined,
   InfoOutlined,
+  SupervisorAccountOutlined,
 } from "@mui/icons-material";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
@@ -95,6 +96,11 @@ const Sidebar = ({
       text: "Company Overview",
       icon: <WorkOutlineOutlined />,
       path: "/companyinformation",
+    },
+    {
+      text: "Client Data Space",
+      icon: <SupervisorAccountOutlined />,
+      path: "/clientdataspace",
     },
     {
       text: "Team Data Space",

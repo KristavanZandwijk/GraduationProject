@@ -35,6 +35,9 @@ import NewTeam from "scenes/NewTeam";
 import TeamDataSpaceIDFiles from "scenes/TeamDataSpaceID";
 import Information from "scenes/Information";
 import Admin from "scenes/Admin";
+import ClientDataSpace from "scenes/ClientDataSpace";
+import ClientProjectDataSpaceID from "scenes/ClientProjectDataSpaceID";
+import ClientTeamDataSpaceID from "scenes/ClientTeamDataSpaceID";
 
 function App() {
   const mode = useSelector((state) => state.mode);
@@ -71,6 +74,10 @@ function App() {
               <Route path="/teamdataspace" element={isAuth ? <TeamDataSpaces /> : <Navigate to="/" />} />
               <Route path="/teamdataspace/:teamID" element={isAuth ? <TeamDataSpaceIDFiles/> : <Navigate to="/" />} />
               <Route path="/teamdataspace/newteam" element={isAuth ? <NewTeam /> : <Navigate to="/" />} />
+
+              <Route path="/clientdataspace" element={isAuth ? <ClientDataSpace /> : <Navigate to="/" />} />
+              <Route path="/clientdataspace/project/:projectID" element={isAuth ? <ClientProjectDataSpaceID /> : <Navigate to="/" />} />
+              <Route path="/clientdataspace/team/:teamID" element={isAuth ? <ClientTeamDataSpaceID /> : <Navigate to="/" />} />
 
 
               <Route path="/dataupload" element={isAuth ? <NewFile /> : <Navigate to="/" />} />

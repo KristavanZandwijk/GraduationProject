@@ -6,24 +6,25 @@ import Header from 'components/Header';
 import DataSpaceTable from 'components/DataSpaceTable';
 import { useTheme } from '@mui/material';
 import IFCViewer from 'components/IFCViewer';
+import { useDispatch, useSelector } from 'react-redux';
 
-const ProjectDataSpaceID = () => {
+const ClientProjectDataSpaceID = () => {
   const { projectID } = useParams();
   const { buildingDataSpaceID } = useParams();
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedFilepaths, setSelectedFilepaths] = useState([]);
+  const user = useSelector((state) => state.user || {});
   const navigate = useNavigate();
   const theme = useTheme();
 
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get('http://localhost:5001/files', {
-        });
+        const response = await axios.get('http://localhost:5001/files', {});
 
-        const allowedStatuses = ['sharedCompany', 'sharedTeam', 'sharedClient', 'public'];
+        const allowedStatuses = ['sharedClient', 'public'];
         const filteredFiles = response.data.filter(
           (file) => file.relatedToProject === projectID && allowedStatuses.includes(file.status)
         );
@@ -37,7 +38,7 @@ const ProjectDataSpaceID = () => {
     };
 
     fetchFiles();
-  }, []);
+  }, [projectID]);
 
   const handleFileClick = (fileID) => {
     navigate(`/buildingdataspace/${buildingDataSpaceID}/${fileID}`);
@@ -63,8 +64,16 @@ const ProjectDataSpaceID = () => {
     <Box m="1.5rem 2.5rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="Project Data Space"
-          subtitle="This page shows all information that is linked to the project"
+          title="Client Data Space"
+          subtitle={
+            <>
+              This page shows all information of the project with projectID: <strong>{projectID}</strong>, where you {' '}
+              <Typography component="span" fontWeight="bold">
+                {user.firstName} {user.lastName}
+              </Typography>{' '}
+              are registered as a client.
+            </>
+          }
         />
       </Box>
       <DataSpaceTable
@@ -80,4 +89,4 @@ const ProjectDataSpaceID = () => {
   );
 };
 
-export default ProjectDataSpaceID;
+export default ClientProjectDataSpaceID;

@@ -9,7 +9,7 @@ import DataSpaceTable from 'components/DataSpaceTable';
 import IFCViewer from 'components/IFCViewer';
 import { setCompanies, setProjects, setUsers, setTeams } from 'state';
 
-const TeamDataSpaceIDFiles = () => {
+const ClientTeamDataSpaceID = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { teamID } = useParams();
@@ -74,7 +74,7 @@ const TeamDataSpaceIDFiles = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const allowedStatuses = ['sharedTeam', 'sharedClient', 'public'];
+        const allowedStatuses = ['sharedClient', 'public'];
         const filteredFiles = response.data.filter(
           (file) => file.relatedToTeam === teamID && allowedStatuses.includes(file.status)
         );
@@ -145,7 +145,7 @@ const TeamDataSpaceIDFiles = () => {
         title="Team Data Spaces"
         subtitle={
           <>
-            This page shows the files shared with team{' '}
+            This page shows the files of team{' '}
             <Typography component="span" fontWeight="bold">
               {selectedTeam ? selectedTeam.teamName : 'N/A'}
             </Typography>{' '}
@@ -153,7 +153,7 @@ const TeamDataSpaceIDFiles = () => {
             <Typography component="span" fontWeight="bold">
               ({user.firstName} {user.lastName})
             </Typography>{' '}
-            are registered as a member.
+            are registered client.
           </>
         }
       />
@@ -175,4 +175,4 @@ const TeamDataSpaceIDFiles = () => {
   );
 };
 
-export default TeamDataSpaceIDFiles;
+export default ClientTeamDataSpaceID;

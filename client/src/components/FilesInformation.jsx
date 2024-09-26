@@ -213,6 +213,7 @@ const FileTable = () => {
                             fullWidth
                           >
                             <MenuItem value="private">Private</MenuItem>
+                            <MenuItem value="sharedClient">Shared with Client</MenuItem>
                             <MenuItem value="sharedCompany">Shared with Company</MenuItem>
                             <MenuItem value="sharedTeam">Shared with Team</MenuItem>
                             <MenuItem value="public">Public</MenuItem>

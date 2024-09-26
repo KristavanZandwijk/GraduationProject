@@ -267,6 +267,7 @@ const FileDrop = ({ picturePath }) => {
               { value: 'private', label: 'Private' },
               { value: 'sharedCompany', label: 'Shared within project team within the company' },
               { value: 'sharedTeam', label: 'Shared with entire team (also with the employees of other companies)' },
+              { value: 'sharedClient', label: 'Shared with the client' },
               { value: 'public', label: 'Public' },
             ]}
             placeholder="What is the sharing status of the file?"

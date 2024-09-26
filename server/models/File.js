@@ -46,7 +46,7 @@ const FileSchema = mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["private", "sharedCompany", "sharedTeam", "public"], // Allowed values 
+            enum: ["private", "sharedClient", "sharedCompany", "sharedTeam", "public"], // Allowed values 
         },
     },
     { timestamps: true }

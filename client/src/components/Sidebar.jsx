@@ -126,35 +126,35 @@ const Sidebar = ({
       icon: <FileUploadOutlined />,
       path: "/dataupload",
     },
-    {
-      text: "Features",
-      icon: null,
-    },
-    {
-      text: "Search Function",
-      icon: <SearchOutlined />,
-      path: "/searchfunction",
-    },
-    {
-      text: "Project Learning",
-      icon: <LocalLibraryOutlined />,
-      path: "/projectlearning",
-    },
-    {
-      text: "Element Passport",
-      icon: <FingerprintOutlined />,
-      path: "/elementpassport",
-    },
-    {
-      text: "Element Reuse",
-      icon: <RecyclingOutlined />,
-      path: "/elementreuse",
-    },
-    {
-      text: "Emergency Plans",
-      icon: <FireExtinguisherOutlined />,
-      path: "/emergencyplans",
-    },
+    // {
+    //   text: "Features",
+    //   icon: null,
+    // },
+    // {
+    //   text: "Search Function",
+    //   icon: <SearchOutlined />,
+    //   path: "/searchfunction",
+    // },
+    // {
+    //   text: "Project Learning",
+    //   icon: <LocalLibraryOutlined />,
+    //   path: "/projectlearning",
+    // },
+    // {
+    //   text: "Element Passport",
+    //   icon: <FingerprintOutlined />,
+    //   path: "/elementpassport",
+    // },
+    // {
+    //   text: "Element Reuse",
+    //   icon: <RecyclingOutlined />,
+    //   path: "/elementreuse",
+    // },
+    // {
+    //   text: "Emergency Plans",
+    //   icon: <FireExtinguisherOutlined />,
+    //   path: "/emergencyplans",
+    // },
     {
       text: "Profile",
       icon: null,
@@ -164,11 +164,11 @@ const Sidebar = ({
       icon: <PersonOutlined />,
       path: "/profile",
     },
-    {
-      text: "Data Privacy",
-      icon: <AdminPanelSettingsOutlined />,
-      path: "/dataprivacy",
-    },
+    // {
+    //   text: "Data Privacy",
+    //   icon: <AdminPanelSettingsOutlined />,
+    //   path: "/dataprivacy",
+    // },
     {
       text: "Information",
       icon: <InfoOutlined />,

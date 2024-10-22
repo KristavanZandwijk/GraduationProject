@@ -53,14 +53,14 @@ const AdvertWidget = () => {
           Acknowledgement
         </Typography>
         <Typography variant="body1" gutterBottom>
-              The defense of this thesis took place on the XXX of November 2024, after which the research became public. The development code of the data space can be found on Github  
+              The defense of this thesis took place on the 28th of November 2024, after which the research became public. The development code of the data space can be found on Github  
               <a href='https://github.com/KristavanZandwijk/GraduationProject' target="_blank" rel="noopener noreferrer">
                 <GitHub style={{ fontSize: 16, color: 'black', marginLeft: '0.5rem' }} />
               </a>.
               The code is openly accessible, and is allowed to be re-used. If you use this code, please cite it as:
             </Typography>
             <Typography variant="body1">
-              van Zandwijk, G. R. K. (2024). [Title report] 
+              van Zandwijk, G. R. K. (2024). Improving Information Exchange in the Architecture, Engineering, Construction, and Operations Industry: Governance and Development of a Data Space 
             </Typography>
     </WidgetWrapper>
   );

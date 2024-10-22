@@ -64,7 +64,7 @@ const ClientProjectDataSpaceID = () => {
     <Box m="1.5rem 2.5rem">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header
-          title="Client Data Space"
+          title="Client View Project Data Space"
           subtitle={
             <>
               This page shows all information of the project with projectID: <strong>{projectID}</strong>, where you {' '}

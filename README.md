@@ -1,6 +1,6 @@
 //Demonstration Video
 A demonstration of the UI can be found on:
-https://www.youtube.com/watch?v=6d6nkbIOrmE&t=44s
+* https://www.youtube.com/watch?v=6d6nkbIOrmE&t=44s
 
 
 //Setting up the environment

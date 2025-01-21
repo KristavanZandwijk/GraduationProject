@@ -2,6 +2,9 @@
 A demonstration of the UI can be found on:
 * https://www.youtube.com/watch?v=6d6nkbIOrmE&t=44s
 
+//Report
+* https://research.tue.nl/nl/studentTheses/seamless-and-trustworthy-information-exchange-in-the-architecture
+
 
 //Setting up the environment
 1.	Installation necessary software:
